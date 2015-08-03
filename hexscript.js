@@ -56,8 +56,7 @@ function start(error, ushex) {
   function mousedown(d) {
     mousing = d.fill ? -1 : +1;
     mousemove.apply(this, arguments);
-    d.cd = "Cali";
-    console.log(d.id);
+    console.log(d.properties);
   }
 
   function mousemove(d) {
@@ -73,8 +72,7 @@ function start(error, ushex) {
   }
 
   function redraw(border) {
-    // border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, function(a, b) {return a.fill ^ b.fill; })));
-    border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, function(a, b) {return a.state != b.state;  })));
+    border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, function(a, b) {return a.properties.state != b.properties.state;  })));
   }
 
   function hexProjection(radius) {

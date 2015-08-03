@@ -40,17 +40,14 @@ function hexTopology(radius, width, height) {
         type: "Polygon",
         arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
         fill: Math.random() > i / n * 2,
-        count: hexCount++,
       });
 
       statesgeo.push({
         type: "Polygon",
         arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
         fill: hexCount == 488 || hexCount == 489,
-        state: getState(hexCount),
-        count: hexCount,
-        id: hexCount,
-        cd: ""
+        id: hexCount++,
+        properties: {state: getState(hexCount)},
       });
     }
   }
