@@ -49,6 +49,7 @@ function hexTopology(radius, width, height) {
         fill: hexCount == 488 || hexCount == 489,
         state: getState(hexCount),
         count: hexCount,
+        id: hexCount,
         cd: ""
       });
     }
@@ -70,7 +71,8 @@ function hexTopology(radius, width, height) {
 
   return {
     type: "Topology",
-    objects: {hexagons: {type: "GeometryCollection", geometries: geometries}, states: {type: "GeometryCollection", geometries: statesgeo}},
+    // objects: {hexagons: {type: "GeometryCollection", geometries: geometries}, states: {type: "GeometryCollection", geometries: statesgeo}},
+    objects: {states: {type: "GeometryCollection", geometries: statesgeo}},
     arcs: arcs,
     transform: {translate: [0, 0], scale: [1, 1]}
   };

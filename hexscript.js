@@ -56,8 +56,8 @@ function start(error, ushex) {
   function mousedown(d) {
     mousing = d.fill ? -1 : +1;
     mousemove.apply(this, arguments);
-    d.cd = "Cali"
-    console.log(d.count);
+    d.cd = "Cali";
+    console.log(d.id);
   }
 
   function mousemove(d) {
