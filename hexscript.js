@@ -16,8 +16,10 @@ var svg = d3.select(".hexagonal").append("svg")
     .attr("height", height);
 
 console.log(topology);
+console.log(topology.objects.hexagons);
 
-var hexFeatures = topology.objects.hexagons.geometries;
+var hexFeatures = topology.objects.states.geometries;
+var hexFeatures = topojson.feature(topology, topology.objects.states).features;
 
 var hexagons = svg.append("g")
     .attr("class", "hexagon")
@@ -25,13 +27,19 @@ var hexagons = svg.append("g")
     .data(hexFeatures)
   .enter().append("path")
     .attr("d", function(d) { return path(topojson.feature(topology, d)); })
-    .attr("class", function(d) { return d.fill ? "fill" : null; })
+    // .attr("class", function(d) { return d.fill ? "fill" : null; })
+    .attr("class", function(d) {
+      if (d.count % 2 == 0)
+        return "even";
+      else
+        return "odd";
+    })
     .on("mousedown", mousedown)
     .on("mousemove", mousemove)
     .on("mouseup", mouseup);
 
 svg.append("path")
-    .datum(topojson.mesh(topology, topology.objects.hexagons))
+    .datum(topojson.mesh(topology, topology.objects.states))
     .attr("class", "mesh")
     .attr("d", path);
 
@@ -41,11 +49,13 @@ var border = svg.append("path")
 
 var mousing = 0;
 
+window.topology = topology;
+
 function mousedown(d) {
   mousing = d.fill ? -1 : +1;
   mousemove.apply(this, arguments);
   d.cd = "Cali"
-  console.log(d);
+  console.log(d.count);
 }
 
 function mousemove(d) {
@@ -61,7 +71,8 @@ function mouseup() {
 }
 
 function redraw(border) {
-  border.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function(a, b) {return a.fill ^ b.fill; })));
+  // border.attr("d", path(topojson.mesh(topology, topology.objects.states, function(a, b) {return a.fill ^ b.fill; })));
+  border.attr("d", path(topojson.mesh(topology, topology.objects.states, function(a, b) {return a.state != b.state;  })));
 }
 
 function hexTopology(radius, width, height) {
@@ -70,7 +81,7 @@ function hexTopology(radius, width, height) {
       m = Math.ceil((height + radius) / dy) + 1,
       n = Math.ceil(width / dx) + 1, // number across and down one level
       geometries = [],
-      states = [],
+      statesgeo = [],
       arcs = [];
 
   var hexCount = 0;
@@ -91,19 +102,34 @@ function hexTopology(radius, width, height) {
         count: hexCount++,
       });
 
-      states.push({
+      statesgeo.push({
         type: "Polygon",
         arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
         fill: hexCount == 488 || hexCount == 489,
+        state: getState(hexCount),
         count: hexCount,
         cd: ""
       });
     }
   }
 
+  function getState(i) {
+    if (i > 485 & i < 490) {
+      return "Iowa";
+    }
+    else {
+      if ( i > 390 & i < 395) {
+        return "Michigan";
+      }
+      else {
+        return "Oregon";
+      }
+    }
+  }
+
   return {
     type: "Topology",
-    objects: {hexagons: {type: "GeometryCollection", geometries: geometries, states: states}},
+    objects: {hexagons: {type: "GeometryCollection", geometries: geometries}, states: {type: "GeometryCollection", geometries: statesgeo}},
     arcs: arcs,
     transform: {translate: [0, 0], scale: [1, 1]}
   };
