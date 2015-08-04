@@ -6,25 +6,19 @@ var d3 = require("d3"),
 	fs = require("fs"),
 	topojson = require("topojson");
 
-var width = 1500,
-    height = 550,
-    radius = 20;
-
-var topology = hexTopology(radius, width, height);
+var topology = hexTopology();
 
 fs.writeFileSync("ushex.json", JSON.stringify(topology, null, 2));
 
-console.log("done");
+console.log("Completed Build");
 
-function hexTopology(radius, width, height) {
-	var dx = radius * 2 * Math.sin(Math.PI / 3),
-		dy = radius * 1.5,
-		m = Math.ceil((height + radius) / dy) + 1,
-		n = Math.ceil(width / dx) + 1, // number across and down one level
+function hexTopology() {
+	var n = 90, // number of hexagons horizontally
+		m = 60, // number of rows
 		geometries = [],
 		statesgeo = [],
-		arcs = []	
-	var hexCount = 0;
+		arcs = [],
+		hexCount = 0;
 
   for (var j = -1; j <= m; ++j) {
     for (var i = -1; i <= n; ++i) {
@@ -44,15 +38,15 @@ function hexTopology(radius, width, height) {
       statesgeo.push({
         type: "Polygon",
         arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
-        fill: hexCount == 488 || hexCount == 489,
         id: hexCount++,
         properties: {state: getState(hexCount)},
       });
     }
   }
+  console.log(hexCount);
 
   function getState(i) {
-    if (i > 185 & i < 190) {
+    if (i > 85 & i < 90) {
       return "Iowa";
     }
     else {
