@@ -23,7 +23,7 @@ svg {
 .hexMesh {
 	fill: none;
 	stroke: #000;
-	stroke-opacity: 0.2;
+	stroke-opacity: 0.3;
 	pointer-events: none;
 }
 
