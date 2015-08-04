@@ -37,7 +37,7 @@ function hexTopology() {
     			arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
     	  	});
 	
-    		if (++hexCount > 180) {
+    		if (++hexCount > 180) { // used to ignore the first line of hexagons that start off the page
     			statesgeo.push({
     				type: "Polygon",
     				arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
