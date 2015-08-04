@@ -1,5 +1,5 @@
-var width = 1100,
-    height = 630,
+var width = 1110,
+    height = 650,
     radius = 7;
 
 // 90 x 60 (width x height)
