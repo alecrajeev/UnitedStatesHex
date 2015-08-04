@@ -56,7 +56,7 @@ function hexTopology() {
     				type: "Polygon",
     				arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
     				id: hexCount-(2*n+1),
-    				properties: {state: getState(hexCount-(2*n+1))},
+    				properties: {state: getState(hexCount-(2*n+1)).split("-",2)[0], district: getState(hexCount-(2*n+1)).split("-",2)[1]},
     			});
   			}
     	}
@@ -68,19 +68,8 @@ function hexTopology() {
 			return id;
 		}
 		else {
-			return "New York";
+			return "Ocean-0";
 		}
-	  // if (i == 476 || i == 477 || i == 571 || i == 572 || i == 667) {
-	  //   return "Washington";
-	  // }
-	  // else {
-	  //   if ( i > 390 & i < 395) {
-	  //     return "Michigan";
-	  //   }
-	  //   else {
-	  //     return "New York";
-	  //   }
-	  // }
 	}
 
   return {

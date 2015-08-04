@@ -30,9 +30,11 @@ function start(error, ushex) {
 	  	.enter()
 	  	.append("path")
 	    .attr("d", path)
+	    .attr("class", function(d) {return d.properties.state;	})
 	    .on("mousedown", mousedown)
 	    .on("mousemove", mousemove)
 	    .on("mouseup", mouseup)	
+	
 	var hexMesh = svg.append("path")
    		.datum(topojson.mesh(ushex, ushex.objects.states))
    		.attr("class", "hexMesh")
@@ -49,7 +51,7 @@ function start(error, ushex) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
- 		console.log(d.id + " " + d.properties.state);
+ 		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
  	}
 
  	function mousemove(d) {

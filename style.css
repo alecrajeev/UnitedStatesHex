@@ -7,23 +7,18 @@ svg {
 	pointer-events: all;
 }
 
-.hexagon path {
-	-webkit-transition: fill 250ms linear;
-	transition: fill 250ms linear;
-}
-
 .hexagon :hover {
 	fill: pink;
 }
 
-.hexagon .fill {
+.Washington {
 	fill: red;
 }
 
 .hexMesh {
 	fill: none;
 	stroke: #000;
-	stroke-opacity: 0.3;
+	stroke-opacity: 0.2;
 	pointer-events: none;
 }
 
