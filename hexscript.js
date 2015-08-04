@@ -1,5 +1,5 @@
-var width = 1110,
-    height = 650,
+var width = 1250,
+    height = 700,
     radius = 7;
 
 // 90 x 60 (width x height)
@@ -49,7 +49,7 @@ function start(error, ushex) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
- 		console.log(d.id);
+ 		console.log(d.id + d.properties.state);
  	}
 
  	function mousemove(d) {

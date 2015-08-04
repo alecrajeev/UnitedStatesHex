@@ -6,15 +6,34 @@ var d3 = require("d3"),
 	fs = require("fs"),
 	topojson = require("topojson");
 
-var topology = hexTopology();
+var congress = JSON.parse(fs.readFileSync("congress.json", "utf8"));
 
-fs.writeFileSync("ushex.json", JSON.stringify(topology, null, 2));
+console.log(congress);
 
-console.log("Completed Build");
+var congressID = {};
+
+start(congress);
+
+function start(c) {
+	for (i = 0; i < c.length; i++) {
+		c[i].ID = +c[i].ID;
+		congressID[c[i].ID] = c[i].State + "-" + c[i].CD;
+	}
+}
+
+console.log(congressID[270]);
+
+
+// var topology = hexTopology();
+
+// fs.writeFileSync("ushex.json", JSON.stringify(topology, null, 2));
+
+// console.log("Completed Build");
 
 function hexTopology() {
-	var n = 90, // number of hexagons horizontally
-		m = 62, // number of rows
+
+	var n = 95, // number of hexagons horizontally
+		m = 67, // number of rows
 		geometries = [],
 		statesgeo = [],
 		arcs = [],
@@ -37,28 +56,27 @@ function hexTopology() {
     			arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
     	  	});
 	
-    		if (++hexCount > 180) { // used to ignore the first line of hexagons that start off the page
+    		if (++hexCount > (2*n)) { // used to ignore the first line of hexagons that start off the page
     			statesgeo.push({
     				type: "Polygon",
     				arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
-    				id: hexCount-181,
-    				properties: {state: getState(hexCount)},
+    				id: hexCount-(2*n-1),
+    				properties: {state: getState(hexCount-(2*n+1))},
     			});
   			}
     	}
 	}
-  console.log(hexCount - 181);
 
   function getState(i) {
-    if (i > 85 & i < 90) {
-      return "Iowa";
+    if (i == 476 || i == 477 || i == 571 || i == 572 || i == 667) {
+      return "Washington";
     }
     else {
       if ( i > 390 & i < 395) {
         return "Michigan";
       }
       else {
-        return "Oregon";
+        return "New York";
       }
     }
   }
