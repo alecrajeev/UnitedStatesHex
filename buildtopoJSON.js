@@ -17,15 +17,14 @@ fs.writeFileSync("ushex.json", JSON.stringify(topology, null, 2));
 console.log("done");
 
 function hexTopology(radius, width, height) {
-  var dx = radius * 2 * Math.sin(Math.PI / 3),
-      dy = radius * 1.5,
-      m = Math.ceil((height + radius) / dy) + 1,
-      n = Math.ceil(width / dx) + 1, // number across and down one level
-      geometries = [],
-      statesgeo = [],
-      arcs = [];
-
-  var hexCount = 0;
+	var dx = radius * 2 * Math.sin(Math.PI / 3),
+		dy = radius * 1.5,
+		m = Math.ceil((height + radius) / dy) + 1,
+		n = Math.ceil(width / dx) + 1, // number across and down one level
+		geometries = [],
+		statesgeo = [],
+		arcs = []	
+	var hexCount = 0;
 
   for (var j = -1; j <= m; ++j) {
     for (var i = -1; i <= n; ++i) {
@@ -69,7 +68,7 @@ function hexTopology(radius, width, height) {
   return {
     type: "Topology",
     // objects: {hexagons: {type: "GeometryCollection", geometries: geometries}, states: {type: "GeometryCollection", geometries: statesgeo}},
-    objects: {states: {type: "GeometryCollection", geometries: statesgeo}},
+    objects: {states: {type: "GeometryCollection", bbox: [0,0,m,n], geometries: statesgeo}},
     arcs: arcs,
     transform: {translate: [0, 0], scale: [1, 1]}
   };

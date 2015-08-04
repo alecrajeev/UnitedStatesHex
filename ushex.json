@@ -3,6 +3,12 @@
   "objects": {
     "states": {
       "type": "GeometryCollection",
+      "bbox": [
+        0,
+        0,
+        20,
+        45
+      ],
       "geometries": [
         {
           "type": "Polygon",
