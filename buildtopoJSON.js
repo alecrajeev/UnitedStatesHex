@@ -8,8 +8,6 @@ var d3 = require("d3"),
 
 var congress = JSON.parse(fs.readFileSync("congress.json", "utf8"));
 
-console.log(congress);
-
 var congressID = {};
 
 start(congress);
@@ -21,14 +19,11 @@ function start(c) {
 	}
 }
 
-console.log(congressID[270]);
+var topology = hexTopology();
 
+fs.writeFileSync("ushex.json", JSON.stringify(topology, null, 2));
 
-// var topology = hexTopology();
-
-// fs.writeFileSync("ushex.json", JSON.stringify(topology, null, 2));
-
-// console.log("Completed Build");
+console.log("Completed Build");
 
 function hexTopology() {
 
@@ -60,26 +55,33 @@ function hexTopology() {
     			statesgeo.push({
     				type: "Polygon",
     				arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
-    				id: hexCount-(2*n-1),
+    				id: hexCount-(2*n+1),
     				properties: {state: getState(hexCount-(2*n+1))},
     			});
   			}
     	}
 	}
 
-  function getState(i) {
-    if (i == 476 || i == 477 || i == 571 || i == 572 || i == 667) {
-      return "Washington";
-    }
-    else {
-      if ( i > 390 & i < 395) {
-        return "Michigan";
-      }
-      else {
-        return "New York";
-      }
-    }
-  }
+	function getState(i) {
+		var id = congressID[i];
+		if (id != undefined) {
+			return id;
+		}
+		else {
+			return "New York";
+		}
+	  // if (i == 476 || i == 477 || i == 571 || i == 572 || i == 667) {
+	  //   return "Washington";
+	  // }
+	  // else {
+	  //   if ( i > 390 & i < 395) {
+	  //     return "Michigan";
+	  //   }
+	  //   else {
+	  //     return "New York";
+	  //   }
+	  // }
+	}
 
   return {
     type: "Topology",
