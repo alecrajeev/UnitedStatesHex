@@ -37,10 +37,10 @@ function start(error, ushex) {
 	    .on("mousemove", mousemove)
 	    .on("mouseup", mouseup)	
 	
-	// var hexMesh = svg.append("path")
- //   		.datum(topojson.mesh(ushex, ushex.objects.states))
- //   		.attr("class", "hexMesh")
- //   		.attr("d", path);
+	var hexMesh = svg.append("path")
+   		.datum(topojson.mesh(ushex, ushex.objects.states))
+   		.attr("class", "hexMesh")
+   		.attr("d", path);
 
   	var districtBorder = svg.append("path")
     	.attr("class", "districtBorder")
@@ -57,7 +57,7 @@ function start(error, ushex) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
- 		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
+ 		// console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
  		hexagonIDs = hexagonIDs + d.id + "\n";
  	}
 

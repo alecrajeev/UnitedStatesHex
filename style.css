@@ -12,13 +12,13 @@ svg {
 }
 
 .hexagon .fill {
-	fill: steelblue;
+	fill: #f0f;
 }
 
 .hexMesh {
 	fill: none;
 	stroke: #000;
-	stroke-opacity: 0;
+	stroke-opacity: 0.2;
 	pointer-events: none;
 }
 
