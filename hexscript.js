@@ -37,14 +37,18 @@ function start(error, ushex) {
 	    .on("mousemove", mousemove)
 	    .on("mouseup", mouseup)	
 	
-	var hexMesh = svg.append("path")
-   		.datum(topojson.mesh(ushex, ushex.objects.states))
-   		.attr("class", "hexMesh")
-   		.attr("d", path);
+	// var hexMesh = svg.append("path")
+ //   		.datum(topojson.mesh(ushex, ushex.objects.states))
+ //   		.attr("class", "hexMesh")
+ //   		.attr("d", path);
 
-  	var border = svg.append("path")
-    	.attr("class", "border")
-    	.call(redraw);
+  	var districtBorder = svg.append("path")
+    	.attr("class", "districtBorder")
+    	.call(drawDistrctBorder);
+
+    var stateBorder = svg.append("path")
+    	.attr("class", "stateBorder")
+    	.call(drawStateBorder);
 
  	var mousing = 0;
 
@@ -53,14 +57,13 @@ function start(error, ushex) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
- 		// console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
+ 		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
  		hexagonIDs = hexagonIDs + d.id + "\n";
  	}
 
  	function mousemove(d) {
  		if (mousing) {
  			d3.select(this).classed("fill", d.fill = mousing > 0);
- 		  	border.call(redraw);
  		}
  	}
 
@@ -69,8 +72,12 @@ function start(error, ushex) {
  		mousing = 0;
  	}
 
- 	function redraw(border) {
+ 	function drawDistrctBorder(border) {
  		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByDistrict)));
+ 	}
+
+ 	function drawStateBorder(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByState)));
  	}
 
  	function checkBorderByDistrict(hex1, hex2) {

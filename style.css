@@ -18,11 +18,19 @@ svg {
 .hexMesh {
 	fill: none;
 	stroke: #000;
-	stroke-opacity: 0.2;
+	stroke-opacity: 0;
 	pointer-events: none;
 }
 
-.border {
+.districtBorder {
+	fill: none;
+	stroke: #000;
+	stroke-width: 1px;
+	stroke-opacity: .2;
+	pointer-events: none;
+}
+
+.stateBorder {
 	fill: none;
 	stroke: #000;
 	stroke-width: 2px;
