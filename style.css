@@ -11,8 +11,8 @@ svg {
 	fill: pink;
 }
 
-.Washington {
-	fill: red;
+.hexagon .fill {
+	fill: steelblue;
 }
 
 .hexMesh {

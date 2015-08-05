@@ -4,6 +4,8 @@ var width = 1250,
 
 // 90 x 60 (width x height)
 
+var hexagonIDs = "";
+
 d3.json("ushex.json", start);
 
 function start(error, ushex) {
@@ -21,7 +23,7 @@ function start(error, ushex) {
 	
 	var hexFeatures = topojson.feature(ushex, ushex.objects.states).features;
 	
-	console.log(ushex)	
+	// console.log(ushex)
 	
 	var hexagons = svg.append("g")
 		.attr("class", "hexagon")
@@ -51,7 +53,8 @@ function start(error, ushex) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
- 		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
+ 		// console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
+ 		hexagonIDs = hexagonIDs + d.id + "\n";
  	}
 
  	function mousemove(d) {
@@ -67,7 +70,18 @@ function start(error, ushex) {
  	}
 
  	function redraw(border) {
- 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, function(a, b) {return a.properties.state != b.properties.state;  })));
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByDistrict)));
+ 	}
+
+ 	function checkBorderByDistrict(hex1, hex2) {
+ 		if (hex1.properties.state == hex2.properties.state)
+ 			return hex1.properties.district != hex2.properties.district;
+ 		else
+ 			return true;
+ 	}
+
+ 	function checkBorderByState(hex1, hex2) {
+ 		return hex1.properties.state != hex2.properties.state;
  	}
 
   	function hexProjection(radius) {
@@ -85,4 +99,8 @@ function start(error, ushex) {
   	  	  }
   	  	};
   	}
+}
+
+function updateData() {
+	console.log(hexagonIDs);
 }
