@@ -15,7 +15,10 @@ buildCongressID(congress);
 function buildCongressID(c) { // imports the congressID array from an external json file
 	for (i = 0; i < c.length; i++) {
 		c[i].ID = +c[i].ID;
-		congressID[c[i].ID] = c[i].State + "-" + c[i].CD;
+		if (c[i].ID != 0)
+			congressID[c[i].ID] = c[i].State + "-" + c[i].CD;
+		else
+			congressID[c[i].ID] = undefined;
 	}
 }
 
@@ -51,13 +54,15 @@ function hexTopology() {
     			arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
     	  	});
 	
-    		if (++hexCount > 2*n) { // used to ignore the first line of hexagons that start off the page
+    		if (++hexCount > (2*n)) { // used to ignore the first line of hexagons that start off the page
     			statesgeo.push({
     				type: "Polygon",
     				arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
     				id: hexCount-(2*n+1),
     				properties: {state: getState(hexCount-(2*n+1)).split("-",2)[0],
-             district: getState(hexCount-(2*n+1)).split("-",2)[1], districtID: getState(hexCount-(2*n+1))},
+            					district: getState(hexCount-(2*n+1)).split("-",2)[1], 
+            					districtID: getState(hexCount-(2*n+1))
+            					}
     			});
   			}
     	}
@@ -66,6 +71,8 @@ function hexTopology() {
 	function getState(i) {
 		var id = congressID[i];
 		if (id != undefined) {
+    		// if (i == 0)
+    		// 	console.log(congressID[i]);  
 			return id;
 		}
 		else {

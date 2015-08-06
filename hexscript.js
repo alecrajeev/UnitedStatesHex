@@ -16,7 +16,7 @@ function start(error, ushex) {
 	var projection = hexProjection(radius)	
 	
 	var path = d3.geo.path()
-		.projection(projection)	
+		.projection(projection)
 	var svg = d3.select(".hexagonal").append("svg")
 	    .attr("width", width)
 	    .attr("height", height)	
@@ -57,7 +57,7 @@ function start(error, ushex) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
- 		// console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
+// 		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
  		hexagonIDs = hexagonIDs + d.id + "\n";
  	}
 
@@ -110,4 +110,5 @@ function start(error, ushex) {
 
 function updateData() {
 	console.log(hexagonIDs);
+	hexagonIDs = "";
 }
