@@ -2,6 +2,11 @@ svg {
   border: 1px solid #f0f;
 }
 
+.buttonDiv {
+	width: 25%;
+	margin: 0 auto;
+}
+
 .hexagon {
 	fill: white;
 	pointer-events: all;
