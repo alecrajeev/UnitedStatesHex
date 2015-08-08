@@ -60,7 +60,7 @@ function start(error, ushex) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
-		// console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
+		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
  		hexagonIDs = hexagonIDs + d.id + "\n";
  	}
 
