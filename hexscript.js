@@ -5,8 +5,11 @@ var width = 1250,
 // 90 x 60 (width x height)
 
 var hexagonIDs = "";
+var colorCounter = 0;
 
 d3.json("ushex.json", start);
+
+var hexMesh;
 
 function start(error, ushex) {
 
@@ -37,7 +40,7 @@ function start(error, ushex) {
 	    .on("mousemove", mousemove)
 	    .on("mouseup", mouseup)	
 	
-	var hexMesh = svg.append("path")
+	hexMesh = svg.append("path")
    		.datum(topojson.mesh(ushex, ushex.objects.states))
    		.attr("class", "hexMesh")
    		.attr("d", path);
@@ -57,13 +60,14 @@ function start(error, ushex) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
-// 		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
+		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
  		hexagonIDs = hexagonIDs + d.id + "\n";
  	}
 
  	function mousemove(d) {
  		if (mousing) {
- 			d3.select(this).classed("fill", d.fill = mousing > 0);
+ 			// d3.select(this).classed("fill", d.fill = mousing > 0);
+ 			d3.select(this).style("fill", getColor());
  		}
  	}
 
@@ -108,7 +112,23 @@ function start(error, ushex) {
   	}
 }
 
+function hideMesh(){
+	hexMesh.attr("class", "noMesh");
+
+}
+
+function showMesh(){
+	hexMesh.attr("class", "hexMesh");
+}
+
+function getColor() {
+	var cArray = ['rgb(166,206,227)','rgb(31,120,180)','rgb(178,223,138)','rgb(51,160,44)','rgb(251,154,153)','rgb(227,26,28)','rgb(253,191,111)','rgb(255,127,0)','rgb(202,178,214)','rgb(106,61,154)','rgb(255,255,153)','rgb(177,89,40)'];
+	return cArray[colorCounter];
+
+}
+
 function updateData() {
 	console.log(hexagonIDs);
 	hexagonIDs = "";
+	colorCounter = (colorCounter+1)%12
 }

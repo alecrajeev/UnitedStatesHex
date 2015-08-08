@@ -15,10 +15,21 @@ svg {
 	fill: #f0f;
 }
 
+.newHex {
+	fill: steelblue;
+}
+
 .hexMesh {
 	fill: none;
 	stroke: #000;
-	stroke-opacity: 0.2;
+	stroke-opacity: 0.1;
+	pointer-events: none;
+}
+
+.noMesh {
+	fill: none;
+	stroke: #000;
+	stroke-opacity: 0;
 	pointer-events: none;
 }
 
@@ -26,7 +37,7 @@ svg {
 	fill: none;
 	stroke: #000;
 	stroke-width: 1px;
-	stroke-opacity: .2;
+	stroke-opacity: .3;
 	pointer-events: none;
 }
 
