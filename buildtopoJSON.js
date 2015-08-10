@@ -31,7 +31,7 @@ console.log("Completed Build");
 function hexTopology() {
 
 	var n = 95, // number of hexagons horizontally
-		m = 67, // number of rows
+		m = 70, // number of rows
 		geometries = [],
 		statesgeo = [],
 		arcs = [],
@@ -71,8 +71,6 @@ function hexTopology() {
 	function getState(i) {
 		var id = congressID[i];
 		if (id != undefined) {
-    		// if (i == 0)
-    		// 	console.log(congressID[i]);  
 			return id;
 		}
 		else {

@@ -34,11 +34,6 @@
 	stroke: #D13F46;
 }
 
-.DE {
-	fill: #D13F46;
-	stroke: #D13F46;
-}
-
 .HI {
 	fill: #D13F46;
 	stroke: #D13F46;
@@ -114,6 +109,11 @@
 	stroke: #A94588;
 }
 
+.CT {
+	fill: #A94588;
+	stroke: #A94588;
+}
+
 .MA {
 	fill: #A94588;
 	stroke: #A94588;
@@ -130,6 +130,11 @@
 }
 
 .AR {
+	fill: #23A5C5;
+	stroke: #23A5C5;
+}
+
+.DE {
 	fill: #23A5C5;
 	stroke: #23A5C5;
 }
@@ -210,11 +215,6 @@
 }
 
 .TN {
-	fill: #D76940;
-	stroke: #D76940;
-}
-
-.CT {
 	fill: #D76940;
 	stroke: #D76940;
 }
