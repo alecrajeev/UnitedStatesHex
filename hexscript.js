@@ -3,8 +3,7 @@ var width = 1250,
     radius = 7;
 
 var color = d3.scale.threshold()
-	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)'])
-	.domain([0.0, .125, .25, .375, .5, .625, .75, .875, 1.0]);
+	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
 var hexMesh;
 
@@ -28,11 +27,18 @@ function makeMyMap(error, ushex, demodata) {
 		d.Party = +d.Party;
 		d.White = +d.Black;
 
-		demoByDiscritID[d.CDID] = d.White;
+		demoByDiscritID[d.CDID] = d.Black;
 	});
 
-	console.log(d3.extent(demodata, function(d) {return d.White;	}));
-	window.color3 = color;
+	var colorDomain = [];
+	var extent2 = d3.extent(demodata, function(d) {return d.Black;	});
+	var j = 0;
+	for (i = extent2[0]; i <= extent2[1]; i += (extent2[1] - extent2[0])/8.0) {
+		colorDomain[j++] = i;
+	}
+	color.domain(colorDomain);
+
+
 
 	var projection = hexProjection(radius);
 
@@ -54,15 +60,15 @@ function makeMyMap(error, ushex, demodata) {
 		.attr("d", path)
 		// .attr("class", function(d) {return d.properties.state;	})
 		.style("fill", function(d) {
-			var tempID = d.properties.districtID;
-			if (tempID != -1) {
-				return color(demoByDiscritID[tempID])
+			var districtID = d.properties.districtID;
+			if (districtID != -1) {
+				return color(demoByDiscritID[districtID])
 			}
 		})
 		.style("stroke", function(d) {
-			var tempID = d.properties.districtID;
-			if (tempID != -1) {
-				return color(demoByDiscritID[tempID])
+			var districtID = d.properties.districtID;
+			if (districtID != -1) {
+				return color(demoByDiscritID[districtID])
 			}
 		})
 		.on("mousedown", mousedown)
