@@ -2,54 +2,77 @@ var width = 1250,
     height = 730,
     radius = 7;
 
-// 90 x 60 (width x height)
+var color = d3.scale.threshold()
+	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)'])
+	.domain([0.0, .125, .25, .375, .5, .625, .75, .875, 1.0]);
+
+var hexMesh;
 
 queue()
 	.defer(d3.json, "ushex.json")
 	.defer(d3.csv, "demographics.csv")
 	.await(makeMyMap);
 
-var hexMesh;
-
 function makeMyMap(error, ushex, demodata) {
 	if (error)
 		return console.warn(error);
-	
-}
 
-function start(error, ushex) {
+	var demoByDiscritID = {};
 
-	if (error)
-    	return console.warn(error);
+	demodata.forEach(function(d) {
+		d.Asian = +d.Asian;
+		d.Black = +d.Black;
+		d.CDID = +d.CDID;
+		d.Latino = +d.Latino;
+		d.Multiracial = +d.Multiracial;
+		d.Party = +d.Party;
+		d.White = +d.Black;
 
-	var projection = hexProjection(radius)	
-	
+		demoByDiscritID[d.CDID] = d.White;
+	});
+
+	console.log(d3.extent(demodata, function(d) {return d.White;	}));
+	window.color3 = color;
+
+	var projection = hexProjection(radius);
+
 	var path = d3.geo.path()
 		.projection(projection)
+
 	var svg = d3.select(".hexagonal").append("svg")
-	    .attr("width", width)
-	    .attr("height", height)	
-	
+		.attr("width", width)
+		.attr("height", height);
+
 	var hexFeatures = topojson.feature(ushex, ushex.objects.states).features;
-	
-	// console.log(ushex)
-	
+
 	var hexagons = svg.append("g")
 		.attr("class", "hexagon")
-	  	.selectAll("path")
-	    .data(hexFeatures)
-	  	.enter()
-	  	.append("path")
-	    .attr("d", path)
-	    .attr("class", function(d) {return d.properties.state;	})
-	    .on("mousedown", mousedown)
-	    .on("mousemove", mousemove)
-	    .on("mouseup", mouseup)	
-	
+		.selectAll("path")
+		.data(hexFeatures)
+		.enter()
+		.append("path")
+		.attr("d", path)
+		// .attr("class", function(d) {return d.properties.state;	})
+		.style("fill", function(d) {
+			var tempID = d.properties.districtID;
+			if (tempID != -1) {
+				return color(demoByDiscritID[tempID])
+			}
+		})
+		.style("stroke", function(d) {
+			var tempID = d.properties.districtID;
+			if (tempID != -1) {
+				return color(demoByDiscritID[tempID])
+			}
+		})
+		.on("mousedown", mousedown)
+		.on("mousemove", mousemove)
+		.on("mouseup", mouseup)
+
 	hexMesh = svg.append("path")
-   		.datum(topojson.mesh(ushex, ushex.objects.states))
-   		.attr("class", "noMesh")
-   		.attr("d", path);
+		.datum(topojson.mesh(ushex, ushex.objects.states))
+		.attr("class", "noMesh")
+		.attr("d", path);
 
   	var districtBorder = svg.append("path")
     	.attr("class", "districtBorder")
@@ -61,17 +84,16 @@ function start(error, ushex) {
 
  	var mousing = 0;
 
- 	window.ushex = ushex;
-
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
-		console.log(d.id + " " + d.properties.state + "-" + d.properties.district);
+		// console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
+ 		console.log(demoByDiscritID[d.properties.districtID]);
  	}
 
  	function mousemove(d) {
  		if (mousing) {
- 			d3.select(this).classed("fill", d.fill = mousing > 0);
+ 			// d3.select(this).classed("fill", d.fill = mousing > 0);
  		}
  	}
 

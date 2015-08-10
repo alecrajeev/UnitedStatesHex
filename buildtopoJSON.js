@@ -8,17 +8,22 @@ var d3 = require("d3"),
 
 var congress = JSON.parse(fs.readFileSync("congress.json", "utf8"));
 
-var congressID = {};
+var hexID = {}; // every hexagon has its own identifying id
+var congressID = {}; // every district has its own identifying id. Eventually will be replaced by role or something
 
-buildCongressID(congress);
+buildhexID(congress);
 
-function buildCongressID(c) { // imports the congressID array from an external json file
+function buildhexID(c) { // imports the hexID array from an external json file
 	for (i = 0; i < c.length; i++) {
 		c[i].ID = +c[i].ID;
-		if (c[i].ID != 0)
-			congressID[c[i].ID] = c[i].State + "-" + c[i].CD;
-		else
+		if (c[i].ID != 0) {
+			hexID[c[i].ID] = c[i].State + "-" + c[i].CD;
+			congressID[c[i].ID] = c[i].CDID;
+		}
+		else {
+			hexID[c[i].ID] = undefined;
 			congressID[c[i].ID] = undefined;
+		}
 	}
 }
 
@@ -59,9 +64,9 @@ function hexTopology() {
     				type: "Polygon",
     				arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
     				id: hexCount-(2*n+1),
-    				properties: {state: getState(hexCount-(2*n+1)).split("-",2)[0],
-            					district: getState(hexCount-(2*n+1)).split("-",2)[1], 
-            					districtID: getState(hexCount-(2*n+1))
+    				properties: {state: getState(hexCount-(2*n+1)),
+            					district: getDistrict(hexCount-(2*n+1)), 
+            					districtID: getDistrictId(hexCount-(2*n+1))
             					}
     			});
   			}
@@ -69,13 +74,31 @@ function hexTopology() {
 	}
 
 	function getState(i) {
+		var id = hexID[i];
+
+		if (id != undefined)
+			return id.split("-",2)[0];
+		else
+			return "Ocean";
+	}
+
+	function getDistrict(i) {
+		var id = hexID[i];
+
+		if (id != undefined)
+			return id.split("-",2)[1];
+		else
+			return 0;
+	}
+
+	function getDistrictId(i) {
 		var id = congressID[i];
-		if (id != undefined) {
+
+
+		if (id != undefined)
 			return id;
-		}
-		else {
-			return "Ocean-0";
-		}
+		else
+			return -1;
 	}
 
   return {

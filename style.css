@@ -12,9 +12,9 @@ svg {
 	pointer-events: all;
 }
 
-.hexagon :hover {
+/*.hexagon :hover {
 	fill: pink;
-}
+}*/
 
 .hexagon .fill {
 	fill: #f0f;
