@@ -36,7 +36,7 @@ console.log("Completed Build");
 function hexTopology() {
 
 	var n = 95, // number of hexagons horizontally
-		m = 70, // number of rows
+		m = 69, // number of rows
 		geometries = [],
 		statesgeo = [],
 		arcs = [],
