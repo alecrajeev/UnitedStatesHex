@@ -58,19 +58,20 @@ function makeMyMap(error, ushex, demodata) {
 		.enter()
 		.append("path")
 		.attr("d", path)
-		.attr("class", function(d) {return "state " + d.properties.state;	})
-		.style("fill", function(d) {
-			var districtID = d.properties.districtID;
-			if (districtID != -1) {
-				return color(demoByDiscritID[districtID])
-			}
-		})
-		.style("stroke", function(d) {
-			var districtID = d.properties.districtID;
-			if (districtID != -1) {
-				return color(demoByDiscritID[districtID])
-			}
-		})
+		.attr("class", function(d) {return d.properties.state;	})
+		.classed("state", true)
+		// .style("fill", function(d) {
+		// 	var districtID = d.properties.districtID;
+		// 	if (districtID != -1) {
+		// 		return color(demoByDiscritID[districtID])
+		// 	}
+		// })
+		// .style("stroke", function(d) {
+		// 	var districtID = d.properties.districtID;
+		// 	if (districtID != -1) {
+		// 		return color(demoByDiscritID[districtID])
+		// 	}
+		// })
 		.on("mousedown", mousedown)
 		.on("mousemove", mousemove)
 		.on("mouseup", mouseup)
@@ -93,8 +94,8 @@ function makeMyMap(error, ushex, demodata) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
-		// console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
- 		console.log(demoByDiscritID[d.properties.districtID]);
+		console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
+ 		// console.log(demoByDiscritID[d.properties.districtID]);
  	}
 
  	function mousemove(d) {
@@ -144,10 +145,12 @@ function makeMyMap(error, ushex, demodata) {
   	}
 }
 
+function showStates() {
+	hexagons.classed("state ", true);
+}
 
-	function showStates() {
-	hexagons.style("fill", "");
-	hexagons.style("stroke", "");
+function hideStates() {
+	hexagons.classed("state ", false);
 }
 
 function hideMesh() {
