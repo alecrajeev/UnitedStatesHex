@@ -52,3 +52,8 @@ svg {
 	stroke-width: 2px;
 	pointer-events: none;
 }
+
+.color1 {
+	fill: rgb(199,233,192);
+	stroke: rgb(199,233,192);
+}

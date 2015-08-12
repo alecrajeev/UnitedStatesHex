@@ -6,6 +6,8 @@ var color = d3.scale.threshold()
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
 var hexMesh, hexagons;
+var demoByDistrictID = {};
+
 
 queue()
 	.defer(d3.json, "ushex.json")
@@ -16,8 +18,6 @@ function makeMyMap(error, ushex, demodata) {
 	if (error)
 		return console.warn(error);
 
-	var demoByDiscritID = {};
-
 	demodata.forEach(function(d) {
 		d.Asian = +d.Asian;
 		d.Black = +d.Black;
@@ -27,7 +27,7 @@ function makeMyMap(error, ushex, demodata) {
 		d.Party = +d.Party;
 		d.White = +d.Black;
 
-		demoByDiscritID[d.CDID] = d.Black;
+		demoByDistrictID[d.CDID] = d.Black;
 	});
 
 	var colorDomain = [];
@@ -60,18 +60,18 @@ function makeMyMap(error, ushex, demodata) {
 		.attr("d", path)
 		.attr("class", function(d) {return d.properties.state;	})
 		.classed("state", true)
-		// .style("fill", function(d) {
-		// 	var districtID = d.properties.districtID;
-		// 	if (districtID != -1) {
-		// 		return color(demoByDiscritID[districtID])
-		// 	}
-		// })
-		// .style("stroke", function(d) {
-		// 	var districtID = d.properties.districtID;
-		// 	if (districtID != -1) {
-		// 		return color(demoByDiscritID[districtID])
-		// 	}
-		// })
+		.style("fill", function(d) {
+			var districtID = d.properties.districtID;
+			if (districtID != -1) {
+				return color(demoByDistrictID[districtID])
+			}
+		})
+		.style("stroke", function(d) {
+			var districtID = d.properties.districtID;
+			if (districtID != -1) {
+				return color(demoByDistrictID[districtID])
+			}
+		})
 		.on("mousedown", mousedown)
 		.on("mousemove", mousemove)
 		.on("mouseup", mouseup)
@@ -95,7 +95,7 @@ function makeMyMap(error, ushex, demodata) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
 		console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
- 		// console.log(demoByDiscritID[d.properties.districtID]);
+ 		// console.log(demoByDistrictID[d.properties.districtID]);
  	}
 
  	function mousemove(d) {
@@ -146,16 +146,25 @@ function makeMyMap(error, ushex, demodata) {
 }
 
 function showStates() {
+	hexagons.style("fill", "");
+	hexagons.style("stroke", "");
 	hexagons.classed("state ", true);
 }
 
-function hideStates() {
-	hexagons.classed("state ", false);
-}
+function showDemographics() {
+	hexagons.style("fill", function(d) {
+			var districtID = d.properties.districtID;
+			if (districtID != -1) {
+				return color(demoByDistrictID[districtID])
+			}
+		});
 
-function hideMesh() {
-	hexMesh.attr("class", "noMesh");
-
+	hexagons.style("stroke", function(d) {
+			var districtID = d.properties.districtID;
+			if (districtID != -1) {
+				return color(demoByDistrictID[districtID])
+			}
+		});
 }
 
 function showMesh() {
