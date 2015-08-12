@@ -144,27 +144,32 @@ function showStates() {
 }
 
 function showWhiteDemographics() {
+	d3.select(".header").text("White Demographics by Congressional District");
 	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.White;	})));
 	showDemographics(0);
 }
 
 function showBlackDemographics() {
+	d3.select(".header").text("Black Demographics by Congressional District");
 	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Black;	})));
 	showDemographics(1);
 
 }
 
 function showLatinoDemographics() {
+	d3.select(".header").text("Latino Demographics by Congressional District");
 	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Latino;	})));
 	showDemographics(2);
 }
 
 function showAsianDemographics() {
+	d3.select(".header").text("Asian Demographics by Congressional District");
 	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Asian;	})));
 	showDemographics(3);
 }
 
 function showMultiRacialDemographics() {
+	d3.select(".header").text("MultiRacial Demographics by Congressional District");
 	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Multiracial;	})));
 	showDemographics(4);
 }
