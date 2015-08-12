@@ -7,6 +7,7 @@ var color = d3.scale.threshold()
 
 var hexMesh, hexagons, ddata;
 var demoByDistrictID = {};
+var specificDistrictID = -2;
 
 
 queue()
@@ -55,6 +56,7 @@ function makeMyMap(error, ushex, demodata) {
 		.attr("d", path)
 		.attr("class", function(d) {return d.properties.state;	})
 		.classed("state", true)
+		.on("mouseover", mouseover)
 		.on("mousedown", mousedown)
 		.on("mousemove", mousemove)
 		.on("mouseup", mouseup)
@@ -64,21 +66,31 @@ function makeMyMap(error, ushex, demodata) {
 		.attr("class", "noMesh")
 		.attr("d", path);
 
-  	var districtBorder = svg.append("path")
-    	.attr("class", "districtBorder")
-    	.call(drawDistrctBorder);
 
     var stateBorder = svg.append("path")
     	.attr("class", "stateBorder")
     	.call(drawStateBorder);
 
+  	var districtBorder = svg.append("path")
+    	.attr("class", "districtBorder")
+    	.call(drawDistrctBorder);
+
+    var specificDistrict = svg.append("path")
+    	.attr("class", "specificBorder")
+    	.call(drawSpecificDistrict);
+
  	var mousing = 0;
+
+ 	function mouseover(d) {
+  		specificDistrictID = d.properties.districtID;
+ 		specificDistrict.call(drawSpecificDistrict);
+ 		changeTooltip(d);	
+ 	}
 
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
 		// console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
- 		console.log(demoByDistrictID[d.properties.districtID]);
  	}
 
  	function mousemove(d) {
@@ -92,12 +104,31 @@ function makeMyMap(error, ushex, demodata) {
  		mousing = 0;
  	}
 
+ 	function drawSpecificDistrict(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkSpecificDistrict)));
+ 	} 	
+
  	function drawDistrctBorder(border) {
  		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByDistrict)));
  	}
 
  	function drawStateBorder(border) {
  		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByState)));
+ 	}
+
+ 	function checkSpecificDistrict(hex1, hex2) {
+ 		if (specificDistrictID < 0) // if there is not specific district to be highlighted
+ 			return false;
+
+ 		if (hex1.properties.districtID != specificDistrictID && 
+ 			hex2.properties.districtID != specificDistrictID)
+ 			// if when traversing the hexmesh you are not near the specific district
+ 			return false;
+ 		
+ 		if (hex1.properties.state == hex2.properties.state)
+ 			return hex1.properties.district != hex2.properties.district;
+ 		else
+ 			return true;
  	}
 
  	function checkBorderByDistrict(hex1, hex2) {
@@ -198,6 +229,27 @@ function showMultiRacialDemographics() {
 	buildColorRange(4);
 	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Multiracial;	})));
 	showDemographics(4);
+}
+
+function changeTooltip(d) {
+	if (d.properties.state != "Ocean") {
+		d3.select(".whichState").text(d.properties.state);
+		d3.select(".whichDistrict").text(d.properties.district);
+		d3.select(".whiteDemo").text("White: " + d3.round(demoByDistrictID[d.properties.districtID][0]*100, 1) + "%");
+		d3.select(".blackDemo").text("Black: " + d3.round(demoByDistrictID[d.properties.districtID][1]*100, 1) + "%");
+		d3.select(".latinoDemo").text("Latino: " + d3.round(demoByDistrictID[d.properties.districtID][2]*100, 1) + "%");
+		d3.select(".asianDemo").text("Asian: " + d3.round(demoByDistrictID[d.properties.districtID][3]*100, 1) + "%");
+		d3.select(".multiDemo").text("Multiracial: " + d3.round(demoByDistrictID[d.properties.districtID][4]*100, 1) + "%");
+	}
+	else {
+		d3.select(".whichState").text("");
+		d3.select(".whichDistrict").text("");
+		d3.select(".whiteDemo").text("White: ")
+		d3.select(".blackDemo").text("Black: ")
+		d3.select(".latinoDemo").text("Latino: ");
+		d3.select(".asianDemo").text("Asian: ");
+		d3.select(".multiDemo").text("Multiracial: ");
+	}
 }
 
 function showDemographics(i) {

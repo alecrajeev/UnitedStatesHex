@@ -1,44 +1,57 @@
 <!DOCTYPE html>
-<head>
-<meta charset="utf-8">
-<link rel="stylesheet", type="text/css", href="style.css">
-<link rel="stylesheet", type="text/css", href="states.css">
-<title>United States Congressional Districts as Hexagons</title>
-</head>
+<html>
 
-<body>
-	<div>
-		<h3 class="header">States</h3>
-	</div>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet", type="text/css", href="style.css">
+		<link rel="stylesheet", type="text/css", href="states.css">
+		<title>United States Congressional Districts as Hexagons</title>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
+		<script type="text/javascript" src="hexscript.js"></script>
+	</head>
 
-	<div class="hexagonal">
-	</div>
-  <div class="legend">
-  <text>Data Set</text>
-    <div class="typeToggle">
-      <input id ="0" type="radio" name="circle-update" class ="I" checked onclick="showStates()">States
+	<body>
+  		<div>
+  			<h3 class="header">States</h3>
+  		</div>
+
+  	<div class="hexagonal">
+  	</div>
+    
+    <div class="legend">
+    <text>Data Set</text>
+      <div class="typeToggle">
+        <input id ="0" type="radio" name="circle-update" class ="I" checked onclick="showStates()">States
+      </div>
+      <div class="typeToggle">
+        <input id ="1" type="radio" name="circle-update" class="II" onclick="showWhiteDemographics()">White Demographics
+      </div>
+      <div class="typeToggle">
+        <input id ="2" type="radio" name="circle-update" class="II" onclick="showBlackDemographics()">Black Demographics
+      </div>
+      <div class="typeToggle">
+        <input id ="3" type="radio" name="circle-update" class="II" onclick="showLatinoDemographics()">Latino Demographics
+      </div>
+      <div class="typeToggle">
+        <input id ="4" type="radio" name="circle-update" class="II" onclick="showAsianDemographics()">Asian Demographics
+      </div>
+      <div class="typeToggle">
+        <input id ="5" type="radio" name="circle-update" class="II" onclick="showMultiRacialDemographics()">MultiRacial Demographics
+      </div>
     </div>
-    <div class="typeToggle">
-      <input id ="1" type="radio" name="circle-update" class="II" onclick="showWhiteDemographics()">White Demographics
-    </div>
-    <div class="typeToggle">
-      <input id ="2" type="radio" name="circle-update" class="II" onclick="showBlackDemographics()">Black Demographics
-    </div>
-    <div class="typeToggle">
-      <input id ="3" type="radio" name="circle-update" class="II" onclick="showLatinoDemographics()">Latino Demographics
-    </div>
-    <div class="typeToggle">
-      <input id ="4" type="radio" name="circle-update" class="II" onclick="showAsianDemographics()">Asian Demographics
-    </div>
-    <div class="typeToggle">
-      <input id ="5" type="radio" name="circle-update" class="II" onclick="showMultiRacialDemographics()">MultiRacial Demographics
+    
+    <div class="information">
+      <div class="stateInfo">State: <span class="whichState"></span></div>
+      <div class="districtNumber">District: <span class="whichDistrict"></span></div>
+      <div class="whiteDemo">White: </div>
+      <div class="blackDemo">Black: </div>
+      <div class="latinoDemo">Latino: </div>
+      <div class="asianDemo">Asian: </div>
+      <div class="multiDemo">MultiRacial </div>
     </div>
 
-  </div>
+  </body>
 
-
-</body>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
-<script type="text/javascript" src="hexscript.js"></script>
+</html>

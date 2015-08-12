@@ -5,6 +5,7 @@
 	border: solid black;
 	padding: 5px;
 	margin: 10 auto;
+	font-family: 'Helvetica Neue';
 }
 
 .legend text{
@@ -13,7 +14,35 @@
 	display: block;
 	border-bottom: thin solid black;
 	padding: 10px 30px 10px 30px;
-	font-family: "Lucida Console", Courier, monospace;
+	font-weight: bold;
+}
+
+.whichState {
+	font-weight: bold;
+}
+
+.whichDistrict {
+	font-weight: bold;
+}
+
+.typeToggle {
+	font-family: 'Helvetica Neue';
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+}
+
+.information {
+	position: absolute;
+	left: 1000px;
+	top: 473px;
+	width: 182px;
+	border: solid black;
+	padding: 5px;
+	margin: 10 auto;
+	font-family: 'Helvetica Neue';
 }
 
 .hexagon {
@@ -24,14 +53,6 @@
 /*.hexagon :hover {
 	fill: pink;
 }*/
-
-.hexagon .fill {
-	fill: #f0f;
-}
-
-.newHex {
-	fill: steelblue;
-}
 
 .hexMesh {
 	fill: none;
@@ -44,6 +65,15 @@
 	fill: none;
 	stroke: #000;
 	stroke-opacity: 0;
+	pointer-events: none;
+}
+
+.specificBorder {
+	fill: none;
+	stroke: #000;
+	stroke-width: 2px;
+	stroke-opacity: 1;
+	stroke: #f0f;
 	pointer-events: none;
 }
 
@@ -60,9 +90,4 @@
 	stroke: #000;
 	stroke-width: 2px;
 	pointer-events: none;
-}
-
-.color1 {
-	fill: rgb(199,233,192);
-	stroke: rgb(199,233,192);
 }
