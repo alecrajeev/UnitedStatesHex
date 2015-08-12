@@ -5,7 +5,7 @@ var width = 1250,
 var color = d3.scale.threshold()
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
-var hexMesh;
+var hexMesh, hexagons;
 
 queue()
 	.defer(d3.json, "ushex.json")
@@ -51,14 +51,14 @@ function makeMyMap(error, ushex, demodata) {
 
 	var hexFeatures = topojson.feature(ushex, ushex.objects.states).features;
 
-	var hexagons = svg.append("g")
+	hexagons = svg.append("g")
 		.attr("class", "hexagon")
 		.selectAll("path")
 		.data(hexFeatures)
 		.enter()
 		.append("path")
 		.attr("d", path)
-		// .attr("class", function(d) {return d.properties.state;	})
+		.attr("class", function(d) {return "state " + d.properties.state;	})
 		.style("fill", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) {
@@ -144,11 +144,17 @@ function makeMyMap(error, ushex, demodata) {
   	}
 }
 
-function hideMesh(){
+
+	function showStates() {
+	hexagons.style("fill", "");
+	hexagons.style("stroke", "");
+}
+
+function hideMesh() {
 	hexMesh.attr("class", "noMesh");
 
 }
 
-function showMesh(){
+function showMesh() {
 	hexMesh.attr("class", "hexMesh");
 }
