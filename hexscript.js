@@ -30,15 +30,7 @@ function makeMyMap(error, ushex, demodata) {
 		demoByDistrictID[d.CDID] = d.Black;
 	});
 
-	var colorDomain = [];
-	var extent2 = d3.extent(demodata, function(d) {return d.Black;	});
-	var j = 0;
-	for (i = extent2[0]; i <= extent2[1]; i += (extent2[1] - extent2[0])/8.0) {
-		colorDomain[j++] = i;
-	}
-	color.domain(colorDomain);
-
-
+	color.domain(buildColorDomain(d3.extent(demodata, function(d) {return d.Black;	})));
 
 	var projection = hexProjection(radius);
 
@@ -60,18 +52,6 @@ function makeMyMap(error, ushex, demodata) {
 		.attr("d", path)
 		.attr("class", function(d) {return d.properties.state;	})
 		.classed("state", true)
-		.style("fill", function(d) {
-			var districtID = d.properties.districtID;
-			if (districtID != -1) {
-				return color(demoByDistrictID[districtID])
-			}
-		})
-		.style("stroke", function(d) {
-			var districtID = d.properties.districtID;
-			if (districtID != -1) {
-				return color(demoByDistrictID[districtID])
-			}
-		})
 		.on("mousedown", mousedown)
 		.on("mousemove", mousemove)
 		.on("mouseup", mouseup)
@@ -94,8 +74,7 @@ function makeMyMap(error, ushex, demodata) {
  	function mousedown(d) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
-		console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
- 		// console.log(demoByDistrictID[d.properties.districtID]);
+		// console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
  	}
 
  	function mousemove(d) {
@@ -126,6 +105,15 @@ function makeMyMap(error, ushex, demodata) {
 
  	function checkBorderByState(hex1, hex2) {
  		return hex1.properties.state != hex2.properties.state;
+ 	}
+
+ 	function buildColorDomain(extent) {
+ 		var colorDomain = [];
+		var j = 0;
+		for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0) {
+			colorDomain[j++] = i;
+		}
+		return colorDomain;
  	}
 
   	function hexProjection(radius) {
