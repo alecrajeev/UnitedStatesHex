@@ -5,7 +5,9 @@ var width = 1250,
 var color = d3.scale.threshold()
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
-var hexMesh;
+var hexMesh, hexagons;
+var demoByDistrictID = {};
+
 
 queue()
 	.defer(d3.json, "ushex.json")
@@ -16,8 +18,6 @@ function makeMyMap(error, ushex, demodata) {
 	if (error)
 		return console.warn(error);
 
-	var demoByDiscritID = {};
-
 	demodata.forEach(function(d) {
 		d.Asian = +d.Asian;
 		d.Black = +d.Black;
@@ -27,18 +27,10 @@ function makeMyMap(error, ushex, demodata) {
 		d.Party = +d.Party;
 		d.White = +d.Black;
 
-		demoByDiscritID[d.CDID] = d.Black;
+		demoByDistrictID[d.CDID] = d.Black;
 	});
 
-	var colorDomain = [];
-	var extent2 = d3.extent(demodata, function(d) {return d.Black;	});
-	var j = 0;
-	for (i = extent2[0]; i <= extent2[1]; i += (extent2[1] - extent2[0])/8.0) {
-		colorDomain[j++] = i;
-	}
-	color.domain(colorDomain);
-
-
+	color.domain(buildColorDomain(d3.extent(demodata, function(d) {return d.Black;	})));
 
 	var projection = hexProjection(radius);
 
@@ -51,26 +43,15 @@ function makeMyMap(error, ushex, demodata) {
 
 	var hexFeatures = topojson.feature(ushex, ushex.objects.states).features;
 
-	var hexagons = svg.append("g")
+	hexagons = svg.append("g")
 		.attr("class", "hexagon")
 		.selectAll("path")
 		.data(hexFeatures)
 		.enter()
 		.append("path")
 		.attr("d", path)
-		// .attr("class", function(d) {return d.properties.state;	})
-		.style("fill", function(d) {
-			var districtID = d.properties.districtID;
-			if (districtID != -1) {
-				return color(demoByDiscritID[districtID])
-			}
-		})
-		.style("stroke", function(d) {
-			var districtID = d.properties.districtID;
-			if (districtID != -1) {
-				return color(demoByDiscritID[districtID])
-			}
-		})
+		.attr("class", function(d) {return d.properties.state;	})
+		.classed("state", true)
 		.on("mousedown", mousedown)
 		.on("mousemove", mousemove)
 		.on("mouseup", mouseup)
@@ -94,7 +75,6 @@ function makeMyMap(error, ushex, demodata) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
 		// console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
- 		console.log(demoByDiscritID[d.properties.districtID]);
  	}
 
  	function mousemove(d) {
@@ -127,6 +107,15 @@ function makeMyMap(error, ushex, demodata) {
  		return hex1.properties.state != hex2.properties.state;
  	}
 
+ 	function buildColorDomain(extent) {
+ 		var colorDomain = [];
+		var j = 0;
+		for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0) {
+			colorDomain[j++] = i;
+		}
+		return colorDomain;
+ 	}
+
   	function hexProjection(radius) {
   	  	var dx = radius * 2 * Math.sin(Math.PI / 3),
   	  	    dy = radius * 1.5;
@@ -144,11 +133,28 @@ function makeMyMap(error, ushex, demodata) {
   	}
 }
 
-function hideMesh(){
-	hexMesh.attr("class", "noMesh");
-
+function showStates() {
+	hexagons.style("fill", "");
+	hexagons.style("stroke", "");
+	hexagons.classed("state ", true);
 }
 
-function showMesh(){
+function showDemographics() {
+	hexagons.style("fill", function(d) {
+			var districtID = d.properties.districtID;
+			if (districtID != -1) {
+				return color(demoByDistrictID[districtID])
+			}
+		});
+
+	hexagons.style("stroke", function(d) {
+			var districtID = d.properties.districtID;
+			if (districtID != -1) {
+				return color(demoByDistrictID[districtID])
+			}
+		});
+}
+
+function showMesh() {
 	hexMesh.attr("class", "hexMesh");
 }
