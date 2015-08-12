@@ -6,10 +6,29 @@
 
 	<div class="hexagonal">
 	</div>
-	<div class="buttonDiv">
-		<input type="button" value="Show States" onclick="showStates()" />
-		<input type="button" value="Show Demographics" onclick="showDemographics()" />
-	</div>
+  <div class="legend">
+  <text>Data Set</text>
+    <div class="typeToggle">
+      <input id ="0" type="radio" name="circle-update" class ="I" checked onclick="showStates()">States
+    </div>
+    <div class="typeToggle">
+      <input id ="1" type="radio" name="circle-update" class="II" onclick="showWhiteDemographics()">White Demographics
+    </div>
+    <div class="typeToggle">
+      <input id ="2" type="radio" name="circle-update" class="II" onclick="showBlackDemographics()">Black Demographics
+    </div>
+    <div class="typeToggle">
+      <input id ="3" type="radio" name="circle-update" class="II" onclick="showLatinoDemographics()">Latino Demographics
+    </div>
+    <div class="typeToggle">
+      <input id ="4" type="radio" name="circle-update" class="II" onclick="showAsianDemographics()">Asian Demographics
+    </div>
+    <div class="typeToggle">
+      <input id ="5" type="radio" name="circle-update" class="II" onclick="showMultiRacialDemographics()">MultiRacial Demographics
+    </div>
+
+  </div>
+
 
 </body>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>

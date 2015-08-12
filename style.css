@@ -1,10 +1,19 @@
-svg {
-  border: 1px solid #f0f;
+.legend {
+	position: absolute;
+	left: 1100px;
+	top: 200px;
+	border: solid black;
+	padding: 5px;
+	margin: 10 auto;
 }
 
-.buttonDiv {
-	width: 25%;
-	margin: 0 auto;
+.legend text{
+	position: relative;
+	text-align: center;
+	display: block;
+	border-bottom: thin solid black;
+	padding: 10px 30px 10px 30px;
+	font-family: "Lucida Console", Courier, monospace;
 }
 
 .hexagon {

@@ -5,7 +5,7 @@ var width = 1250,
 var color = d3.scale.threshold()
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
-var hexMesh, hexagons;
+var hexMesh, hexagons, ddata;
 var demoByDistrictID = {};
 
 
@@ -25,12 +25,15 @@ function makeMyMap(error, ushex, demodata) {
 		d.Latino = +d.Latino;
 		d.Multiracial = +d.Multiracial;
 		d.Party = +d.Party;
-		d.White = +d.Black;
+		d.White = +d.White;
 
-		demoByDistrictID[d.CDID] = d.Black;
+
+		demoByDistrictID[d.CDID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial];
 	});
 
-	color.domain(buildColorDomain(d3.extent(demodata, function(d) {return d.Black;	})));
+	ddata = demodata;
+
+	color.domain(buildColorDomain(d3.extent(demodata, function(d) {return d.White;	})));
 
 	var projection = hexProjection(radius);
 
@@ -75,6 +78,7 @@ function makeMyMap(error, ushex, demodata) {
  		mousing = d.fill ? -1 : +1;
  		mousemove.apply(this, arguments);
 		// console.log(d.properties.districtID + " " + d.properties.state + "-" + d.properties.district);
+ 		console.log(demoByDistrictID[d.properties.districtID]);
  	}
 
  	function mousemove(d) {
@@ -107,15 +111,6 @@ function makeMyMap(error, ushex, demodata) {
  		return hex1.properties.state != hex2.properties.state;
  	}
 
- 	function buildColorDomain(extent) {
- 		var colorDomain = [];
-		var j = 0;
-		for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0) {
-			colorDomain[j++] = i;
-		}
-		return colorDomain;
- 	}
-
   	function hexProjection(radius) {
   	  	var dx = radius * 2 * Math.sin(Math.PI / 3),
   	  	    dy = radius * 1.5;
@@ -133,24 +128,59 @@ function makeMyMap(error, ushex, demodata) {
   	}
 }
 
+function buildColorDomain(extent) {
+ 	var colorDomain = [];
+	var j = 0;
+	for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0) {
+		colorDomain[j++] = i;
+	}
+	return colorDomain;
+}
+
 function showStates() {
 	hexagons.style("fill", "");
 	hexagons.style("stroke", "");
 	hexagons.classed("state ", true);
 }
 
-function showDemographics() {
+function showWhiteDemographics() {
+	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.White;	})));
+	showDemographics(0);
+}
+
+function showBlackDemographics() {
+	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Black;	})));
+	showDemographics(1);
+
+}
+
+function showLatinoDemographics() {
+	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Latino;	})));
+	showDemographics(2);
+}
+
+function showAsianDemographics() {
+	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Asian;	})));
+	showDemographics(3);
+}
+
+function showMultiRacialDemographics() {
+	color.domain(buildColorDomain(d3.extent(ddata, function(d) {return d.Multiracial;	})));
+	showDemographics(4);
+}
+
+function showDemographics(i) {
 	hexagons.style("fill", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) {
-				return color(demoByDistrictID[districtID])
+				return color(demoByDistrictID[districtID][i])
 			}
 		});
 
 	hexagons.style("stroke", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) {
-				return color(demoByDistrictID[districtID])
+				return color(demoByDistrictID[districtID][i])
 			}
 		});
 }
