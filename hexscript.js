@@ -272,33 +272,42 @@ function showMultiRacialDemographics() {
 	showDemographics(4);
 }
 
-function showPresidentialResults() {
+function showPresidentialResults2012() {
 	d3.select(".header").text("Presidential Results by Congressional District");
 	buildPresColorRange(0);
 	presColor.domain(buildPresColorDomain(d3.extent(presData, function(d) {return d.Obama2012	})));
 	showPresidential(0);
 }
 
+function showPresidentialResults2008() {
+	d3.select(".header").text("Presidential Results by Congressional District");
+	buildPresColorRange(0);
+	presColor.domain(buildPresColorDomain(d3.extent(presData, function(d) {return d.Obama2012	})));
+	showPresidential(2);
+}
+
 function changeTooltip(d) {
 	if (d.properties.state != "Ocean") {
 		d3.select(".whichState").text(d.properties.state);
 		d3.select(".whichDistrict").text(d.properties.district);
+		d3.select(".Pres2012").text("Obama 2012: " + d3.round(presByDistrictID[d.properties.districtID][0]*100, 1) + "%");
+		d3.select(".Pres2008").text("Obama 2008: " + d3.round(presByDistrictID[d.properties.districtID][2]*100, 1) + "%");
 		d3.select(".whiteDemo").text("White: " + d3.round(demoByDistrictID[d.properties.districtID][0]*100, 1) + "%");
 		d3.select(".blackDemo").text("Black: " + d3.round(demoByDistrictID[d.properties.districtID][1]*100, 1) + "%");
 		d3.select(".latinoDemo").text("Latino: " + d3.round(demoByDistrictID[d.properties.districtID][2]*100, 1) + "%");
 		d3.select(".asianDemo").text("Asian: " + d3.round(demoByDistrictID[d.properties.districtID][3]*100, 1) + "%");
 		d3.select(".multiDemo").text("Multiracial: " + d3.round(demoByDistrictID[d.properties.districtID][4]*100, 1) + "%");
-		d3.select(".Pres2012").text("Obama 2012: " + d3.round(presByDistrictID[d.properties.districtID][0]*100, 1) + "%");
 	}
 	else {
 		d3.select(".whichState").text("");
+		d3.select(".Pres2012").text("Obama 2012: ");
+		d3.select(".Pres2008").text("Obama 2008: ");
 		d3.select(".whichDistrict").text("");
 		d3.select(".whiteDemo").text("White: ")
 		d3.select(".blackDemo").text("Black: ")
 		d3.select(".latinoDemo").text("Latino: ");
 		d3.select(".asianDemo").text("Asian: ");
 		d3.select(".multiDemo").text("Multiracial: ");
-		d3.select(".Pres2012").text("Obama 2012: ");
 	}
 }
 
