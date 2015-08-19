@@ -6,7 +6,7 @@ var d3 = require("d3"),
 	fs = require("fs"),
 	topojson = require("topojson");
 
-var congress = JSON.parse(fs.readFileSync("congress.json", "utf8"));
+var congress = JSON.parse(fs.readFileSync("districtList.json", "utf8"));
 
 var hexID = {}; // every hexagon has its own identifying id
 var congressID = {}; // every district has its own identifying id. Eventually will be replaced by role or something
@@ -103,7 +103,6 @@ function hexTopology() {
 
   return {
     type: "Topology",
-    // objects: {hexagons: {type: "GeometryCollection", geometries: geometries}, states: {type: "GeometryCollection", geometries: statesgeo}},
     objects: {states: {type: "GeometryCollection", bbox: [0,0,m,n], geometries: statesgeo}},
     arcs: arcs,
     transform: {translate: [0, 0], scale: [1, 1]}
