@@ -2,6 +2,8 @@ var width = 1250,
     height = 730,
     radius = 7;
 
+// http://goo.gl/kMz0hx
+
 var color = d3.scale.threshold()
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
