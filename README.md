@@ -12,3 +12,5 @@ The file congress.csv is a list of every district, and the id number for all 5 h
 
 ### Displaying the Map on Browser
 Now it is ready to launched in a browser. The file index.html imports the various javascript libraries used such as D3, topoJSON, and Queue. It creates dividers for the main map, and buttons to select which demographics you want to be displayed. The javascript source with D3 is called hexscript.js. This displays the hexagon mesh and assigns each district an id. This is done alphabetically, so Alabama-1 is 1, and Wyoming-1 is 435. Then it connects this information with demographic data from the 2010 U.S. census. This data was taken from Dave Wasserman's [google sheets](https://docs.google.com/spreadsheets/d/1KPoyYlQBzCLOuklFD5PmX91li8F58paL5hKzTSM3XaQ/edit?usp=sharing) file on it. The hexscript file imports this and assigns colors based on demographics. The darker the color is, the more people of that demographic live there.
+
+[logo]: https://raw.githubusercontent.com/alecrajeev/UnitedStatesHex/master/thumbnail.png "Congressional Map"
