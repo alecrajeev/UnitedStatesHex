@@ -34,6 +34,13 @@ function makeMyMap(error, ushex, demodata) {
 
 	ddata = demodata;
 
+	if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		d3.select(".information").style("display", "none");
+	}
+	else {
+		d3.select(".information").style("display", "block");
+	}
+
 	color.domain(buildColorDomain(d3.extent(demodata, function(d) {return d.White;	})));
 
 	var projection = hexProjection(radius);
