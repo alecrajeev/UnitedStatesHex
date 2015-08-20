@@ -5,7 +5,7 @@ var width = 1250,
 var hexMesh, hexagons, demoData, presData;
 var dataByDistrictID = {};
 var specificDistrictID = -2;
-var dataSets = ["White", "Black", "Asian", "Latino", "Multiracial", "Obama 2012", "Obama 2008"];
+var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Obama 2012", "Obama 2008"];
 var extentData = {};
 
 queue()
@@ -43,13 +43,6 @@ function makeMyMap(error, ushex, ddata, presidentialData) {
 	presData = presidentialData;
 
 	buildExtentData();
-
-	if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-		d3.select(".information").style("display", "none");
-	}
-	else {
-		d3.select(".information").style("display", "block");
-	}
 
 	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.White;	})));
 
@@ -193,10 +186,13 @@ function changeTooltip(d) {
 	}
 }
 
-function hideSideBar() {
-	d3.select(".information").style("display", "none");
+function showSideBar() {
+	d3.select(".information").style("display", "block");
+	d3.select(".specificBorder").style("stroke-opacity", "1");
 }
 
-function showSidebar() {
-	d3.select(".information").style("display", "block");
+function hideSideBar() {
+	d3.select(".information").style("display", "none");
+	d3.select(".specificBorder").style("stroke-opacity", "0");
+
 }

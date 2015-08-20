@@ -1,15 +1,32 @@
+.top {
+    position: absolute;
+    left:0; right:0;
+    height: 92px;
+    margin-left: 15px;
+    font-family: 'Helvetica Neue';
+    font-weight: bold;
+}
+
+.left {
+    position: absolute;
+    left:0; top:80px; bottom: 0;
+    width: 178px;
+    margin-left: 15px;
+}
+
+.main {
+    position: relative;
+    left:180px; top:92px; right:0; bottom:0;
+}
+
 .map {
 	position: relative;
 	top: -60px;
 }
 
 .legend {
-	position: absolute;
-	left: 1000px;
-	top: 300px;
 	border: solid black;
 	padding: 5px;
-	margin: 10 auto;
 	font-family: 'Helvetica Neue';
 }
 
@@ -20,6 +37,7 @@
 	border-bottom: thin solid black;
 	padding: 10px 30px 10px 30px;
 	font-weight: bold;
+	font-family: 'Helvetica Neue';
 }
 
 .whichState {
@@ -32,6 +50,7 @@
 
 .typeToggle {
 	font-family: 'Helvetica Neue';
+	padding: 3px;
 	font-size: 14px;
 	font-style: normal;
 	font-variant: normal;
@@ -40,14 +59,21 @@
 }
 
 .information {
-	position: absolute;
-	left: 1000px;
-	top: 513px;
-	width: 182px;
+	position: relative;
+	top: -3px;
 	border: solid black;
 	padding: 5px;
-	margin: 10 auto;
 	font-family: 'Helvetica Neue';
+	display: block;
+}
+
+.toggleSideBar {
+	position: relative;
+	top: -3px;
+	border: solid black;
+	padding: 5px;
+	font-family: 'Helvetica Neue';
+	display: block;
 }
 
 .hexagon {
@@ -60,7 +86,7 @@
 	stroke: #000;
 	stroke-width: 2.5px;
 	stroke-opacity: 1;
-	stroke: #f0f;
+	stroke: #fff;
 	pointer-events: none;
 }
 
@@ -77,8 +103,4 @@
 	stroke: #000;
 	stroke-width: 2px;
 	pointer-events: none;
-}
-
-.information {
-	display: none;
 }
