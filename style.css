@@ -1,3 +1,8 @@
+.map {
+	position: relative;
+	top: -60px;
+}
+
 .legend {
 	position: absolute;
 	left: 1000px;
@@ -46,7 +51,7 @@
 }
 
 .hexagon {
-	fill: white;
+	fill: none;
 	pointer-events: all;
 }
 

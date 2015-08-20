@@ -2,8 +2,6 @@ var width = 1250,
     height = 730,
     radius = 7;
 
-// http://goo.gl/mAJOsV
-
 var demoColor = d3.scale.threshold()
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
@@ -67,7 +65,7 @@ function makeMyMap(error, ushex, ddata, presidentialData) {
 	var path = d3.geo.path()
 		.projection(projection)
 
-	var svg = d3.select(".hexagonal").append("svg")
+	var svg = d3.select(".map").append("svg")
 		.attr("width", width)
 		.attr("height", height);
 
