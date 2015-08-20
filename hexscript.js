@@ -12,10 +12,9 @@ var presColor = d3.scale.threshold()
 	.domain([.18, .3, .35, .4, .45, .55, .6, .65, .7, .97]);;
 
 var hexMesh, hexagons, demoData, presData;
-var demoByDistrictID = {};
-var presByDistrictID = {};
+var dataByDistrictID = {};
 var specificDistrictID = -2;
-var dataSets = ["White", "Black", "Asian", "Latino", "Multiracial", "2012", "2008"];
+var dataSets = ["White", "Black", "Asian", "Latino", "Multiracial", "Obama 2012", "Obama 2008"];
 var extentData = {};
 
 queue()
@@ -37,20 +36,17 @@ function makeMyMap(error, ushex, ddata, presidentialData) {
 		d.Party = +d.Party;
 		d.White = +d.White;
 
-		demoByDistrictID[d.CDID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial];
+		dataByDistrictID[d.CDID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial];
 	});
 
 	demoData = ddata;
 
 	presidentialData.forEach(function(d) {
 		d.Obama2012 = +d.Obama2012;
-		d.Romney2012 = +d.Romney2012;
 		d.Obama2008 = +d.Obama2008;
-		d.McCain2008 = +d.McCain2008;
 		d.CDID = +d.CDID;
 
-		demoByDistrictID[d.CDID].push(d.Obama2012,d.Obama2008);
-		presByDistrictID[d.CDID] = [d.Obama2012, d.Obama2008, d.Romney2012, d.McCain2008];
+		dataByDistrictID[d.CDID].push(d.Obama2012,d.Obama2008);
 	});
 
 	presData = presidentialData;
@@ -95,7 +91,6 @@ function makeMyMap(error, ushex, ddata, presidentialData) {
 		.datum(topojson.mesh(ushex, ushex.objects.states))
 		.attr("class", "noMesh")
 		.attr("d", path);
-
 
     var stateBorder = svg.append("path")
     	.attr("class", "stateBorder")
@@ -253,39 +248,28 @@ function showDataSet(i) {
 	d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
-function getTooltipName(i) {
-	switch(i) {
-		case 5:
-			return ".Pres2012";
-			break;
-		case 6:
-			return ".Pres2008"
-			break;
-	}
-}
-
 function changeTooltip(d) {
 	if (d.properties.state != "Ocean") {
 		d3.select(".whichState").text(d.properties.state);
 		d3.select(".whichDistrict").text(d.properties.district);
-		d3.select(getTooltipName(5)).text("Obama 2012: " + d3.round(presByDistrictID[d.properties.districtID][0]*100, 1) + "%");
-		d3.select(".Pres2008").text("Obama 2008: " + d3.round(presByDistrictID[d.properties.districtID][2]*100, 1) + "%");
-		d3.select(".whiteDemo").text("White: " + d3.round(demoByDistrictID[d.properties.districtID][0]*100, 1) + "%");
-		d3.select(".blackDemo").text("Black: " + d3.round(demoByDistrictID[d.properties.districtID][1]*100, 1) + "%");
-		d3.select(".latinoDemo").text("Latino: " + d3.round(demoByDistrictID[d.properties.districtID][2]*100, 1) + "%");
-		d3.select(".asianDemo").text("Asian: " + d3.round(demoByDistrictID[d.properties.districtID][3]*100, 1) + "%");
-		d3.select(".multiDemo").text("Multiracial: " + d3.round(demoByDistrictID[d.properties.districtID][4]*100, 1) + "%");
-	}
+		for (i = 0; i < 7; i++) {
+			var classNameSplit = dataSets[i].split(" ");
+			if (classNameSplit.length < 2)
+				d3.select("." + dataSets[i] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]*100, 1) + "%");
+			else
+				d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]*100, 1) + "%");
+		}
+}
 	else {
 		d3.select(".whichState").text("");
-		d3.select(".Pres2012").text("Obama 2012: ");
-		d3.select(".Pres2008").text("Obama 2008: ");
-		d3.select(".whichDistrict").text("");
-		d3.select(".whiteDemo").text("White: ")
-		d3.select(".blackDemo").text("Black: ")
-		d3.select(".latinoDemo").text("Latino: ");
-		d3.select(".asianDemo").text("Asian: ");
-		d3.select(".multiDemo").text("Multiracial: ");
+		d3.select(".whichDistrict").text("");		
+		for (i = 0; i < 7; i++) {
+			var classNameSplit = dataSets[i].split(" ");
+			if (classNameSplit.length < 2)
+				d3.select("." + dataSets[i] + ".Tooltip").text(dataSets[i] + ": ");
+			else
+				d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": ");
+		}
 	}
 }
 
@@ -293,14 +277,14 @@ function showDemographics(i) {
 	hexagons.style("fill", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) { // if it's an actual district and not part of the ocean
-				return demoColor(demoByDistrictID[districtID][i])
+				return demoColor(dataByDistrictID[districtID][i])
 			}
 		});
 
 	hexagons.style("stroke", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) {
-				return demoColor(demoByDistrictID[districtID][i])
+				return demoColor(dataByDistrictID[districtID][i])
 			}
 		});
 }
@@ -310,14 +294,14 @@ function showPresidential(i) {
 	hexagons.style("fill", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) {
-				return presColor(presByDistrictID[districtID][i-5])
+				return presColor(dataByDistrictID[districtID][i])
 			}
 		});
 
 	hexagons.style("stroke", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) {
-				return presColor(presByDistrictID[districtID][i-5])
+				return presColor(dataByDistrictID[districtID][i])
 			}
 		});
 }

@@ -50,10 +50,6 @@
 	pointer-events: all;
 }
 
-/*.hexagon :hover {
-	fill: pink;
-}*/
-
 .hexMesh {
 	fill: none;
 	stroke: #000;
