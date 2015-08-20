@@ -236,6 +236,7 @@ function showStates() {
 	hexagons.style("fill", "");
 	hexagons.style("stroke", "");
 	hexagons.classed("state ", true);
+	d3.select(".districtBorder").style("stroke-opacity", ".2");
 }
 
 function showWhiteDemographics() {
@@ -243,6 +244,7 @@ function showWhiteDemographics() {
 	buildColorRange(0);
 	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.White;	})));
 	showDemographics(0);
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showBlackDemographics() {
@@ -250,7 +252,7 @@ function showBlackDemographics() {
 	buildColorRange(1);
 	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.Black;	})));
 	showDemographics(1);
-
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showLatinoDemographics() {
@@ -258,6 +260,7 @@ function showLatinoDemographics() {
 	buildColorRange(2);
 	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.Latino;	})));
 	showDemographics(2);
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showAsianDemographics() {
@@ -265,6 +268,7 @@ function showAsianDemographics() {
 	buildColorRange(3);
 	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.Asian;	})));
 	showDemographics(3);
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showMultiRacialDemographics() {
@@ -272,6 +276,7 @@ function showMultiRacialDemographics() {
 	buildColorRange(4);
 	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.Multiracial;	})));
 	showDemographics(4);
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showPresidentialResults2012() {
@@ -279,6 +284,7 @@ function showPresidentialResults2012() {
 	buildPresColorRange(0);
 	presColor.domain(buildPresColorDomain(d3.extent(presData, function(d) {return d.Obama2012	})));
 	showPresidential(0);
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showPresidentialResults2008() {
@@ -286,6 +292,7 @@ function showPresidentialResults2008() {
 	buildPresColorRange(0);
 	presColor.domain(buildPresColorDomain(d3.extent(presData, function(d) {return d.Obama2012	})));
 	showPresidential(2);
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function changeTooltip(d) {
