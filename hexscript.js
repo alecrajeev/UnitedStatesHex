@@ -2,7 +2,7 @@ var width = 1250,
     height = 730,
     radius = 7;
 
-// http://goo.gl/tfC480
+// http://goo.gl/mAJOsV
 
 var demoColor = d3.scale.threshold()
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
@@ -195,9 +195,11 @@ function buildColorDomain(extent) {
 function buildPresColorDomain(extent) {
  	var colorDomain = [];
 	var j = 0;
-	for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0) {
-		colorDomain[j++] = i;
-	}
+	// for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0) {
+	// 	colorDomain[j++] = i;
+	// }
+	console.log(extent);
+	colorDomain = [.18, .3, .35, .4, .45, .55, .6, .65, .7, .97];
 	return colorDomain;
 }
 
@@ -224,7 +226,7 @@ function buildColorRange(i) {
 function buildPresColorRange(i) {
 	switch(i) {
 		case 0:
-		presColor.range(['rgb(178,24,43)','rgb(214,96,77)','rgb(244,165,130)','rgb(253,219,199)','rgb(247,247,247)','rgb(209,229,240)','rgb(146,197,222)','rgb(67,147,195)','rgb(33,102,172)']);
+		presColor.range(['#AE000C','#BA3035','#C56365','#D09697','#DBC8C8','#C8C8D5','#9697BD','#6465A5','#32358E', 'rgb(1,10,121)']);
 		break;
 	}
 }
@@ -273,14 +275,14 @@ function showMultiRacialDemographics() {
 }
 
 function showPresidentialResults2012() {
-	d3.select(".header").text("Presidential Results by Congressional District");
+	d3.select(".header").text("2012 Presidential Results by Congressional District");
 	buildPresColorRange(0);
 	presColor.domain(buildPresColorDomain(d3.extent(presData, function(d) {return d.Obama2012	})));
 	showPresidential(0);
 }
 
 function showPresidentialResults2008() {
-	d3.select(".header").text("Presidential Results by Congressional District");
+	d3.select(".header").text("2008 Presidential Results by Congressional District");
 	buildPresColorRange(0);
 	presColor.domain(buildPresColorDomain(d3.extent(presData, function(d) {return d.Obama2012	})));
 	showPresidential(2);

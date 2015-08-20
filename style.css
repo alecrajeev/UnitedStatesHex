@@ -71,7 +71,7 @@
 .specificBorder {
 	fill: none;
 	stroke: #000;
-	stroke-width: 2px;
+	stroke-width: 2.5px;
 	stroke-opacity: 1;
 	stroke: #f0f;
 	pointer-events: none;
@@ -81,7 +81,7 @@
 	fill: none;
 	stroke: #000;
 	stroke-width: 1px;
-	stroke-opacity: .3;
+	stroke-opacity: .5;
 	pointer-events: none;
 }
 
