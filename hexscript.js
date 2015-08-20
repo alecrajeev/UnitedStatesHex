@@ -44,13 +44,6 @@ function makeMyMap(error, ushex, ddata, presidentialData) {
 
 	buildExtentData();
 
-	if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-		d3.select(".information").style("display", "none");
-	}
-	else {
-		d3.select(".information").style("display", "block");
-	}
-
 	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.White;	})));
 
 	var projection = hexProjection(radius);

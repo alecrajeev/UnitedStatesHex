@@ -64,7 +64,7 @@
 	border: solid black;
 	padding: 5px;
 	font-family: 'Helvetica Neue';
-	display: none;
+	display: block;
 }
 
 .toggleSideBar {
@@ -86,7 +86,7 @@
 	stroke: #000;
 	stroke-width: 2.5px;
 	stroke-opacity: 1;
-	stroke: #f0f;
+	stroke: #fff;
 	pointer-events: none;
 }
 
