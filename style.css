@@ -55,20 +55,6 @@
 	pointer-events: all;
 }
 
-.hexMesh {
-	fill: none;
-	stroke: #000;
-	stroke-opacity: 0.1;
-	pointer-events: none;
-}
-
-.noMesh {
-	fill: none;
-	stroke: #000;
-	stroke-opacity: 0;
-	pointer-events: none;
-}
-
 .specificBorder {
 	fill: none;
 	stroke: #000;
