@@ -9,58 +9,68 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
-    <script type="text/javascript" src="colorBuilder.js"></script>
+    	<script type="text/javascript" src="colorBuilder.js"></script>
 		<script type="text/javascript" src="hexscript.js"></script>
 	</head>
 
 	<body>
-  		<div>
-  			<h3 class="header">States</h3>
-  		</div>
 
-  	<div class="map">
-  	</div>
-    
-    <div class="legend">
-    <text>Data Set</text>
-      <div class="typeToggle">
-        <input id ="0" type="radio" name="circle-update" class ="I" checked onclick="showStates()">States
-      </div>
-      <div class="typeToggle">
-        <input id="0" type="radio" name="circle-update" class"II" onclick="showDataSet(5)">Presidential Results 2012
-      </div>
-            <div class="typeToggle">
-        <input id="0" type="radio" name="circle-update" class"II" onclick="showDataSet(6)">Presidential Results 2008
-      </div>
-      <div class="typeToggle">
-        <input id ="1" type="radio" name="circle-update" class="II" onclick="showDataSet(0)">White Demographics
-      </div>
-      <div class="typeToggle">
-        <input id ="2" type="radio" name="circle-update" class="II" onclick="showDataSet(1)">Black Demographics
-      </div>
-      <div class="typeToggle">
-        <input id ="3" type="radio" name="circle-update" class="II" onclick="showDataSet(2)">Latino Demographics
-      </div>
-      <div class="typeToggle">
-        <input id ="4" type="radio" name="circle-update" class="II" onclick="showDataSet(3)">Asian Demographics
-      </div>
-      <div class="typeToggle">
-        <input id ="5" type="radio" name="circle-update" class="II" onclick="showDataSet(4)">MultiRacial Demographics
-      </div>
-    </div>
-    
-    <div class="information">
-      <div class="stateInfo">State: <span class="whichState"></span></div>
-      <div class="districtNumber">District: <span class="whichDistrict"></span></div>
-      <div class="Obama2012 Tooltip"> Obama 2012: </div>
-      <div class="Obama2008 Tooltip"> Obama 2008: </div>
-      <div class="White Tooltip">White: </div>
-      <div class="Black Tooltip">Black: </div>
-      <div class="Latino Tooltip">Latino: </div>
-      <div class="Asian Tooltip">Asian: </div>
-      <div class="Multiracial Tooltip">MultiRacial: </div>
+    	<div class="top">
+    		<h3 class="header">States</h3>
+    	</div>
 
-    </div>
+    	<div class="left">
+      	
+    		<div class="legend">
+      			<text>Data Set</text>
+        		<div class="typeToggle">
+        			<input id ="0" type="radio" name="circle-update" class ="I" checked onclick="showStates()">States
+        		</div>
+        		<div class="typeToggle">
+        			<input id="0" type="radio" name="circle-update" class"II" onclick="showDataSet(5)">Presidential Results 2012
+        		</div>
+        		<div class="typeToggle">
+        			<input id="0" type="radio" name="circle-update" class"II" onclick="showDataSet(6)">Presidential Results 2008
+        		</div>
+        		<div class="typeToggle">
+        			<input id ="1" type="radio" name="circle-update" class="II" onclick="showDataSet(0)">White Demographics
+        		</div>
+        		<div class="typeToggle">
+        			<input id ="2" type="radio" name="circle-update" class="II" onclick="showDataSet(1)">Black Demographics
+        		</div>
+        		<div class="typeToggle">
+        			<input id ="3" type="radio" name="circle-update" class="II" onclick="showDataSet(2)">Latino Demographics
+        		</div>
+        		<div class="typeToggle">
+        			<input id ="4" type="radio" name="circle-update" class="II" onclick="showDataSet(3)">Asian Demographics
+        		</div>
+        		<div class="typeToggle">
+        			<input id ="5" type="radio" name="circle-update" class="II" onclick="showDataSet(4)">MultiRacial Demographics
+        		</div>
+    		</div>
+      		
+    		<div class="information">
+    			<div>State: <span class="whichState"></span></div>
+    			<div>District: <span class="whichDistrict"></span></div>
+    			<div class="Obama2012 Tooltip"> Obama 2012: </div>
+    			<div class="Obama2008 Tooltip"> Obama 2008: </div>
+    			<div class="White Tooltip">White: </div>
+    			<div class="Black Tooltip">Black: </div>
+    			<div class="Latino Tooltip">Latino: </div>
+    			<div class="Asian Tooltip">Asian: </div>
+    			<div class="Multiracial Tooltip">MultiRacial: </div>
+    		</div>
+
+<!--     		<div class="toggleSideBar">
+    			<button onclick="showSideBar()">Turn On Tooltip</button>
+    			<button onclick="hideSideBar()">Turn Off Tooltip</button>
+    		</div> -->
+
+    	</div>
+
+    	<div class="main">
+	   		<div class="map"></div>
+    	</div>
 
   </body>
 
