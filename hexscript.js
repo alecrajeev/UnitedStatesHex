@@ -8,12 +8,15 @@ var demoColor = d3.scale.threshold()
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
 var presColor = d3.scale.threshold()
-	.range(['rgb(178,24,43)','rgb(214,96,77)','rgb(244,165,130)','rgb(253,219,199)','rgb(247,247,247)','rgb(209,229,240)','rgb(146,197,222)','rgb(67,147,195)','rgb(33,102,172)']);
+	.range(['#AE000C','#BA3035','#C56365','#D09697','#DBC8C8','#C8C8D5','#9697BD','#6465A5','#32358E', 'rgb(1,10,121)'])
+	.domain([.18, .3, .35, .4, .45, .55, .6, .65, .7, .97]);;
 
 var hexMesh, hexagons, demoData, presData;
 var demoByDistrictID = {};
 var presByDistrictID = {};
 var specificDistrictID = -2;
+var dataSets = ["White", "Black", "Asian", "Latino", "Multiracial", "2012", "2008"];
+var extentData = {};
 
 queue()
 	.defer(d3.json, "ushex.json")
@@ -46,10 +49,13 @@ function makeMyMap(error, ushex, ddata, presidentialData) {
 		d.McCain2008 = +d.McCain2008;
 		d.CDID = +d.CDID;
 
-		presByDistrictID[d.CDID] = [d.Obama2012, d.Romney2012, d.Obama2008, d.McCain2008];
+		demoByDistrictID[d.CDID].push(d.Obama2012,d.Obama2008);
+		presByDistrictID[d.CDID] = [d.Obama2012, d.Obama2008, d.Romney2012, d.McCain2008];
 	});
 
 	presData = presidentialData;
+
+	buildExtentData();
 
 	if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
 		d3.select(".information").style("display", "none");
@@ -192,17 +198,6 @@ function buildColorDomain(extent) {
 	return colorDomain;
 }
 
-function buildPresColorDomain(extent) {
- 	var colorDomain = [];
-	var j = 0;
-	// for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0) {
-	// 	colorDomain[j++] = i;
-	// }
-	console.log(extent);
-	colorDomain = [.18, .3, .35, .4, .45, .55, .6, .65, .7, .97];
-	return colorDomain;
-}
-
 function buildColorRange(i) {
 	switch(i) {
 		case 0: // white
@@ -220,15 +215,20 @@ function buildColorRange(i) {
 		case 4: // multiracial
 			demoColor.range(['rgb(247,251,255)','rgb(222,235,247)','rgb(198,219,239)','rgb(158,202,225)','rgb(107,174,214)','rgb(66,146,198)','rgb(33,113,181)','rgb(8,81,156)','rgb(8,48,107)']);
 			break;
+		default: // presidential, never actually used here
+			presColor.range(['#AE000C','#BA3035','#C56365','#D09697','#DBC8C8','#C8C8D5','#9697BD','#6465A5','#32358E', 'rgb(1,10,121)']);
+			break;
 	}
 }
 
-function buildPresColorRange(i) {
-	switch(i) {
-		case 0:
-		presColor.range(['#AE000C','#BA3035','#C56365','#D09697','#DBC8C8','#C8C8D5','#9697BD','#6465A5','#32358E', 'rgb(1,10,121)']);
-		break;
-	}
+function buildExtentData() { // builds the mininum and maximum value array, extent, for each dataset
+	extentData[0] = d3.extent(demoData, function(d) {return d.White;	});
+	extentData[1] = d3.extent(demoData, function(d) {return d.Black;	});
+	extentData[2] = d3.extent(demoData, function(d) {return d.Latino;	});
+	extentData[3] = d3.extent(demoData, function(d) {return d.Asian;	});
+	extentData[4] = d3.extent(demoData, function(d) {return d.Multiracial;	});
+	extentData[5] = d3.extent(presData, function(d) {return d.Obama2012;	});
+	extentData[6] = d3.extent(presData, function(d) {return d.Obama2008;	});
 }
 
 function showStates() {
@@ -239,67 +239,36 @@ function showStates() {
 	d3.select(".districtBorder").style("stroke-opacity", ".2");
 }
 
-function showWhiteDemographics() {
-	d3.select(".header").text("White Demographics by Congressional District");
-	buildColorRange(0);
-	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.White;	})));
-	showDemographics(0);
-	d3.select(".districtBorder").style("stroke-opacity", ".5");
+function showDataSet(i) {
+	if (i < 5) { // demographics sets
+		d3.select(".header").text(dataSets[i] + " Demographics by Congressional District");
+		buildColorRange(i);
+		demoColor.domain(buildColorDomain(extentData[i]));
+		showDemographics(i);
+	}
+	else { // presidential sets
+		d3.select(".header").text(dataSets[i] + " Presidential Results by Congressional District");
+		showPresidential(i);
+	}
+	d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
-function showBlackDemographics() {
-	d3.select(".header").text("Black Demographics by Congressional District");
-	buildColorRange(1);
-	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.Black;	})));
-	showDemographics(1);
-	d3.select(".districtBorder").style("stroke-opacity", ".5");
-}
-
-function showLatinoDemographics() {
-	d3.select(".header").text("Latino Demographics by Congressional District");
-	buildColorRange(2);
-	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.Latino;	})));
-	showDemographics(2);
-	d3.select(".districtBorder").style("stroke-opacity", ".5");
-}
-
-function showAsianDemographics() {
-	d3.select(".header").text("Asian Demographics by Congressional District");
-	buildColorRange(3);
-	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.Asian;	})));
-	showDemographics(3);
-	d3.select(".districtBorder").style("stroke-opacity", ".5");
-}
-
-function showMultiRacialDemographics() {
-	d3.select(".header").text("MultiRacial Demographics by Congressional District");
-	buildColorRange(4);
-	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.Multiracial;	})));
-	showDemographics(4);
-	d3.select(".districtBorder").style("stroke-opacity", ".5");
-}
-
-function showPresidentialResults2012() {
-	d3.select(".header").text("2012 Presidential Results by Congressional District");
-	buildPresColorRange(0);
-	presColor.domain(buildPresColorDomain(d3.extent(presData, function(d) {return d.Obama2012	})));
-	showPresidential(0);
-	d3.select(".districtBorder").style("stroke-opacity", ".5");
-}
-
-function showPresidentialResults2008() {
-	d3.select(".header").text("2008 Presidential Results by Congressional District");
-	buildPresColorRange(0);
-	presColor.domain(buildPresColorDomain(d3.extent(presData, function(d) {return d.Obama2012	})));
-	showPresidential(2);
-	d3.select(".districtBorder").style("stroke-opacity", ".5");
+function getTooltipName(i) {
+	switch(i) {
+		case 5:
+			return ".Pres2012";
+			break;
+		case 6:
+			return ".Pres2008"
+			break;
+	}
 }
 
 function changeTooltip(d) {
 	if (d.properties.state != "Ocean") {
 		d3.select(".whichState").text(d.properties.state);
 		d3.select(".whichDistrict").text(d.properties.district);
-		d3.select(".Pres2012").text("Obama 2012: " + d3.round(presByDistrictID[d.properties.districtID][0]*100, 1) + "%");
+		d3.select(getTooltipName(5)).text("Obama 2012: " + d3.round(presByDistrictID[d.properties.districtID][0]*100, 1) + "%");
 		d3.select(".Pres2008").text("Obama 2008: " + d3.round(presByDistrictID[d.properties.districtID][2]*100, 1) + "%");
 		d3.select(".whiteDemo").text("White: " + d3.round(demoByDistrictID[d.properties.districtID][0]*100, 1) + "%");
 		d3.select(".blackDemo").text("Black: " + d3.round(demoByDistrictID[d.properties.districtID][1]*100, 1) + "%");
@@ -323,7 +292,7 @@ function changeTooltip(d) {
 function showDemographics(i) {
 	hexagons.style("fill", function(d) {
 			var districtID = d.properties.districtID;
-			if (districtID != -1) {
+			if (districtID != -1) { // if it's an actual district and not part of the ocean
 				return demoColor(demoByDistrictID[districtID][i])
 			}
 		});
@@ -337,17 +306,18 @@ function showDemographics(i) {
 }
 
 function showPresidential(i) {
+
 	hexagons.style("fill", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) {
-				return presColor(presByDistrictID[districtID][i])
+				return presColor(presByDistrictID[districtID][i-5])
 			}
 		});
 
 	hexagons.style("stroke", function(d) {
 			var districtID = d.properties.districtID;
 			if (districtID != -1) {
-				return presColor(presByDistrictID[districtID][i])
+				return presColor(presByDistrictID[districtID][i-5])
 			}
 		});
 }
