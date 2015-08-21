@@ -9,6 +9,7 @@ var dataByDistrictID = {};
 var specificDistrictID = -2;
 var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Obama 2012", "Obama 2008"];
 var extentData = {};
+var cVoteData;
 
 queue()
 	.defer(d3.csv, "districtCDIDlist.csv")
@@ -213,6 +214,27 @@ function changeTooltip(d) {
 				d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": ");
 		}
 	}
+}
+
+function buildRollCallVote(govtracknum) {
+
+	var temp = d3.json("https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435", function(error, cdata) {
+
+		if (error)
+			console.warn(error);
+
+		cVoteData = cdata;
+
+		cVoteData.objects.forEach(function(d) {
+		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
+		d.simplevote = getSimpleVote(d.option.key);
+		d.districtID = getdistrictID(d.statecd);	
+
+		voteByDistrictID[d.districtID] = d.simplevote;
+		});
+
+		console.log(cVoteData);	
+	});
 }
 
 function checkAaronSchockers(voteByDistrictID) { // checks if there are any empty seats i.e. Aaron Schock
