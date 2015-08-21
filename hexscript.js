@@ -3,34 +3,40 @@ var width = 1250,
     radius = 7;
 
 var hexMesh, hexagons, demoData, presData;
+var districtList = {};
+var voteByDistrictID = {};
 var dataByDistrictID = {};
 var specificDistrictID = -2;
 var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Obama 2012", "Obama 2008"];
 var extentData = {};
 
 queue()
+	.defer(d3.csv, "districtCDIDlist.csv")
 	.defer(d3.json, "ushex.json")
-	.defer(d3.csv, "demographics.csv")
+	.defer(d3.tsv, "demographics.tsv")
 	.defer(d3.tsv, "presidential_results.tsv")
 	.defer(d3.json, "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435")
 	.await(makeMyMap);
 
-function makeMyMap(error, ushex, ddata, presidentialData, congressVoteData) {
+function makeMyMap(error, districtListData, ushex, ddata, presidentialData, congressVoteData) {
 	if (error)
 		return console.warn(error);
 
-	console.log(congressVoteData.objects);
+	districtListData.forEach(function(d) {
+		d.districtID = +d.CDID;
+		districtList[d.districtID] = d.StateCD; // eventually make this tree or a hashtable, preprocess in node
+	});
 
 	ddata.forEach(function(d) {
 		d.Asian = +d.Asian;
 		d.Black = +d.Black;
-		d.CDID = +d.CDID;
+		d.districtID = +d.districtID;
 		d.Latino = +d.Latino;
 		d.Multiracial = +d.Multiracial;
 		d.Party = +d.Party;
 		d.White = +d.White;
 
-		dataByDistrictID[d.CDID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial];
+		dataByDistrictID[d.districtID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial];
 	});
 
 	demoData = ddata;
@@ -38,16 +44,26 @@ function makeMyMap(error, ushex, ddata, presidentialData, congressVoteData) {
 	presidentialData.forEach(function(d) {
 		d.Obama2012 = +d.Obama2012;
 		d.Obama2008 = +d.Obama2008;
-		d.CDID = +d.CDID;
+		d.districtID = +d.districtID;
 
-		dataByDistrictID[d.CDID].push(d.Obama2012,d.Obama2008);
+		dataByDistrictID[d.districtID].push(d.Obama2012,d.Obama2008);
 	});
 
 	presData = presidentialData;
 
 	buildExtentData();
 
-	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.White;	})));
+	// console.log(congressVoteData.objects);
+
+	congressVoteData.objects.forEach(function(d) {
+		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
+		d.simplevote = getSimpleVote(d.option.key);
+		d.districtID = getdistrictID(d.statecd);
+
+		voteByDistrictID[d.districtID] = d.simplevote;
+	});
+
+	console.log(dataByDistrictID);
 
 	var projection = hexProjection(radius);
 
@@ -84,7 +100,7 @@ function makeMyMap(error, ushex, ddata, presidentialData, congressVoteData) {
  	function mouseover(d) {
   		specificDistrictID = d.properties.districtID;
  		specificDistrict.call(drawSpecificDistrict);
- 		changeTooltip(d);	
+ 		changeTooltip(d);
  	}
 
  	function drawSpecificDistrict(border) {
@@ -146,8 +162,14 @@ function showStates() {
 	d3.select(".header").text("States");
 	hexagons.style("fill", "");
 	hexagons.style("stroke", "");
-	hexagons.classed("state ", true);
 	d3.select(".districtBorder").style("stroke-opacity", ".2");
+}
+
+function showRollCallVote() {
+	d3.selectAll(".header").text("Roll Call Vote");
+	showVote();
+
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showDataSet(i) {
@@ -164,7 +186,7 @@ function showDataSet(i) {
 	d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
-function getRealDistrict(i, state) {
+function getRealDistrict(i, state) { // returns "at large" if the district number is 0, like Montana
 	if (i > 0)
 		return i;
 	return "At-Large";
@@ -193,6 +215,50 @@ function changeTooltip(d) {
 				d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": ");
 		}
 	}
+}
+
+function getSimpleVote(e) { // an integer representation of what the vote was
+
+	if (e == "+")
+		return 1; // return 1 if answered Aye, Yeah, etc.
+
+	if (e == "-") // return -1 if answered No, Nay, etc.
+		return -1;
+	
+	return 0; // return 0 if answered Present, skipped voted, etc. Also if "Not Proven" (Arlen Specter)
+}
+
+function getdistrictID(statecd) { // give the id for the specific congressional district
+	// determined by the name of the state and district number
+	// will eventually preprocess a hashtable in node
+
+	for (i = 0; i < 435; i++) {
+		if (districtList[i] === statecd) {
+			// console.log(statecd);
+			return i;
+		}
+	}
+
+	console.log("umm");
+	return -1;
+
+
+}
+
+function getdistrictID2(statecd) {
+
+	console.log(statecd);
+	for (i = 0; i < 435; i++) {
+		if (districtList[i] === statecd) {
+			console.log(statecd);
+			return i;
+		}
+	}
+
+	console.log(statecd + "umm");
+	return -1;
+
+
 }
 
 function showSideBar() {

@@ -7,6 +7,10 @@ var presColor = d3.scale.threshold() // color scale for the presidential data
 	.range(['#AE000C','#BA3035','#C56365','#D09697','#DBC8C8','#C8C8D5','#9697BD','#6465A5','#32358E', 'rgb(1,10,121)'])
 	.domain([.18, .3, .35, .4, .45, .55, .6, .65, .7, .97]);;
 
+var voteColor = d3.scale.threshold() // color scale for a specifc vote
+	.range(['rgb(175,141,195)','rgb(247,247,247)','rgb(127,191,123)'])
+	.domain([-1,0,1]);
+
 function buildColorRange(i) { // builds the color range
 	switch(i) {
 		case 0: // white
@@ -81,3 +85,17 @@ function showPresidential(i) {
 			}
 		});
 }
+
+function showVote() {
+	
+	hexagons.style("fill", function(d) {
+			var statecd = d.properties.state + d.properties.district;
+			var districtID = getdistrictID2(statecd);
+
+			if (districtID != -1) {
+				return voteColor(voteByDistrictID[districtID]);
+			}
+		});	
+}
+
+
