@@ -53,17 +53,15 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, cong
 
 	buildExtentData();
 
-	// console.log(congressVoteData.objects);
-
 	congressVoteData.objects.forEach(function(d) {
 		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
 		d.simplevote = getSimpleVote(d.option.key);
-		d.districtID = getdistrictID(d.statecd);
+		d.districtID = getdistrictID(d.statecd);	
 
 		voteByDistrictID[d.districtID] = d.simplevote;
 	});
 
-	console.log(dataByDistrictID);
+	checkAaronSchockers(voteByDistrictID);
 
 	var projection = hexProjection(radius);
 
@@ -217,12 +215,18 @@ function changeTooltip(d) {
 	}
 }
 
+function checkAaronSchockers(voteByDistrictID) { // checks if there are any empty seats i.e. Aaron Schock
+	for (i = 0; i < 434; i++)
+		if (voteByDistrictID[i] === undefined)
+			voteByDistrictID[i] = 0;
+}
+
 function getSimpleVote(e) { // an integer representation of what the vote was
 
-	if (e == "+")
+	if (e === "+")
 		return 1; // return 1 if answered Aye, Yeah, etc.
 
-	if (e == "-") // return -1 if answered No, Nay, etc.
+	if (e === "-") // return -1 if answered No, Nay, etc.
 		return -1;
 	
 	return 0; // return 0 if answered Present, skipped voted, etc. Also if "Not Proven" (Arlen Specter)
@@ -234,31 +238,10 @@ function getdistrictID(statecd) { // give the id for the specific congressional 
 
 	for (i = 0; i < 435; i++) {
 		if (districtList[i] === statecd) {
-			// console.log(statecd);
 			return i;
 		}
 	}
-
-	console.log("umm");
 	return -1;
-
-
-}
-
-function getdistrictID2(statecd) {
-
-	console.log(statecd);
-	for (i = 0; i < 435; i++) {
-		if (districtList[i] === statecd) {
-			console.log(statecd);
-			return i;
-		}
-	}
-
-	console.log(statecd + "umm");
-	return -1;
-
-
 }
 
 function showSideBar() {
