@@ -12,11 +12,14 @@ queue()
 	.defer(d3.json, "ushex.json")
 	.defer(d3.csv, "demographics.csv")
 	.defer(d3.tsv, "presidential_results.tsv")
+	.defer(d3.json, "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435")
 	.await(makeMyMap);
 
-function makeMyMap(error, ushex, ddata, presidentialData) {
+function makeMyMap(error, ushex, ddata, presidentialData, congressVoteData) {
 	if (error)
 		return console.warn(error);
+
+	console.log(congressVoteData.objects);
 
 	ddata.forEach(function(d) {
 		d.Asian = +d.Asian;
@@ -161,10 +164,16 @@ function showDataSet(i) {
 	d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
+function getRealDistrict(i, state) {
+	if (i > 0)
+		return i;
+	return "At-Large";
+}
+
 function changeTooltip(d) {
 	if (d.properties.state != "Ocean") { // if you're on a district
 		d3.select(".whichState").text(d.properties.state);
-		d3.select(".whichDistrict").text(d.properties.district);
+		d3.select(".whichDistrict").text(getRealDistrict(d.properties.district, d.properties.state));
 		for (i = 0; i < 7; i++) {
 			var classNameSplit = dataSets[i].split(" ");
 			if (classNameSplit.length < 2)
