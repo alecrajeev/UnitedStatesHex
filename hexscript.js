@@ -232,8 +232,6 @@ function buildRollCallVote(govtracknum) {
 
 		voteByDistrictID[d.districtID] = d.simplevote;
 		});
-
-		console.log(cVoteData);	
 	});
 }
 
@@ -264,6 +262,19 @@ function getdistrictID(statecd) { // give the id for the specific congressional 
 		}
 	}
 	return -1;
+}
+
+function grabNumber() {
+
+	var textBox = document.getElementById("textbox");
+	var govTrackNum = +textBox.value;
+
+	if (isNaN(govTrackNum))
+		console.log("needs to be a real number");
+	else {
+		buildRollCallVote(govTrackNum);
+		showRollCallVote();
+	}
 }
 
 function showSideBar() {
