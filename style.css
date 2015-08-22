@@ -25,12 +25,24 @@
 }
 
 .legend {
+	position: relative;
+	top: -6px;
+	height: 200px;
+	border: solid black;
+	padding: 5px;
+	padding-top: 10px;
+	display: block;
+	font-family: "Helvetica Neue";
+	stroke-width: 2px;
+}
+
+.sidebar {
 	border: solid black;
 	padding: 5px;
 	font-family: 'Helvetica Neue';
 }
 
-.legend text{
+.sidebar text{
 	position: relative;
 	text-align: center;
 	display: block;

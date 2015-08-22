@@ -1,6 +1,6 @@
 var width = 1250,
     height = 730,
-    radius = 7;
+    radius = 6.5;
 
 var hexMesh, hexagons, demoData, presData;
 var districtList = {};
@@ -95,6 +95,34 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, cong
     var specificDistrict = svg.append("path")
     	.attr("class", "specificBorder")
     	.call(drawSpecificDistrict);
+
+    showDataSet(0);
+
+    var svgLegend = d3.select(".legend").append("svg")
+    	.attr("height", "200px")
+    	.attr("width", "162px");
+
+    var legend = svgLegend.selectAll(".legend")
+    	.data(demoColor.domain())
+    	.enter()
+    	.append("g")
+    	.attr("class", "legend")
+    	.attr("transform", function(d,i) {
+    		var rectHeight = i*25;
+    		var rectWidth = 10;
+    		return "translate(" + rectWidth + ", " + rectHeight + ")";
+    	})
+
+    legend.append("rect")
+    	.attr("width", "13")
+    	.attr("height", "15")
+    	.style("fill", demoColor)
+    	.style("stroke", "black")
+
+    legend.append("text")
+    	.attr("x", 20)
+    	.attr("y", 14)
+    	.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
 
  	function mouseover(d) {
   		specificDistrictID = d.properties.districtID;
