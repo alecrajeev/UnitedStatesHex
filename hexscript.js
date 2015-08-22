@@ -3,31 +3,41 @@ var width = 1250,
     radius = 7;
 
 var hexMesh, hexagons, demoData, presData;
+var districtList = {};
+var voteByDistrictID = {};
 var dataByDistrictID = {};
 var specificDistrictID = -2;
 var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Obama 2012", "Obama 2008"];
 var extentData = {};
+var cVoteData;
 
 queue()
+	.defer(d3.csv, "districtCDIDlist.csv")
 	.defer(d3.json, "ushex.json")
-	.defer(d3.csv, "demographics.csv")
+	.defer(d3.tsv, "demographics.tsv")
 	.defer(d3.tsv, "presidential_results.tsv")
+	.defer(d3.json, "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435")
 	.await(makeMyMap);
 
-function makeMyMap(error, ushex, ddata, presidentialData) {
+function makeMyMap(error, districtListData, ushex, ddata, presidentialData, congressVoteData) {
 	if (error)
 		return console.warn(error);
+
+	districtListData.forEach(function(d) {
+		d.districtID = +d.CDID;
+		districtList[d.districtID] = d.StateCD; // eventually make this tree or a hashtable, preprocess in node
+	});
 
 	ddata.forEach(function(d) {
 		d.Asian = +d.Asian;
 		d.Black = +d.Black;
-		d.CDID = +d.CDID;
+		d.districtID = +d.districtID;
 		d.Latino = +d.Latino;
 		d.Multiracial = +d.Multiracial;
 		d.Party = +d.Party;
 		d.White = +d.White;
 
-		dataByDistrictID[d.CDID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial];
+		dataByDistrictID[d.districtID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial];
 	});
 
 	demoData = ddata;
@@ -35,16 +45,24 @@ function makeMyMap(error, ushex, ddata, presidentialData) {
 	presidentialData.forEach(function(d) {
 		d.Obama2012 = +d.Obama2012;
 		d.Obama2008 = +d.Obama2008;
-		d.CDID = +d.CDID;
+		d.districtID = +d.districtID;
 
-		dataByDistrictID[d.CDID].push(d.Obama2012,d.Obama2008);
+		dataByDistrictID[d.districtID].push(d.Obama2012,d.Obama2008);
 	});
 
 	presData = presidentialData;
 
 	buildExtentData();
 
-	demoColor.domain(buildColorDomain(d3.extent(demoData, function(d) {return d.White;	})));
+	congressVoteData.objects.forEach(function(d) {
+		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
+		d.simplevote = getSimpleVote(d.option.key);
+		d.districtID = getdistrictID(d.statecd);	
+
+		voteByDistrictID[d.districtID] = d.simplevote;
+	});
+
+	checkAaronSchockers(voteByDistrictID);
 
 	var projection = hexProjection(radius);
 
@@ -81,7 +99,7 @@ function makeMyMap(error, ushex, ddata, presidentialData) {
  	function mouseover(d) {
   		specificDistrictID = d.properties.districtID;
  		specificDistrict.call(drawSpecificDistrict);
- 		changeTooltip(d);	
+ 		changeTooltip(d);
  	}
 
  	function drawSpecificDistrict(border) {
@@ -143,8 +161,14 @@ function showStates() {
 	d3.select(".header").text("States");
 	hexagons.style("fill", "");
 	hexagons.style("stroke", "");
-	hexagons.classed("state ", true);
 	d3.select(".districtBorder").style("stroke-opacity", ".2");
+}
+
+function showRollCallVote() {
+	d3.selectAll(".header").text("Roll Call Vote");
+	showVote();
+
+	d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showDataSet(i) {
@@ -161,10 +185,16 @@ function showDataSet(i) {
 	d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
+function getRealDistrict(i, state) { // returns "at large" if the district number is 0, like Montana
+	if (i > 0)
+		return i;
+	return "At-Large";
+}
+
 function changeTooltip(d) {
 	if (d.properties.state != "Ocean") { // if you're on a district
 		d3.select(".whichState").text(d.properties.state);
-		d3.select(".whichDistrict").text(d.properties.district);
+		d3.select(".whichDistrict").text(getRealDistrict(d.properties.district, d.properties.state));
 		for (i = 0; i < 7; i++) {
 			var classNameSplit = dataSets[i].split(" ");
 			if (classNameSplit.length < 2)
@@ -183,6 +213,67 @@ function changeTooltip(d) {
 			else
 				d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": ");
 		}
+	}
+}
+
+function buildRollCallVote(govtracknum) {
+
+	var temp = d3.json("https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435", function(error, cdata) {
+
+		if (error)
+			console.warn(error);
+
+		cVoteData = cdata;
+
+		cVoteData.objects.forEach(function(d) {
+		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
+		d.simplevote = getSimpleVote(d.option.key);
+		d.districtID = getdistrictID(d.statecd);	
+
+		voteByDistrictID[d.districtID] = d.simplevote;
+		});
+	});
+}
+
+function checkAaronSchockers(voteByDistrictID) { // checks if there are any empty seats i.e. Aaron Schock
+	for (i = 0; i < 434; i++)
+		if (voteByDistrictID[i] === undefined)
+			voteByDistrictID[i] = 0;
+}
+
+function getSimpleVote(e) { // an integer representation of what the vote was
+
+	if (e === "+")
+		return 1; // return 1 if answered Aye, Yeah, etc.
+
+	if (e === "-") // return -1 if answered No, Nay, etc.
+		return -1;
+	
+	return 0; // return 0 if answered Present, skipped voted, etc. Also if "Not Proven" (Arlen Specter)
+}
+
+function getdistrictID(statecd) { // give the id for the specific congressional district
+	// determined by the name of the state and district number
+	// will eventually preprocess a hashtable in node
+
+	for (i = 0; i < 435; i++) {
+		if (districtList[i] === statecd) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+function grabNumber() {
+
+	var textBox = document.getElementById("textbox");
+	var govTrackNum = +textBox.value;
+
+	if (isNaN(govTrackNum))
+		console.log("needs to be a real number");
+	else {
+		buildRollCallVote(govTrackNum);
+		showRollCallVote();
 	}
 }
 

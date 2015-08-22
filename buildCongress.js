@@ -2,6 +2,8 @@
 // this was script used in google sheets custom functions
 // builds the list with 5 hexagons for each district
 
+// needs to be fixed for at large districts. They should be 0, but are currently 1
+
 function buildDistrictInformation() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var statesData = sheet.getDataRange().getValues();

@@ -94,7 +94,6 @@ function hexTopology() {
 	function getDistrictId(i) {
 		var id = congressID[i];
 
-
 		if (id != undefined)
 			return id;
 		else

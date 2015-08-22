@@ -1,4 +1,4 @@
-State-CD	CDID	Party	Obama2012	Romney2012	Obama2008	McCain2008
+State-CD	districtID	Party	Obama2012	Romney2012	Obama2008	McCain2008
 AL1	0	(R)	0.374	0.618	0.385	0.609
 AL2	1	(R)	0.364	0.629	0.35	0.645
 AL3	2	(R)	0.368	0.623	0.366	0.626
