@@ -10,6 +10,8 @@ var specificDistrictID = -2;
 var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Obama 2012", "Obama 2008"];
 var extentData = {};
 var cVoteData;
+var legendRectSize = 15,
+	legendSpacing = 7;
 
 queue()
 	.defer(d3.csv, "districtCDIDlist.csv")
@@ -96,33 +98,31 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, cong
     	.attr("class", "specificBorder")
     	.call(drawSpecificDistrict);
 
-    showDataSet(0);
+    // var svgLegend = d3.select(".legend").append("svg")
+    // 	.attr("height", "200px")
+    // 	.attr("width", "162px");
 
-    var svgLegend = d3.select(".legend").append("svg")
-    	.attr("height", "200px")
-    	.attr("width", "162px");
+    // legend = svgLegend.selectAll(".legend")
+    // 	.data(demoColor.domain())
+    // 	.enter()
+    // 	.append("g")
+    // 	.attr("class", "legend")
+    // 	.attr("transform", function(d,i) {
+    // 		var rectHeight = i*(legendRectSize + legendSpacing);
+    // 		var rectWidth = legendRectSize;
+    // 		return "translate(" + rectWidth + ", " + rectHeight + ")";
+    // 	})
 
-    var legend = svgLegend.selectAll(".legend")
-    	.data(demoColor.domain())
-    	.enter()
-    	.append("g")
-    	.attr("class", "legend")
-    	.attr("transform", function(d,i) {
-    		var rectHeight = i*25;
-    		var rectWidth = 10;
-    		return "translate(" + rectWidth + ", " + rectHeight + ")";
-    	})
+    // legend.append("rect")
+    // 	.attr("width", legendRectSize-2)
+    // 	.attr("height", legendRectSize)
+    // 	.style("fill", demoColor)
+    // 	.style("stroke", "black")
 
-    legend.append("rect")
-    	.attr("width", "13")
-    	.attr("height", "15")
-    	.style("fill", demoColor)
-    	.style("stroke", "black")
-
-    legend.append("text")
-    	.attr("x", 20)
-    	.attr("y", 14)
-    	.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+    // legend.append("text")
+    // 	.attr("x", legendRectSize + legendSpacing*1.3)
+    // 	.attr("y", legendRectSize-1)
+    // 	.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
 
  	function mouseover(d) {
   		specificDistrictID = d.properties.districtID;
@@ -205,12 +205,47 @@ function showDataSet(i) {
 		buildColorRange(i);
 		demoColor.domain(buildColorDomain(extentData[i]));
 		showDemographics(i);
+		showLegend(i);
 	}
 	else { // presidential sets
 		d3.select(".header").text(dataSets[i] + " Presidential Results by Congressional District");
 		showPresidential(i);
 	}
 	d3.select(".districtBorder").style("stroke-opacity", ".5");		
+}
+
+function showLegend(i) {
+	if (i < 5) { // demographic sets
+
+		var svgLegend = d3.select(".legend").append("svg")
+    	.attr("height", "200px")
+    	.attr("width", "162px");
+
+    	var legend = svgLegend.selectAll(".legend")
+    		.data(demoColor.domain())
+    		.enter()
+    		.append("g")
+    		.attr("class", "legend")
+    		.attr("transform", function(d,i) {
+    			var rectHeight = i*(legendRectSize + legendSpacing);
+    			var rectWidth = legendRectSize;
+    			return "translate(" + rectWidth + ", " + rectHeight + ")";
+    		})
+		
+    	legend.append("rect")
+    		.attr("width", legendRectSize-2)
+    		.attr("height", legendRectSize)
+    		.style("fill", function(d) {return demoColor(d)})
+    		.style("stroke", "black")
+	
+    	legend.append("text")
+    		.attr("x", legendRectSize + legendSpacing*1.3)
+    		.attr("y", legendRectSize-1)
+    		.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+	}
+	else {
+
+	}
 }
 
 function getRealDistrict(i, state) { // returns "at large" if the district number is 0, like Montana
