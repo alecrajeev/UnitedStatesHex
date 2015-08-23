@@ -170,6 +170,7 @@ function showStates() {
 		.delay(500)
 		.style({fill: 	function(d) {return getStateColor(d.properties.stateID);	},
 				stroke: function(d) {return getStateColor(d.properties.stateID);	}});
+	d3.select(".legend").style("display", "none");
 	// d3.select(".districtBorder").style("stroke-opacity", ".2");
 }
 
@@ -186,6 +187,7 @@ function showDataSet(i) {
 	color.domain(buildColorDomain(i,extentData[i]));
 	updateHexagonColor(i);
 	showLegend(i);
+	d3.select(".legend").style("display", "block");
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
