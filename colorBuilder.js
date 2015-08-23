@@ -1,6 +1,6 @@
 // this is the javascript file that has all the functions that regarding color
 
-var color = d3.scale.threshold() // initial color scale for the demographic data
+var color = d3.scale.linear() // initial color scale for the demographic data
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
 var voteColor = d3.scale.threshold() // color scale for a specifc vote
@@ -30,7 +30,7 @@ function buildColorRange(i) { // builds the color range
 			color.range(['rgb(247,251,255)','rgb(222,235,247)','rgb(198,219,239)','rgb(158,202,225)','rgb(107,174,214)','rgb(66,146,198)','rgb(33,113,181)','rgb(8,81,156)','rgb(8,48,107)']);
 			break;
 		default: // presidential
-			color.range(['#AE000C','#BA3035','#C56365','#D09697','#DBC8C8','#C8C8D5','#9697BD','#6465A5','#32358E', 'rgb(1,10,121)']);
+			color.range(['#AE000C','#BA3035','#C56365','#D09697','#DBC8C8','#C8C8D5','#9697BD','#6465A5','#32358E', '#010a79']);
 			break;
 	}
 }
