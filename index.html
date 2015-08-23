@@ -7,10 +7,11 @@
 		<link rel="stylesheet", type="text/css", href="states.css">
 		<title>United States Congressional Districts as Hexagons</title>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js">
+        </script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js">
+        </script>
     	<script type="text/javascript" src="colorBuilder.js"></script>
-		<script type="text/javascript" src="hexscript.js"></script>
 	</head>
 
 	<body>
@@ -66,7 +67,7 @@
             <div class="search">
                 <input type="text" value="Enter GovTrack Number Here" id="textbox"></input>
                 <button onclick="grabNumber()">Search</button>
-            </div>         
+            </div>  
 
 <!--     		<div class="toggleSideBar">
     			<button onclick="showSideBar()">Turn On Tooltip</button>
@@ -80,5 +81,6 @@
     	</div>
 
   </body>
+  <script type="text/javascript" src="hexscript.js"></script>
 
 </html>
