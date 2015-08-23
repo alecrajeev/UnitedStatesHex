@@ -86,8 +86,8 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, cong
 		.enter()
 		.append("path")
 		.attr("d", path)
-		.attr("class", function(d) {return d.properties.state;	})
-		.classed("state", true)
+		.style({fill: 	function(d) {return getStateColor(d.properties.stateID);	},
+				stroke: function(d) {return getStateColor(d.properties.stateID);	}})
 		.on("mouseover", mouseover)
 
     var stateBorder = svg.append("path")
@@ -165,9 +165,12 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, cong
 
 function showStates() {
 	d3.select(".header").text("States");
-	hexagons.style("fill", "");
-	hexagons.style("stroke", "");
-	d3.select(".districtBorder").style("stroke-opacity", ".2");
+	hexagons
+		.transition()
+		.delay(500)
+		.style({fill: 	function(d) {return getStateColor(d.properties.stateID);	},
+				stroke: function(d) {return getStateColor(d.properties.stateID);	}});
+	// d3.select(".districtBorder").style("stroke-opacity", ".2");
 }
 
 function showRollCallVote() {
@@ -183,7 +186,7 @@ function showDataSet(i) {
 	color.domain(buildColorDomain(i,extentData[i]));
 	updateHexagonColor(i);
 	showLegend(i);
-	d3.select(".districtBorder").style("stroke-opacity", ".5");		
+	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
 function showLegend(i) {

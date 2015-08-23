@@ -9,7 +9,8 @@ var d3 = require("d3"),
 var congress = JSON.parse(fs.readFileSync("districtList.json", "utf8"));
 
 var hexID = {}; // every hexagon has its own identifying id
-var congressID = {}; // every district has its own identifying id. Eventually will be replaced by role or something
+var districtIDList = {}; // every district has its own identifying id. Eventually will be replaced by role or something
+var stateIDList = {};
 
 buildhexID(congress);
 
@@ -18,11 +19,13 @@ function buildhexID(c) { // imports the hexID array from an external json file
 		c[i].ID = +c[i].ID;
 		if (c[i].ID != 0) {
 			hexID[c[i].ID] = c[i].State + "-" + c[i].CD;
-			congressID[c[i].ID] = c[i].CDID;
+			districtIDList[c[i].ID] = c[i].districtID;
+			stateIDList[c[i].ID] = c[i].stateID;
 		}
 		else {
 			hexID[c[i].ID] = undefined;
-			congressID[c[i].ID] = undefined;
+			districtIDList[c[i].ID] = undefined;
+			stateIDList[c[i].ID] = undefined;
 		}
 	}
 }
@@ -66,7 +69,8 @@ function hexTopology() {
     				id: hexCount-(2*n+1),
     				properties: {state: getState(hexCount-(2*n+1)),
             					district: getDistrict(hexCount-(2*n+1)), 
-            					districtID: getDistrictId(hexCount-(2*n+1))
+            					districtID: getDistrictID(hexCount-(2*n+1)),
+            					stateID: getStateID(hexCount-(2*n+1))
             					}
     			});
   			}
@@ -91,13 +95,22 @@ function hexTopology() {
 			return 0;
 	}
 
-	function getDistrictId(i) {
-		var id = congressID[i];
+	function getDistrictID(i) {
+		var id = districtIDList[i];
 
 		if (id != undefined)
 			return id;
 		else
 			return -1;
+	}
+
+	function getStateID(i) {
+		var id = stateIDList[i];
+
+		if (id != undefined)
+			return id;
+		else
+			return -1;		
 	}
 
   return {

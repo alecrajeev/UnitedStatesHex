@@ -7,6 +7,11 @@ var voteColor = d3.scale.threshold() // color scale for a specifc vote
 	.range(['rgb(175,141,195)',"#BFBFBF",'rgb(127,191,123)'])
 	.domain([-.9,0.1,1.2]);
 
+var stateColor = ["#A94588","#D76940","#D13F46","#23A5C5", "#F0A851", "#F0A851", "#A94588", "#23A5C5", "#228947", "#2B6AA1", "#D13F46", "#A94588", "#A94588",
+ "#2B6AA1", "#F0A851", "#D76940", "#D13F46", "#D13F46", "#6EAE51", "#A94588", "#A94588", "#D76940", "#D13F46", "#F0A851", "#228947", "#D76940", "#23A5C5",
+  "#23A5C5", "#D13F46", "#6EAE51", "#A94588", "#2B6AA1", "#23A5C5", "#2B6AA1", "#6EAE51", "#2B6AA1", "#2B6AA1", "#D13F46", "#23A5C5", "#6EAE51", "#6EAE51",
+   "#D76940", "#6EAE51", "#228947", "#F0A851", "#F0A851", "#D13F46", "#726198", "#726198", "#726198"];
+
 function buildColorRange(i) { // builds the color range
 	switch(i) {
 		case 0: // white
@@ -57,15 +62,22 @@ function buildExtentData() { // builds the mininum and maximum value array, exte
 
 function updateHexagonColor(i) { // fills in the hexagons with the correct color according to the scale
 
-	hexagons.transition().delay(250).style({fill: function(d) {return getTrueColor(d.properties.districtID,i);	},
-					stroke: function(d) {return getTrueColor(d.properties.districtID,i);	}});
+	hexagons
+		.transition()
+		.delay(500)
+		.style({fill: 	function(d) {return getDistrictColor(d.properties.districtID,i);	},
+				stroke: function(d) {return getDistrictColor(d.properties.districtID,i);	}});
 }
 
-function getTrueColor(districtID,i) {
-	// var districtID = d.properties.districtID;
+function getDistrictColor(districtID,i) {
 	if (districtID != -1)
 		return color(dataByDistrictID[districtID][i])
 
+}
+
+function getStateColor(stateID) {
+	if (stateID != -1)
+		return stateColor[stateID];
 }
 
 function showVote() {
