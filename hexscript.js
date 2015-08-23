@@ -181,7 +181,7 @@ function showDataSet(i) {
 	d3.select(".header").text(dataSets[i] + " Demographics by Congressional District");
 	buildColorRange(i);
 	color.domain(buildColorDomain(i,extentData[i]));
-	showDemographics(i);
+	updateHexagonColor(i);
 	showLegend(i);
 	d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }

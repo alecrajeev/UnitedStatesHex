@@ -91,6 +91,7 @@
 .hexagon {
 	fill: none;
 	pointer-events: all;
+	stroke: 0px;
 }
 
 .specificBorder {

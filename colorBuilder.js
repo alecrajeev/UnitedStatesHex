@@ -55,20 +55,17 @@ function buildExtentData() { // builds the mininum and maximum value array, exte
 	extentData[6] = d3.extent(presData, function(d) {return d.Obama2008;	});
 }
 
-function showDemographics(i) { // fills in the hexagons with the correct color according to the scale
-	hexagons.style("fill", function(d) {
-			var districtID = d.properties.districtID;
-			if (districtID != -1) { // if it's an actual district and not part of the ocean
-				return color(dataByDistrictID[districtID][i])
-			}
-		});
+function updateHexagonColor(i) { // fills in the hexagons with the correct color according to the scale
 
-	hexagons.style("stroke", function(d) { // the stroke has to be the same color as the hexagon for it to look correct
-			var districtID = d.properties.districtID;
-			if (districtID != -1) {
-				return color(dataByDistrictID[districtID][i])
-			}
-		});
+	hexagons.transition().delay(250).style({fill: function(d) {return getTrueColor(d.properties.districtID,i);	},
+					stroke: function(d) {return getTrueColor(d.properties.districtID,i);	}});
+}
+
+function getTrueColor(districtID,i) {
+	// var districtID = d.properties.districtID;
+	if (districtID != -1)
+		return color(dataByDistrictID[districtID][i])
+
 }
 
 function showVote() {
