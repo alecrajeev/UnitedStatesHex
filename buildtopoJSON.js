@@ -6,13 +6,13 @@ var d3 = require("d3"),
 	fs = require("fs"),
 	topojson = require("topojson");
 
-var congress = JSON.parse(fs.readFileSync("districtList.json", "utf8"));
+var districtList = JSON.parse(fs.readFileSync("districtList.json", "utf8"));
 
 var hexID = {}; // every hexagon has its own identifying id
 var districtIDList = {}; // every district has its own identifying id. Eventually will be replaced by role or something
 var stateIDList = {};
 
-buildhexID(congress);
+buildhexID(districtList);
 
 function buildhexID(c) { // imports the hexID array from an external json file
 	for (i = 0; i < c.length; i++) {

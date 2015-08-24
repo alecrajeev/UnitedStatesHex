@@ -36,7 +36,7 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, cong
 
 	console.log(congressVoteList);
 	congressVoteList.objects.forEach(function(d) {
-		console.log(d.id);
+		// console.log(d.id);
 	});
 
 	districtListData.forEach(function(d) {
