@@ -34,10 +34,10 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, cong
 	if (error)
 		return console.warn(error);
 
-	// console.log(congressVoteList);
-	// congressVoteList.objects.forEach(function(d) {
-	// 	console.log(d.id);
-	// });
+	console.log(congressVoteList);
+	congressVoteList.objects.forEach(function(d) {
+		console.log(d.id);
+	});
 
 	districtListData.forEach(function(d) {
 		d.districtID = +d.CDID;
@@ -181,10 +181,12 @@ function showStates() {
 }
 
 function showRollCallVote() {
-	d3.selectAll(".header").text("Roll Call Vote");
+	buildVoteColor();
 	showVote();
+	showLegend(8);
+	d3.select(".legend").style("display", "block");
 
-	d3.select(".districtBorder").style("stroke-opacity", ".5");
+	// d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
 
 function showDataSet(i) {
@@ -199,50 +201,99 @@ function showDataSet(i) {
 
 function showLegend(i) {
 
-	var LegendContent = svgLegend.selectAll(".LegendContent")
-		.data(color.domain())
+	if (i < 7) { // demographics and presidential data sets
+		var LegendContent = svgLegend.selectAll(".LegendContent")
+			.data(color.domain())
+		
+		var LegendEnter = LegendContent.enter()
+			.append("g")
+			.attr("class", "LegendContent")
+			.attr("transform", function(d,i) {
+				var rectHeight = i*(legendRectSize + legendSpacing);
+				var rectWidth = legendRectSize;
+				return "translate(" + rectWidth + ", " + rectHeight + ")";
+			})
+		
+		LegendEnter.append("rect")
+			.attr("width", legendRectSize-2)
+			.attr("height", legendRectSize)
+			.style("fill", function(d) {return color(d)})
+			.style("stroke", "black")
+
+		LegendEnter.append("text")
+			.attr("x", legendRectSize + legendSpacing*1.3)
+			.attr("y", legendRectSize-1)
+			.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+
+		var updateSelection = svgLegend.selectAll(".LegendContent")
+			.transition()
+			.duration(1000)
+			.style("opacity", "1")
+			.attr("transform", function(d,i) {
+				var rectHeight = i*(legendRectSize + legendSpacing);
+				var rectWidth = legendRectSize;
+				return "translate(" + rectWidth + ", " + rectHeight + ")";
+			})
+
+		updateSelection.select("rect")
+			.style("fill", function(d) {return color(d);	});
+
+		updateSelection.select("text")
+			.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+
+		LegendContent.exit()
+			.transition()
+			.duration(1000)
+			.style("opacity", "0")
+			.remove();
+	}
+	else { // vote data sets
 	
-	var LegendEnter = LegendContent.enter()
-		.append("g")
-		.attr("class", "LegendContent")
-		.attr("transform", function(d,i) {
-			var rectHeight = i*(legendRectSize + legendSpacing);
-			var rectWidth = legendRectSize;
-			return "translate(" + rectWidth + ", " + rectHeight + ")";
-		})
-	
-	LegendEnter.append("rect")
-		.attr("width", legendRectSize-2)
-		.attr("height", legendRectSize)
-		.style("fill", function(d) {return color(d)})
-		.style("stroke", "black")
+		var LegendContent = svgLegend.selectAll(".LegendContent")
+			.data(voteColor.domain())
+		
+		var LegendEnter = LegendContent.enter()
+			.append("g")
+			.attr("class", "LegendContent")
+			.attr("transform", function(d,i) {
+				var rectHeight = i*(legendRectSize + legendSpacing);
+				var rectWidth = legendRectSize;
+				return "translate(" + rectWidth + ", " + rectHeight + ")";
+			})
+		
+		LegendEnter.append("rect")
+			.attr("width", legendRectSize-2)
+			.attr("height", legendRectSize)
+			.style("fill", function(d) {return color(d)})
+			.style("stroke", "black")
 
-	LegendEnter.append("text")
-		.attr("x", legendRectSize + legendSpacing*1.3)
-		.attr("y", legendRectSize-1)
-		.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+		LegendEnter.append("text")
+			.attr("x", legendRectSize + legendSpacing*1.3)
+			.attr("y", legendRectSize-1)
+			.text(function(d) {return interpretVote(d);	});
 
-	var updateSelection = svgLegend.selectAll(".LegendContent")
-		.transition()
-		.duration(1000)
-		.style("opacity", "1")
-		.attr("transform", function(d,i) {
-			var rectHeight = i*(legendRectSize + legendSpacing);
-			var rectWidth = legendRectSize;
-			return "translate(" + rectWidth + ", " + rectHeight + ")";
-		})
+		var updateSelection = svgLegend.selectAll(".LegendContent")
+			.transition()
+			.duration(1000)
+			.style("opacity", "1")
+			.attr("transform", function(d,i) {
+				var rectHeight = i*(legendRectSize + legendSpacing);
+				var rectWidth = legendRectSize;
+				return "translate(" + rectWidth + ", " + rectHeight + ")";
+			})
 
-	updateSelection.select("rect")
-		.style("fill", function(d) {return color(d);	});
+		updateSelection.select("rect")
+			.style("fill", function(d) {return voteColor(d);	});
 
-	updateSelection.select("text")
-		.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+		updateSelection.select("text")
+			.text(function(d) {return interpretVote(d);	});
 
-	LegendContent.exit()
-		.transition()
-		.duration(1000)
-		.style("opacity", "0")
-		.remove();
+		LegendContent.exit()
+			.transition()
+			.duration(1000)
+			.style("opacity", "0")
+			.remove();		
+	}
 }
 
 function getRealDistrict(i, state) { // returns "at large" if the district number is 0, like Montana
@@ -278,10 +329,13 @@ function changeTooltip(d) {
 
 function buildRollCallVote(govtracknum) {
 
-	var temp = d3.json("https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435", function(error, cdata) {
+	d3.json("https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435", function(error, cdata) {
 
 		if (error)
 			console.warn(error);
+
+		console.log(cdata);
+		d3.select(".header").text(cdata.objects[0].vote.category_label + ": " + cdata.objects[0].vote.question);
 
 		cVoteData = cdata;
 
@@ -312,6 +366,15 @@ function getSimpleVote(e) { // an integer representation of what the vote was
 	return 0; // return 0 if answered Present, skipped voted, etc. Also if "Not Proven" (Arlen Specter)
 }
 
+function interpretVote(e) {
+
+	if (e === 1)
+		return "Yes";
+	if (e === -1)
+		return "No";
+	return "Missed Vote";
+}
+
 function getdistrictID(statecd) { // give the id for the specific congressional district
 	// determined by the name of the state and district number
 	// will eventually preprocess a hashtable in node
@@ -324,7 +387,7 @@ function getdistrictID(statecd) { // give the id for the specific congressional 
 	return -1;
 }
 
-function grabNumber() {
+function grabGovTrackNumber() {
 
 	var textBox = document.getElementById("textbox");
 	var govTrackNum = +textBox.value;
