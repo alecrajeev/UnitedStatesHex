@@ -20,7 +20,7 @@ function buildColorRange(i) { // builds the color range
 		case 1: // black
 			color.range(['rgb(252,251,253)','rgb(239,237,245)','rgb(218,218,235)','rgb(188,189,220)','rgb(158,154,200)','rgb(128,125,186)','rgb(106,81,163)','rgb(84,39,143)','rgb(63,0,125)']);
 			break;
-		case 2: // latino
+		case 2: // latino 
 			color.range(['rgb(255,245,235)','rgb(254,230,206)','rgb(253,208,162)','rgb(253,174,107)','rgb(253,141,60)','rgb(241,105,19)','rgb(217,72,1)','rgb(166,54,3)','rgb(127,39,4)']);
 			break;
 		case 3: // asian
