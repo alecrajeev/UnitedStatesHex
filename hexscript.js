@@ -27,17 +27,11 @@ queue()
 	.defer(d3.tsv, "demographics.tsv")
 	.defer(d3.tsv, "presidential_results.tsv")
 	.defer(d3.json, "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435")
-	.defer(d3.json, "https://www.govtrack.us/api/v2/vote?sort=-created&congress=114&chamber=house&limit=500")
 	.await(makeMyMap);
 
-function makeMyMap(error, districtListData, ushex, ddata, presidentialData, congressVoteData, congressVoteList) {
+function makeMyMap(error, districtListData, ushex, ddata, presidentialData, congressVoteData) {
 	if (error)
 		return console.warn(error);
-
-	console.log(congressVoteList);
-	congressVoteList.objects.forEach(function(d) {
-		// console.log(d.id);
-	});
 
 	districtListData.forEach(function(d) {
 		d.districtID = +d.CDID;
@@ -173,10 +167,12 @@ function showStates() {
 	d3.select(".header").text("States");
 	hexagons
 		.transition()
-		.delay(500)
+		.delay(750)
 		.style({fill: 	function(d) {return getStateColor(d.properties.stateID);	},
 				stroke: function(d) {return getStateColor(d.properties.stateID);	}});
 	d3.select(".legend").style("display", "none");
+	d3.select(".voteSelector").style("top", "-6px");
+
 	// d3.select(".districtBorder").style("stroke-opacity", ".2");
 }
 
@@ -196,6 +192,7 @@ function showDataSet(i) {
 	updateHexagonColor(i);
 	showLegend(i);
 	d3.select(".legend").style("display", "block");
+	d3.select(".voteSelector").style("top", "-9px");
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
@@ -334,7 +331,6 @@ function buildRollCallVote(govtracknum) {
 		if (error)
 			console.warn(error);
 
-		console.log(cdata);
 		d3.select(".header").text(cdata.objects[0].vote.category_label + ": " + cdata.objects[0].vote.question);
 
 		cVoteData = cdata;

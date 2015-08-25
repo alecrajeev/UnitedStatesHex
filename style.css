@@ -37,6 +37,40 @@
 	display: none;
 }
 
+.voteSelector {
+	position: relative;
+	top: -6px;
+	height: 220px;
+	border: solid black;
+	padding: 5px;
+	padding-top: 10px;
+	display: block;
+	font-family: "Helvetica Neue";
+	stroke-width: 2px;
+	display: block;
+}
+
+.buttonDiv {
+	padding: 5px 5px 5px 5px;
+}
+
+.passage {
+/*  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  font-family: "Helvetica Neue";
+  color: #ffffff;
+  font-size: 14px;
+  background: #3498db;
+padding: 5px 5px 5px 5px;
+*/
+  width: 150px;
+  height: 40px;
+}
+
 .sidebar {
 	border: solid black;
 	padding: 5px;
