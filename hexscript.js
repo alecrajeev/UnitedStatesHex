@@ -183,7 +183,6 @@ function showDataSet(i) {
 	showLegend();
 	d3.select(".legend").style("display", "block");
 	d3.select(".voteLegend").style("display", "none");
-	d3.select(".voteSelector").style("top", "-9px");
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 

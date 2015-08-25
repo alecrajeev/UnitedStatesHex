@@ -74,7 +74,6 @@ function updateHexagonColor(i) { // fills in the hexagons with the correct color
 		.style({fill: 	function(d) {return getDistrictColor(d.properties.districtID,i);	},
 				stroke: function(d) {return getDistrictColor(d.properties.districtID,i);	}});
 
-	console.log("change color");
 }
 
 function getDistrictColor(districtID,i) {

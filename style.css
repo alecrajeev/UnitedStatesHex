@@ -19,6 +19,14 @@
     left:180px; top:92px; right:0; bottom:0;
 }
 
+.right {
+	position: relative;
+	background: #fff;
+	top: -656px;
+	left: 1200px;
+	width: 178px;
+}
+
 .map {
 	position: relative;
 	top: -60px;
@@ -39,17 +47,25 @@
 
 .voteSelector {
 	position: relative;
-	top: -6px;
-	height: 220px;
+	height: 302px;
 	border: solid black;
 	padding: 5px;
-	padding-top: 15px;
 	display: block;
 	font-family: "Helvetica Neue";
 	stroke-width: 2px;
-
+	background: #fff;
 	overflow: scroll;
 	display: block;
+}
+
+.voteSelector text {
+	position: relative;
+	text-align: center;
+	display: block;
+	border-bottom: thin solid black;
+	padding: 10px 30px 10px 30px;
+	font-weight: bold;
+	font-family: 'Helvetica Neue';
 }
 
 .buttonDiv {
@@ -60,7 +76,7 @@
 
 .voteLegend {
 	position: relative;
-	top: -6px;
+	top: -3px;
 	height: 100px;
 	border: solid black;
 	padding: 5px;

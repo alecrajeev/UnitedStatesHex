@@ -54,9 +54,6 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 			queue()
 				.defer(d3.json, url)
 				.await(buildMyVote);
-			// buildRollCallVote(d.id);
-			// console.log("here2");
-			// showRollCallVote();
 		});
 }
 
@@ -186,17 +183,4 @@ function interpretVote(e) {
 	if (e === -1)
 		return "No" + margin[0];
 	return "Missed Vote" + margin[1];
-}
-
-function grabGovTrackNumber() {
-
-	var textBox = document.getElementById("textbox");
-	var govTrackNum = +textBox.value;
-
-	if (isNaN(govTrackNum))
-		console.log("needs to be a real number");
-	else {
-		buildRollCallVote(govTrackNum);
-		showRollCallVote();
-	}
 }
