@@ -2,6 +2,8 @@
 
 var url = "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435";
 
+var divs;
+
 queue()
 	.defer(d3.json, url)
 	.defer(d3.csv, "votesExport.csv")
@@ -34,7 +36,7 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 
 	var passage = nestedData[0].values; // fix this to work with keys
 
-	var divs = d3.select(".voteSelector").selectAll("div")
+	divs = d3.select(".voteSelector").selectAll("div")
 		.data(passage)
 		.enter()
 		.append("div")
@@ -47,8 +49,14 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 		.attr("title", function(d) {return d.question;	})
 		.on("click", function(d) {
 
-			buildRollCallVote(d.id);
-			showRollCallVote();
+			url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + d.id.toString() + "&limit=435";
+
+			queue()
+				.defer(d3.json, url)
+				.await(buildMyVote);
+			// buildRollCallVote(d.id);
+			// console.log("here2");
+			// showRollCallVote();
 		});
 }
 
@@ -99,14 +107,40 @@ function showVoteLegend() {
 		.remove();
 }
 
+function buildMyVote(error, congressVoteData) {
+	if (error)
+		console.warnr(error);
+
+	d3.select(".header").text(congressVoteData.objects[0].vote.category_label + ": " + congressVoteData.objects[0].vote.question);
+
+	congressVoteData.objects.forEach(function(d) {
+		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
+		d.simplevote = getSimpleVote(d.option.key);
+		d.districtID = getdistrictID(d.statecd);	
+
+		voteByDistrictID[d.districtID] = d.simplevote;
+	});
+
+	checkAaronSchockers(voteByDistrictID);
+
+	margin[0] = " (" + congressVoteData.objects[0].vote.total_minus + ")";
+	margin[1] = " (" + congressVoteData.objects[0].vote.total_other + ")";
+	margin[2] = " (" + congressVoteData.objects[0].vote.total_plus + ")";
+
+
+	showRollCallVote();
+}
+
 function buildRollCallVote(govtracknum) {
 
-	url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435"
+	url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435";
 
 	d3.json(url, function(error, cdata) {
 
 		if (error)
 			console.warn(error);
+
+		console.log("here3");
 
 		d3.select(".header").text(cdata.objects[0].vote.category_label + ": " + cdata.objects[0].vote.question);
 
