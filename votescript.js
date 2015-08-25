@@ -1,12 +1,14 @@
 // builds the sidebar with the list of votes to select
 
+var url = "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435";
+
 queue()
-	.defer(d3.json, "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435")
+	.defer(d3.json, url)
 	.defer(d3.csv, "votesExport.csv")
 	.await(makeMyVoteSelector);
 
 var nestedData;
-var margin = [0,0,0];
+var margin = ["","",""];
 
 var svgVoteLegend = d3.select(".voteLegend").append("svg")
 	.attr("height", "100px")
@@ -44,6 +46,7 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 		.attr("value", function(d) {return d.question.substring(0,10);	})
 		.attr("title", function(d) {return d.question;	})
 		.on("click", function(d) {
+
 			buildRollCallVote(d.id);
 			showRollCallVote();
 		});
@@ -67,8 +70,6 @@ function showVoteLegend() {
 		.attr("height", legendRectSize)
 		.style("fill", function(d) {return color(d)})
 		.style("stroke", "black")
-
-	console.log(margin);
 	
 	LegendEnter.append("text")
 		.attr("x", legendRectSize + legendSpacing*1.3)
@@ -100,7 +101,9 @@ function showVoteLegend() {
 
 function buildRollCallVote(govtracknum) {
 
-	d3.json("https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435", function(error, cdata) {
+	url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435"
+
+	d3.json(url, function(error, cdata) {
 
 		if (error)
 			console.warn(error);
@@ -117,9 +120,11 @@ function buildRollCallVote(govtracknum) {
 		voteByDistrictID[d.districtID] = d.simplevote;
 		});
 
-		margin[0] = cdata.objects[0].vote.total_minus;
-		margin[1] = cdata.objects[0].vote.total_other;
-		margin[2] = cdata.objects[0].vote.total_plus;
+		checkAaronSchockers(voteByDistrictID);
+
+		margin[0] = " (" + cdata.objects[0].vote.total_minus + ")";
+		margin[1] = " (" + cdata.objects[0].vote.total_other + ")";
+		margin[2] = " (" + cdata.objects[0].vote.total_plus + ")";
 	});
 }
 
@@ -143,10 +148,10 @@ function getSimpleVote(e) { // an integer representation of what the vote was
 function interpretVote(e) {
 
 	if (e === 1)
-		return "Yes (" + margin[2] + ")";
+		return "Yes" + margin[2];
 	if (e === -1)
-		return "No (" + margin[0] + ")";
-	return "Missed Vote (" + margin[1] + ")";
+		return "No" + margin[0];
+	return "Missed Vote" + margin[1];
 }
 
 function grabGovTrackNumber() {
