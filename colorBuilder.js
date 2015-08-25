@@ -97,7 +97,8 @@ function showVote() {
 		.transition()
 		.delay(500)
 		.style({fill: 	function(d) {return getVoteDistrictColor(d.properties.districtID);	},
-				stroke: function(d) {return getVoteDistrictColor(d.properties.districtID);	}});	
+				stroke: function(d) {return getVoteDistrictColor(d.properties.districtID);	}});
+
 }
 
 

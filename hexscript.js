@@ -26,10 +26,9 @@ queue()
 	.defer(d3.json, "ushex.json")
 	.defer(d3.tsv, "demographics.tsv")
 	.defer(d3.tsv, "presidential_results.tsv")
-	.defer(d3.json, "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435")
 	.await(makeMyMap);
 
-function makeMyMap(error, districtListData, ushex, ddata, presidentialData, congressVoteData) {
+function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 	if (error)
 		return console.warn(error);
 
@@ -63,16 +62,6 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, cong
 	presData = presidentialData;
 
 	buildExtentData();
-
-	congressVoteData.objects.forEach(function(d) {
-		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
-		d.simplevote = getSimpleVote(d.option.key);
-		d.districtID = getdistrictID(d.statecd);	
-
-		voteByDistrictID[d.districtID] = d.simplevote;
-	});
-
-	checkAaronSchockers(voteByDistrictID);
 
 	var projection = hexProjection(radius);
 
@@ -171,7 +160,7 @@ function showStates() {
 		.style({fill: 	function(d) {return getStateColor(d.properties.stateID);	},
 				stroke: function(d) {return getStateColor(d.properties.stateID);	}});
 	d3.select(".legend").style("display", "none");
-	d3.select(".voteSelector").style("top", "-6px");
+	d3.select(".voteLegend").style("display", "none");
 
 	// d3.select(".districtBorder").style("stroke-opacity", ".2");
 }
@@ -179,8 +168,9 @@ function showStates() {
 function showRollCallVote() {
 	buildVoteColor();
 	showVote();
-	showLegend(8);
-	d3.select(".legend").style("display", "block");
+	showVoteLegend();
+	d3.select(".voteLegend").style("display", "block");
+	d3.select(".legend").style("display", "none");
 
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");
 }
@@ -190,107 +180,59 @@ function showDataSet(i) {
 	buildColorRange(i);
 	color.domain(buildColorDomain(i,extentData[i]));
 	updateHexagonColor(i);
-	showLegend(i);
+	showLegend();
 	d3.select(".legend").style("display", "block");
+	d3.select(".voteLegend").style("display", "none");
 	d3.select(".voteSelector").style("top", "-9px");
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
-function showLegend(i) {
+function showLegend() {
 
-	if (i < 7) { // demographics and presidential data sets
-		var LegendContent = svgLegend.selectAll(".LegendContent")
-			.data(color.domain())
-		
-		var LegendEnter = LegendContent.enter()
-			.append("g")
-			.attr("class", "LegendContent")
-			.attr("transform", function(d,i) {
-				var rectHeight = i*(legendRectSize + legendSpacing);
-				var rectWidth = legendRectSize;
-				return "translate(" + rectWidth + ", " + rectHeight + ")";
-			})
-		
-		LegendEnter.append("rect")
-			.attr("width", legendRectSize-2)
-			.attr("height", legendRectSize)
-			.style("fill", function(d) {return color(d)})
-			.style("stroke", "black")
-
-		LegendEnter.append("text")
-			.attr("x", legendRectSize + legendSpacing*1.3)
-			.attr("y", legendRectSize-1)
-			.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
-
-		var updateSelection = svgLegend.selectAll(".LegendContent")
-			.transition()
-			.duration(1000)
-			.style("opacity", "1")
-			.attr("transform", function(d,i) {
-				var rectHeight = i*(legendRectSize + legendSpacing);
-				var rectWidth = legendRectSize;
-				return "translate(" + rectWidth + ", " + rectHeight + ")";
-			})
-
-		updateSelection.select("rect")
-			.style("fill", function(d) {return color(d);	});
-
-		updateSelection.select("text")
-			.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
-
-		LegendContent.exit()
-			.transition()
-			.duration(1000)
-			.style("opacity", "0")
-			.remove();
-	}
-	else { // vote data sets
+	var LegendContent = svgLegend.selectAll(".LegendContent")
+		.data(color.domain())
 	
-		var LegendContent = svgLegend.selectAll(".LegendContent")
-			.data(voteColor.domain())
-		
-		var LegendEnter = LegendContent.enter()
-			.append("g")
-			.attr("class", "LegendContent")
-			.attr("transform", function(d,i) {
-				var rectHeight = i*(legendRectSize + legendSpacing);
-				var rectWidth = legendRectSize;
-				return "translate(" + rectWidth + ", " + rectHeight + ")";
-			})
-		
-		LegendEnter.append("rect")
-			.attr("width", legendRectSize-2)
-			.attr("height", legendRectSize)
-			.style("fill", function(d) {return color(d)})
-			.style("stroke", "black")
-
-		LegendEnter.append("text")
-			.attr("x", legendRectSize + legendSpacing*1.3)
-			.attr("y", legendRectSize-1)
-			.text(function(d) {return interpretVote(d);	});
-
-		var updateSelection = svgLegend.selectAll(".LegendContent")
-			.transition()
-			.duration(1000)
-			.style("opacity", "1")
-			.attr("transform", function(d,i) {
-				var rectHeight = i*(legendRectSize + legendSpacing);
-				var rectWidth = legendRectSize;
-				return "translate(" + rectWidth + ", " + rectHeight + ")";
-			})
-
-		updateSelection.select("rect")
-			.style("fill", function(d) {return voteColor(d);	});
-
-		updateSelection.select("text")
-			.text(function(d) {return interpretVote(d);	});
-
-		LegendContent.exit()
-			.transition()
-			.duration(1000)
-			.style("opacity", "0")
-			.remove();		
-	}
+	var LegendEnter = LegendContent.enter()
+		.append("g")
+		.attr("class", "LegendContent")
+		.attr("transform", function(d,i) {
+			var rectHeight = i*(legendRectSize + legendSpacing);
+			var rectWidth = legendRectSize;
+			return "translate(" + rectWidth + ", " + rectHeight + ")";
+		})
+	
+	LegendEnter.append("rect")
+		.attr("width", legendRectSize-2)
+		.attr("height", legendRectSize)
+		.style("fill", function(d) {return color(d)})
+		.style("stroke", "black")
+	
+	LegendEnter.append("text")
+		.attr("x", legendRectSize + legendSpacing*1.3)
+		.attr("y", legendRectSize-1)
+		.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+	
+	var updateSelection = svgLegend.selectAll(".LegendContent")
+		.transition()
+		.duration(1000)
+		.style("opacity", "1")
+		.attr("transform", function(d,i) {
+			var rectHeight = i*(legendRectSize + legendSpacing);
+			var rectWidth = legendRectSize;
+			return "translate(" + rectWidth + ", " + rectHeight + ")";
+		})
+	
+	updateSelection.select("rect")
+		.style("fill", function(d) {return color(d);	});
+	
+	updateSelection.select("text")
+		.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+	
+	LegendContent.exit()
+		.transition()
+		.duration(1000)
+		.style("opacity", "0")
+		.remove();
 }
 
 function getRealDistrict(i, state) { // returns "at large" if the district number is 0, like Montana
@@ -324,53 +266,6 @@ function changeTooltip(d) {
 	}
 }
 
-function buildRollCallVote(govtracknum) {
-
-	d3.json("https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435", function(error, cdata) {
-
-		if (error)
-			console.warn(error);
-
-		d3.select(".header").text(cdata.objects[0].vote.category_label + ": " + cdata.objects[0].vote.question);
-
-		cVoteData = cdata;
-
-		cVoteData.objects.forEach(function(d) {
-		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
-		d.simplevote = getSimpleVote(d.option.key);
-		d.districtID = getdistrictID(d.statecd);	
-
-		voteByDistrictID[d.districtID] = d.simplevote;
-		});
-	});
-}
-
-function checkAaronSchockers(voteByDistrictID) { // checks if there are any empty seats i.e. Aaron Schock
-	for (i = 0; i < 434; i++)
-		if (voteByDistrictID[i] === undefined)
-			voteByDistrictID[i] = 0;
-}
-
-function getSimpleVote(e) { // an integer representation of what the vote was
-
-	if (e === "+")
-		return 1; // return 1 if answered Aye, Yeah, etc.
-
-	if (e === "-") // return -1 if answered No, Nay, etc.
-		return -1;
-	
-	return 0; // return 0 if answered Present, skipped voted, etc. Also if "Not Proven" (Arlen Specter)
-}
-
-function interpretVote(e) {
-
-	if (e === 1)
-		return "Yes";
-	if (e === -1)
-		return "No";
-	return "Missed Vote";
-}
-
 function getdistrictID(statecd) { // give the id for the specific congressional district
 	// determined by the name of the state and district number
 	// will eventually preprocess a hashtable in node
@@ -381,28 +276,4 @@ function getdistrictID(statecd) { // give the id for the specific congressional 
 		}
 	}
 	return -1;
-}
-
-function grabGovTrackNumber() {
-
-	var textBox = document.getElementById("textbox");
-	var govTrackNum = +textBox.value;
-
-	if (isNaN(govTrackNum))
-		console.log("needs to be a real number");
-	else {
-		buildRollCallVote(govTrackNum);
-		showRollCallVote();
-	}
-}
-
-function showSideBar() {
-	d3.select(".information").style("display", "block");
-	d3.select(".specificBorder").style("stroke-opacity", "1");
-}
-
-function hideSideBar() {
-	d3.select(".information").style("display", "none");
-	d3.select(".specificBorder").style("stroke-opacity", "0");
-
 }
