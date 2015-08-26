@@ -4,8 +4,8 @@ var color = d3.scale.linear() // initial color scale for the demographic data
 	.range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
 var voteColor = d3.scale.ordinal() // color scale for a specifc vote
-	.range(['rgb(175,141,195)',"#BFBFBF",'rgb(127,191,123)'])
-	.domain([-1,0,1]);
+	.range(["#7A9CC7","#DA9285","#a9a9a9","#405695","#B43030"])
+	.domain([0, 1, 2, 3, 4]);
 
 var stateColor = ["#A94588","#D76940","#D13F46","#23A5C5", "#F0A851", "#F0A851", "#A94588", "#23A5C5", "#228947", "#2B6AA1", "#D13F46", "#A94588", "#A94588",
  "#2B6AA1", "#F0A851", "#D76940", "#D13F46", "#D13F46", "#6EAE51", "#A94588", "#A94588", "#D76940", "#D13F46", "#F0A851", "#228947", "#D76940", "#23A5C5",
@@ -37,8 +37,8 @@ function buildColorRange(i) { // builds the color range
 
 function buildVoteColor() {
 	voteColor = d3.scale.ordinal() // color scale for a specifc vote
-		.range(['rgb(175,141,195)',"#BFBFBF",'rgb(127,191,123)'])
-		.domain([-1,0,1]);
+		.range(["#7A9CC7","#DA9285","#a9a9a9","#405695","#B43030"])
+		.domain([0, 1, 2, 3, 4]);
 }
 
 function buildColorDomain(i, extent) {
@@ -88,11 +88,14 @@ function getStateColor(stateID) {
 }
 
 function getVoteDistrictColor(districtID) {
-	if (districtID != -1)
+	if (districtID != -1) {
+		if (districtID === 152)
+			console.log("Indiana is here");
 		return voteColor(voteByDistrictID[districtID]);
+	}
 }
 
-function showVote() {
+function updateVoteHexagonColor() {
 
 	hexagons
 		.transition()

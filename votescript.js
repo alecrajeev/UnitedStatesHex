@@ -13,7 +13,7 @@ var nestedData;
 var margin = ["","",""];
 
 var svgVoteLegend = d3.select(".voteLegend").append("svg")
-	.attr("height", "100px")
+	.attr("height", "120px")
 	.attr("width", "162px");
 
 function makeMyVoteSelector(error, congressVoteData, votesExport) {
@@ -112,7 +112,7 @@ function buildMyVote(error, congressVoteData) {
 
 	congressVoteData.objects.forEach(function(d) {
 		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
-		d.simplevote = getSimpleVote(d.option.key);
+		d.simplevote = getSimpleVote(d.option.key,d.person_role.party);
 		d.districtID = getdistrictID(d.statecd);	
 
 		voteByDistrictID[d.districtID] = d.simplevote;
@@ -128,59 +128,42 @@ function buildMyVote(error, congressVoteData) {
 	showRollCallVote();
 }
 
-function buildRollCallVote(govtracknum) {
-
-	url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + govtracknum.toString() + "&limit=435";
-
-	d3.json(url, function(error, cdata) {
-
-		if (error)
-			console.warn(error);
-
-		console.log("here3");
-
-		d3.select(".header").text(cdata.objects[0].vote.category_label + ": " + cdata.objects[0].vote.question);
-
-		cVoteData = cdata;
-
-		cVoteData.objects.forEach(function(d) {
-		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
-		d.simplevote = getSimpleVote(d.option.key);
-		d.districtID = getdistrictID(d.statecd);	
-
-		voteByDistrictID[d.districtID] = d.simplevote;
-		});
-
-		checkAaronSchockers(voteByDistrictID);
-
-		margin[0] = " (" + cdata.objects[0].vote.total_minus + ")";
-		margin[1] = " (" + cdata.objects[0].vote.total_other + ")";
-		margin[2] = " (" + cdata.objects[0].vote.total_plus + ")";
-	});
-}
-
 function checkAaronSchockers(voteByDistrictID) { // checks if there are any empty seats i.e. Aaron Schock
 	for (i = 0; i < 434; i++)
-		if (voteByDistrictID[i] === undefined)
-			voteByDistrictID[i] = 0;
+		if (voteByDistrictID[i] === undefined) {
+			voteByDistrictID[i] = 2;
+			console.log("Aaron Schockers ");
+		}
 }
 
-function getSimpleVote(e) { // an integer representation of what the vote was
+function getSimpleVote(vote, party) { // an integer representation of what the vote was
 
-	if (e === "+")
-		return 1; // return 1 if answered Aye, Yeah, etc.
+	var republican = (party === "Republican" ? true : false);
 
-	if (e === "-") // return -1 if answered No, Nay, etc.
-		return -1;
-	
-	return 0; // return 0 if answered Present, skipped voted, etc. Also if "Not Proven" (Arlen Specter)
+	if (vote === "+") // if voted in the affirmative
+		if (republican)
+			return 4; // if republican yes
+		else
+			return 3; // if democrat no
+	else
+		if (republican) 
+			return 1; // if republican no
+		else
+			return 0; // if democrat no
+	return 2; // return 0 if answered Present, skipped voted, etc. Also if "Not Proven" (Arlen Specter)
+
 }
 
-function interpretVote(e) {
+function interpretVote(v) {
 
-	if (e === 1)
-		return "Yes" + margin[2];
-	if (e === -1)
-		return "No" + margin[0];
-	return "Missed Vote" + margin[1];
+	if (v == 4)
+		return "Republican Yes";
+	if (v == 3)
+		return "Democrat Yes";
+	if (v == 2)
+		return "Other";
+	if (v == 1)
+		return "Republican No";
+	if (v == 0)
+		return "Democrat No";
 }
