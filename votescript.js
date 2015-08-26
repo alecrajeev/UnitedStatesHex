@@ -2,7 +2,8 @@
 
 var url = "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435";
 
-var divs;
+// nytimes api key
+// c16f4da13a525de8e49c614d0da8de41:3:66225453
 
 queue()
 	.defer(d3.json, url)
@@ -36,7 +37,7 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 
 	var passage = nestedData[0].values; // fix this to work with keys
 
-	divs = d3.select(".voteSelector").selectAll("div")
+	var divs = d3.select(".voteSelector").selectAll("div")
 		.data(passage)
 		.enter()
 		.append("div")
@@ -108,6 +109,8 @@ function buildMyVote(error, congressVoteData) {
 	if (error)
 		console.warnr(error);
 
+	console.log(congressVoteData);
+
 	d3.select(".header").text(congressVoteData.objects[0].vote.category_label + ": " + congressVoteData.objects[0].vote.question);
 
 	congressVoteData.objects.forEach(function(d) {
@@ -119,6 +122,8 @@ function buildMyVote(error, congressVoteData) {
 	});
 
 	checkAaronSchockers(voteByDistrictID);
+
+	console.log(congressVoteData.objects[0].vote.number);
 
 	margin[0] = " (" + congressVoteData.objects[0].vote.total_minus + ")";
 	margin[1] = " (" + congressVoteData.objects[0].vote.total_other + ")";
