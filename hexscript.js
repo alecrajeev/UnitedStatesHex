@@ -22,7 +22,7 @@ var svgLegend = d3.select(".legend").append("svg")
 	.attr("width", "162px");
 
 queue()
-	.defer(d3.csv, "districtCDIDlist.csv")
+	.defer(d3.tsv, "districtCDIDlist.tsv")
 	.defer(d3.json, "ushex.json")
 	.defer(d3.tsv, "demographics.tsv")
 	.defer(d3.tsv, "presidential_results.tsv")
@@ -32,9 +32,9 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 	if (error)
 		return console.warn(error);
 
-	districtListData.forEach(function(d) {
-		d.districtID = +d.CDID;
-		districtList[d.districtID] = d.StateCD; // eventually make this tree or a hashtable, preprocess in node
+	districtListData.forEach(function(d) { // will use import the nyt member list here
+		d.districtID = +d.districtID;
+		districtList[d.districtID] = [d.statecd, d.nytID]; // eventually make this tree or a hashtable, preprocess in node
 	});
 
 	ddata.forEach(function(d) {
@@ -270,12 +270,24 @@ function changeTooltip(d) {
 	}
 }
 
+function getdistrictIDfromNYT(nytID) { // give the id for the specific congressional district from the New Yokr Times's ID
+	// determined by the name of the state and district number
+	// will eventually preprocess a hashtable in node
+
+	for (i = 0; i < 435; i++) {
+		if (districtList[i][1] === nytID) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 function getdistrictID(statecd) { // give the id for the specific congressional district
 	// determined by the name of the state and district number
 	// will eventually preprocess a hashtable in node
 
 	for (i = 0; i < 435; i++) {
-		if (districtList[i] === statecd) {
+		if (districtList[i][0] === statecd) {
 			return i;
 		}
 	}

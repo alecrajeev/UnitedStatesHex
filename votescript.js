@@ -61,6 +61,36 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 		});
 }
 
+function buildMyVote(error, congressVoteData) {
+	if (error)
+		console.warnr(error);
+
+	console.log(congressVoteData);
+
+	congressVoteData = congressVoteData.results.votes;
+
+	d3.select(".header").text(congressVoteData.vote.bill.title);
+
+	congressVoteData.objects.forEach(function(d) {
+		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
+		d.simplevote = getSimpleVote(d.option.key,d.person_role.party);
+		d.districtID = getdistrictID(d.statecd);
+
+		voteByDistrictID[d.districtID] = d.simplevote;
+	});
+
+	checkAaronSchockers(voteByDistrictID);
+
+	console.log(congressVoteData.objects[0].vote.number);
+
+	margin[0] = " (" + congressVoteData.objects[0].vote.total_minus + ")";
+	margin[1] = " (" + congressVoteData.objects[0].vote.total_other + ")";
+	margin[2] = " (" + congressVoteData.objects[0].vote.total_plus + ")";
+
+
+	showRollCallVote();
+}
+
 function showVoteLegend() {
 	var LegendContent = svgVoteLegend.selectAll(".LegendContent")
 		.data(voteColor.domain())
@@ -106,36 +136,6 @@ function showVoteLegend() {
 		.duration(1000)
 		.style("opacity", "0")
 		.remove();
-}
-
-function buildMyVote(error, congressVoteData) {
-	if (error)
-		console.warnr(error);
-
-	console.log(congressVoteData);
-
-	congressVoteData = congressVoteData.results.votes;
-
-	d3.select(".header").text(congressVoteData.vote.bill.title);
-
-	congressVoteData.objects.forEach(function(d) {
-		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
-		d.simplevote = getSimpleVote(d.option.key,d.person_role.party);
-		d.districtID = getdistrictID(d.statecd);
-
-		voteByDistrictID[d.districtID] = d.simplevote;
-	});
-
-	checkAaronSchockers(voteByDistrictID);
-
-	console.log(congressVoteData.objects[0].vote.number);
-
-	margin[0] = " (" + congressVoteData.objects[0].vote.total_minus + ")";
-	margin[1] = " (" + congressVoteData.objects[0].vote.total_other + ")";
-	margin[2] = " (" + congressVoteData.objects[0].vote.total_plus + ")";
-
-
-	showRollCallVote();
 }
 
 function checkAaronSchockers(voteByDistrictID) { // checks if there are any empty seats i.e. Aaron Schock
