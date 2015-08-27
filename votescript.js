@@ -1,17 +1,14 @@
 // builds the sidebar with the list of votes to select
 
-var url = "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435";
 var roll_call = "10";
 
-var apikey = "c16f4da13a525de8e49c614d0da8de41:3:66225453";
+var nytAddress = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/house/votes/2015/06.json?api-key=",
+	apikey = "c16f4da13a525de8e49c614d0da8de41:3:66225453";
 
 // nytimes api key
 // c16f4da13a525de8e49c614d0da8de41:3:66225453
 
-var nytAddress = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/house/votes/2015/06.json?api-key=";
-
 queue()
-	.defer(d3.json, url)
 	.defer(d3.json, nytAddress + apikey)
 	.await(makeMyVoteSelector);
 
@@ -22,19 +19,9 @@ var svgVoteLegend = d3.select(".voteLegend").append("svg")
 	.attr("height", "120px")
 	.attr("width", "162px");
 
-function makeMyVoteSelector(error, congressVoteData, votesList) {
+function makeMyVoteSelector(error, votesList) {
 	if (error)
 		console.warn(error);
-
-	// congressVoteData.objects.forEach(function(d) {
-	// 	d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
-	// 	d.simplevote = getSimpleVote(d.option.key);
-	// 	d.districtID = getdistrictID(d.statecd);
-
-	// 	voteByDistrictID[d.districtID] = d.simplevote;
-	// });
-
-	// checkAaronSchockers(voteByDistrictID);
 
 	votesList = votesList.results.votes;
 
@@ -152,8 +139,6 @@ function checkAaronSchockers(voteByDistrictID) { // checks if there are any empt
 function getSimpleVote(vote, party) { // an integer representation of what the vote was
 
 	var republican = (party === "R" ? true : false);
-
-	// check if actually republican
 
 	if (vote === "Yes") // if voted in the affirmative
 		if (republican)

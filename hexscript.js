@@ -79,7 +79,6 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 		.style({fill: 	function(d) {return getStateColor(d.properties.stateID);	},
 				stroke: function(d) {return getStateColor(d.properties.stateID);	}})
 		.on("mouseover", mouseover)
-		.on("mousedown", mousedown);
 
     var stateBorder = svg.append("path")
     	.attr("class", "stateBorder")
@@ -97,10 +96,6 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
   		specificDistrictID = d.properties.districtID;
  		specificDistrict.call(drawSpecificDistrict);
  		changeTooltip(d);
- 	}
-
- 	function mousedown(d) {
- 		console.log(voteByDistrictID[d.properties.districtID]);
  	}
 
  	function drawSpecificDistrict(border) {

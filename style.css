@@ -87,6 +87,11 @@
 	display: none;
 }
 
+.nytimesLogo {
+	position: relative;
+	top: -3px;
+}
+
 .passage {
   width: 130px;
   height: 40px;
