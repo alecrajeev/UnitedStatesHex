@@ -53,7 +53,7 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 		.on("click", function(d) {
 
 			// url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + d.id.toString() + "&limit=435";
-			url = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/114/bills/HR2146.json?api-key=c16f4da13a525de8e49c614d0da8de41:3:66225453"
+			url = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/114/house/sessions/1/votes/374.json?api-key=" + apikey;
 
 			queue()
 				.defer(d3.json, url)
@@ -112,11 +112,11 @@ function buildMyVote(error, congressVoteData) {
 	if (error)
 		console.warnr(error);
 
-	console.log(congressVoteData.results[0]);
+	console.log(congressVoteData);
 
-	var cData = congressVoteData.results[0];
+	congressVoteData = congressVoteData.results.votes;
 
-	d3.select(".header").text(cData.title);
+	d3.select(".header").text(congressVoteData.vote.bill.title);
 
 	congressVoteData.objects.forEach(function(d) {
 		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
@@ -140,10 +140,8 @@ function buildMyVote(error, congressVoteData) {
 
 function checkAaronSchockers(voteByDistrictID) { // checks if there are any empty seats i.e. Aaron Schock
 	for (i = 0; i < 434; i++)
-		if (voteByDistrictID[i] === undefined) {
+		if (voteByDistrictID[i] === undefined)
 			voteByDistrictID[i] = 2;
-			console.log("Aaron Schockers ");
-		}
 }
 
 function getSimpleVote(vote, party) { // an integer representation of what the vote was
