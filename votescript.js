@@ -2,6 +2,8 @@
 
 var url = "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435";
 
+var apikey = "c16f4da13a525de8e49c614d0da8de41:3:66225453";
+
 // nytimes api key
 // c16f4da13a525de8e49c614d0da8de41:3:66225453
 
@@ -24,7 +26,7 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 	congressVoteData.objects.forEach(function(d) {
 		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
 		d.simplevote = getSimpleVote(d.option.key);
-		d.districtID = getdistrictID(d.statecd);	
+		d.districtID = getdistrictID(d.statecd);
 
 		voteByDistrictID[d.districtID] = d.simplevote;
 	});
@@ -42,7 +44,7 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 		.enter()
 		.append("div")
 		.attr("class", "buttonDiv");
-	
+
 	divs.append("input")
 		.attr("type", "button")
 		.attr("class", function(d) {return d.category;	})
@@ -50,7 +52,8 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 		.attr("title", function(d) {return d.question;	})
 		.on("click", function(d) {
 
-			url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + d.id.toString() + "&limit=435";
+			// url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + d.id.toString() + "&limit=435";
+			url = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/114/bills/HR2146.json?api-key=c16f4da13a525de8e49c614d0da8de41:3:66225453"
 
 			queue()
 				.defer(d3.json, url)
@@ -61,7 +64,7 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 function showVoteLegend() {
 	var LegendContent = svgVoteLegend.selectAll(".LegendContent")
 		.data(voteColor.domain())
-	
+
 	var LegendEnter = LegendContent.enter()
 		.append("g")
 		.attr("class", "LegendContent")
@@ -70,18 +73,18 @@ function showVoteLegend() {
 			var rectWidth = legendRectSize;
 			return "translate(" + rectWidth + ", " + rectHeight + ")";
 		})
-	
+
 	LegendEnter.append("rect")
 		.attr("width", legendRectSize-2)
 		.attr("height", legendRectSize)
 		.style("fill", function(d) {return color(d)})
 		.style("stroke", "black")
-	
+
 	LegendEnter.append("text")
 		.attr("x", legendRectSize + legendSpacing*1.3)
 		.attr("y", legendRectSize-1)
 		.text(function(d) {return interpretVote(d);	});
-	
+
 	var updateSelection = svgVoteLegend.selectAll(".LegendContent")
 		.transition()
 		.duration(1000)
@@ -91,13 +94,13 @@ function showVoteLegend() {
 			var rectWidth = legendRectSize;
 			return "translate(" + rectWidth + ", " + rectHeight + ")";
 		})
-	
+
 	updateSelection.select("rect")
 		.style("fill", function(d) {return voteColor(d);	});
-	
+
 	updateSelection.select("text")
 		.text(function(d) {return interpretVote(d);	});
-	
+
 	LegendContent.exit()
 		.transition()
 		.duration(1000)
@@ -109,14 +112,16 @@ function buildMyVote(error, congressVoteData) {
 	if (error)
 		console.warnr(error);
 
-	console.log(congressVoteData);
+	console.log(congressVoteData.results[0]);
 
-	d3.select(".header").text(congressVoteData.objects[0].vote.category_label + ": " + congressVoteData.objects[0].vote.question);
+	var cData = congressVoteData.results[0];
+
+	d3.select(".header").text(cData.title);
 
 	congressVoteData.objects.forEach(function(d) {
 		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
 		d.simplevote = getSimpleVote(d.option.key,d.person_role.party);
-		d.districtID = getdistrictID(d.statecd);	
+		d.districtID = getdistrictID(d.statecd);
 
 		voteByDistrictID[d.districtID] = d.simplevote;
 	});
@@ -151,7 +156,7 @@ function getSimpleVote(vote, party) { // an integer representation of what the v
 		else
 			return 3; // if democrat no
 	else
-		if (republican) 
+		if (republican)
 			return 1; // if republican no
 		else
 			return 0; // if democrat no
