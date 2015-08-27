@@ -21,8 +21,9 @@ var svgLegend = d3.select(".legend").append("svg")
 	.attr("height", "220px")
 	.attr("width", "162px");
 
+
 queue()
-	.defer(d3.tsv, "districtCDIDlist.tsv")
+	.defer(d3.tsv, "districtList.tsv")
 	.defer(d3.json, "ushex.json")
 	.defer(d3.tsv, "demographics.tsv")
 	.defer(d3.tsv, "presidential_results.tsv")
@@ -34,7 +35,7 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 
 	districtListData.forEach(function(d) { // will use import the nyt member list here
 		d.districtID = +d.districtID;
-		districtList[d.districtID] = [d.statecd, d.nytID]; // eventually make this tree or a hashtable, preprocess in node
+		districtList[d.districtID] = [d.statecd, d.nytID, d.party]; // eventually make this tree or a hashtable, preprocess in node
 	});
 
 	ddata.forEach(function(d) {
@@ -268,18 +269,6 @@ function changeTooltip(d) {
 				d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": ");
 		}
 	}
-}
-
-function getdistrictIDfromNYT(nytID) { // give the id for the specific congressional district from the New Yokr Times's ID
-	// determined by the name of the state and district number
-	// will eventually preprocess a hashtable in node
-
-	for (i = 0; i < 435; i++) {
-		if (districtList[i][1] === nytID) {
-			return i;
-		}
-	}
-	return -1;
 }
 
 function getdistrictID(statecd) { // give the id for the specific congressional district

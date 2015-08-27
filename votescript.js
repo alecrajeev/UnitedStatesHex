@@ -1,43 +1,50 @@
 // builds the sidebar with the list of votes to select
 
 var url = "https://www.govtrack.us/api/v2/vote_voter?vote=117238&limit=435";
+var roll_call = "10";
 
 var apikey = "c16f4da13a525de8e49c614d0da8de41:3:66225453";
 
 // nytimes api key
 // c16f4da13a525de8e49c614d0da8de41:3:66225453
 
+var nytAddress = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/house/votes/2015/06.json?api-key=";
+
 queue()
 	.defer(d3.json, url)
-	.defer(d3.csv, "votesExport.csv")
+	.defer(d3.json, nytAddress + apikey)
 	.await(makeMyVoteSelector);
 
 var nestedData;
-var margin = ["","",""];
+var margin = ["","","","",""];
 
 var svgVoteLegend = d3.select(".voteLegend").append("svg")
 	.attr("height", "120px")
 	.attr("width", "162px");
 
-function makeMyVoteSelector(error, congressVoteData, votesExport) {
+function makeMyVoteSelector(error, congressVoteData, votesList) {
 	if (error)
 		console.warn(error);
 
-	congressVoteData.objects.forEach(function(d) {
-		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
-		d.simplevote = getSimpleVote(d.option.key);
-		d.districtID = getdistrictID(d.statecd);
+	// congressVoteData.objects.forEach(function(d) {
+	// 	d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
+	// 	d.simplevote = getSimpleVote(d.option.key);
+	// 	d.districtID = getdistrictID(d.statecd);
 
-		voteByDistrictID[d.districtID] = d.simplevote;
-	});
+	// 	voteByDistrictID[d.districtID] = d.simplevote;
+	// });
 
-	checkAaronSchockers(voteByDistrictID);
+	// checkAaronSchockers(voteByDistrictID);
 
-	nestedData = d3.nest()
-		.key(function(d) {return d.category;	})
-		.entries(votesExport);
+	votesList = votesList.results.votes;
 
-	var passage = nestedData[0].values; // fix this to work with keys
+	// lost the ablity to nest by category when I switched from the GovTrack api to the NYTimes API
+
+	// nestedData = d3.nest()
+	// 	.key(function(d) {return d.category;	})
+	// 	.entries(votesExport);
+
+	var passage = votesList;
 
 	var divs = d3.select(".voteSelector").selectAll("div")
 		.data(passage)
@@ -48,12 +55,13 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 	divs.append("input")
 		.attr("type", "button")
 		.attr("class", function(d) {return d.category;	})
-		.attr("value", function(d) {return d.question.substring(0,10);	})
-		.attr("title", function(d) {return d.question;	})
+		.attr("value", function(d) {return d.description.substring(0,28);	})
+		.attr("title", function(d) {return d.description.substring(0,80);	})
 		.on("click", function(d) {
 
-			// url = "https://www.govtrack.us/api/v2/vote_voter?vote=" + d.id.toString() + "&limit=435";
-			url = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/114/house/sessions/1/votes/374.json?api-key=" + apikey;
+			url = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/114/house/sessions/1/votes/";
+			roll_call = d.roll_call;
+			url = url + roll_call + ".json?api-key=" + apikey;
 
 			queue()
 				.defer(d3.json, url)
@@ -63,30 +71,27 @@ function makeMyVoteSelector(error, congressVoteData, votesExport) {
 
 function buildMyVote(error, congressVoteData) {
 	if (error)
-		console.warnr(error);
+		console.warn(error);
 
-	console.log(congressVoteData);
+	congressVoteData = congressVoteData.results.votes.vote;
 
-	congressVoteData = congressVoteData.results.votes;
+	d3.select(".header").text(congressVoteData.bill.title.substring(0,80));
 
-	d3.select(".header").text(congressVoteData.vote.bill.title);
+	congressVoteData.positions.forEach(function(d) {
 
-	congressVoteData.objects.forEach(function(d) {
-		d.statecd = d.person_role.state.toUpperCase() + d.person_role.district;
-		d.simplevote = getSimpleVote(d.option.key,d.person_role.party);
-		d.districtID = getdistrictID(d.statecd);
+		d.districtID = getdistrictIDfromNYT(d.member_id);
+		d.simplevote = getSimpleVote(d.vote_position,districtList[d.districtID][2])
 
 		voteByDistrictID[d.districtID] = d.simplevote;
 	});
 
 	checkAaronSchockers(voteByDistrictID);
 
-	console.log(congressVoteData.objects[0].vote.number);
-
-	margin[0] = " (" + congressVoteData.objects[0].vote.total_minus + ")";
-	margin[1] = " (" + congressVoteData.objects[0].vote.total_other + ")";
-	margin[2] = " (" + congressVoteData.objects[0].vote.total_plus + ")";
-
+	margin[0] = " (" + congressVoteData.democratic.no + ")";
+	margin[1] = " (" + congressVoteData.republican.no + ")";
+	margin[2] = " (" + (congressVoteData.total.not_voting + congressVoteData.total.present) + ")";
+	margin[3] = " (" + congressVoteData.democratic.yes + ")";
+	margin[4] = " (" + congressVoteData.republican.yes + ")";
 
 	showRollCallVote();
 }
@@ -146,14 +151,16 @@ function checkAaronSchockers(voteByDistrictID) { // checks if there are any empt
 
 function getSimpleVote(vote, party) { // an integer representation of what the vote was
 
-	var republican = (party === "Republican" ? true : false);
+	var republican = (party === "R" ? true : false);
 
-	if (vote === "+") // if voted in the affirmative
+	// check if actually republican
+
+	if (vote === "Yes") // if voted in the affirmative
 		if (republican)
 			return 4; // if republican yes
 		else
-			return 3; // if democrat no
-	else
+			return 3; // if democrat yes
+	if (vote === "No")
 		if (republican)
 			return 1; // if republican no
 		else
@@ -165,13 +172,25 @@ function getSimpleVote(vote, party) { // an integer representation of what the v
 function interpretVote(v) {
 
 	if (v == 4)
-		return "Republican Yes";
+		return "Rep Yes" + margin[4];
 	if (v == 3)
-		return "Democrat Yes";
+		return "Dem Yes" + margin[3];
 	if (v == 2)
-		return "Other";
+		return "Other" + margin[2];
 	if (v == 1)
-		return "Republican No";
+		return "Rep No" + margin[1];
 	if (v == 0)
-		return "Democrat No";
+		return "Dem No" + margin[0];
+}
+
+function getdistrictIDfromNYT(nytID) { // give the id for the specific congressional district from the New Yokr Times's ID
+	// determined by the name of the state and district number
+	// will eventually preprocess a hashtable in node
+
+	for (i = 0; i < 435; i++) {
+		if (districtList[i][1] === nytID) {
+			return i;
+		}
+	}
+	return -1;
 }

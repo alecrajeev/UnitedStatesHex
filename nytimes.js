@@ -15,7 +15,12 @@ request(address + apikey, function (error, response, body) {
     	var simpleList = [];
 
     	memberList.forEach(function(d) {
-        	simpleList.push({statecd: d.state + d.district, name: d.first_name + " " + d.last_name, nytID: d.id, state: d.state, district: d.district});
+        	simpleList.push({statecd: d.state + d.district, 
+        					name: d.first_name + " " + d.last_name, nytID: d.id, 
+        					state: d.state, 
+        					district: d.district,
+        					party: d.party
+        					});
     	});
 
     	// specific csv converter 
