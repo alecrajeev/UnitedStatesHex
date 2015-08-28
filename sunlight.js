@@ -16,7 +16,6 @@ var request = require("request"),
 	//   	}
 	// });
 
-var results = {};
 var i = 0;
 
 var fetch = function(file,cb){
@@ -24,26 +23,12 @@ var fetch = function(file,cb){
            if ( err){
                  cb(err);
            } else {
-           		results.push(JSON.parse(body).results[0].state);
-                 cb(null, JSON.parse(body).results[0].state);
+
+           		var body = JSON.parse(body).results[0];
+                 cb(null,body);
            }
      });
 }
-
-var results = [];
-
-async.map([getAddress("27.660082","-97.382706"),getAddress("22.226328", "-159.477264")], fetch, function(err, results){
-    if ( err){
-       // either file1, file2 or file3 has raised an error, so you should not use results and handle the error
-    } else {
-
-    	console.log(results);
-       // results[0] -> "file1" body
-       // results[1] -> "file2" body
-       // results[2] -> "file3" body
-    }
-});
-
 
 function getAddress(latitude, longitude) {
 
@@ -53,34 +38,37 @@ function getAddress(latitude, longitude) {
 
 	var url = baseAddress + districtsLocate + latitude + "&longitude=" + longitude + "&apikey=" + apikey;
 
-	// console.log(url);
-	// console.log("\n");
-
 	return url;
 }
-
-// console.log(getFullDistrict("27.660082","-97.382706"))
-// console.log(getFullDistrict("22.226328", "-159.477264"))
-// console.log(getFullDistrict("20.764214", "-156.458282"))
-// console.log(getFullDistrict("30.252453","-97.743767"))
 
 var locationList = [];
 var districtList = {};
 
+var functionList = [];
 
-// fs.readFile('bdata.json', 'utf-8', function (err, data) {
+fs.readFile('bdata.json', 'utf-8', function (err, data) {
 
-// 	bernie = JSON.parse(data);
+	bernie = JSON.parse(data);
 
-// 	bernie = bernie.results;
+	bernie = bernie.results;
 
-// 	var count = 0;
+	var count = 0;
 
-// 	bernie.forEach(function (d) {
-// 		locationList.push([d.latitude, d.longitude, d.attendee_count]);
-// 	});
+	bernie.forEach(function (d) {
+		locationList.push([d.latitude, d.longitude, d.attendee_count]);
+	});
 
-// 	locationList.forEach(function (d) {
-// 		getFullDistrict(d[0],d[1]);
-// 	});
-// });
+	locationList.forEach(function (d) {
+		functionList.push(getAddress(d[0],d[1]));
+	});
+
+	async.map(functionList, fetch, function(err, results){
+	    if ( err){
+	       // either file1, file2 or file3 has raised an error, so you should not use results and handle the error
+	    } else {
+
+	    	console.log(results);
+	    }
+	});
+
+});
