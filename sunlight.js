@@ -18,7 +18,7 @@ var request = require("request"),
 var results = {};
 var i = 0;
 
-function getFullDistrict(latitude, longitude ) {
+function getFullDistrict(latitude, longitude) {
 
 	request(getAddress(latitude, longitude), function (error, response, body) {
 
@@ -26,11 +26,14 @@ function getFullDistrict(latitude, longitude ) {
 	
 			body = JSON.parse(body).results[0];
 	
-			// console.log(body.state + body.district);
-			
-			results[i++] = [body.state, body.district];
-			console.log(results);
-			console.log("\n");
+			console.log(body.state + body.district);
+
+			// results[i++] = [body.state, body.district];
+			// console.log(results);
+			// console.log("\n")
+		}
+		else {
+			console.log("error#####")
 		}
 	});
 }
@@ -41,12 +44,16 @@ function getAddress(latitude, longitude) {
 	var districtsLocate = "districts/locate?latitude="
 	var apikey = "9ffeee7330774d769247a6de8d856aa2";
 
-	return baseAddress + districtsLocate + latitude + "&longitude=" + longitude + "&apikey=" + apikey;
+	var url = baseAddress + districtsLocate + latitude + "&longitude=" + longitude + "&apikey=" + apikey;
 
+	// console.log(url);
+	// console.log("\n");
+
+	return url;
 }
 
-getFullDistrict("27.660082","-97.382706");
-getFullDistrict("30.252453","-97.743767");
+// getFullDistrict("27.660082","-97.382706");
+// getFullDistrict("30.252453","-97.743767");
 
 var locationList = [];
 var districtList = {};
