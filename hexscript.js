@@ -33,6 +33,8 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 	if (error)
 		return console.warn(error);
 
+	// console.log(bernie);
+
 	districtListData.forEach(function(d) { // will use import the nyt member list here
 		d.districtID = +d.districtID;
 		districtList[d.districtID] = [d.statecd, d.nytID, d.party]; // eventually make this tree or a hashtable, preprocess in node

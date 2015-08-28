@@ -8,6 +8,9 @@ var nytAddress = "http://api.nytimes.com/svc/politics/v3/us/legislative/congress
 // nytimes api key
 // c16f4da13a525de8e49c614d0da8de41:3:66225453
 
+// sunglight foundation key
+// 9ffeee7330774d769247a6de8d856aa2
+
 queue()
 	.defer(d3.json, nytAddress + apikey)
 	.await(makeMyVoteSelector);
