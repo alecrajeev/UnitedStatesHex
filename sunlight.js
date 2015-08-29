@@ -1,9 +1,10 @@
 #!usr/bin/env node
 
 var request = require("request"),
-	tsv = require("node-tsv-json"),
-	fs = require("fs"),
-	async = require("async");
+	tsv 	= require("node-tsv-json"),
+	fs 		= require("fs"),
+	async 	= require("async"),
+	d3 		= require("d3");
 
 	// tsv({
 	// 	input: "bernieEventList.tsv", 
@@ -33,6 +34,10 @@ var fetch = function(info,cb){
 		} else {
 		
 			var sunlightData = JSON.parse(sunlightData).results[0];
+			 // changes at-large districts to 1 instead of 0
+			sunlightData.district = (sunlightData.district == 0) ? 1 : sunlightData.district;
+
+			sunlightData.statecd = sunlightData.state + sunlightData.district;
 			sunlightData.attendee_count = attendee_count;
 			cb(null,sunlightData);
 		}
@@ -51,29 +56,71 @@ function getDistrictInfo(latitude, longitude, acount) {
 	return [url,acount];
 }
 
-fs.readFile('bdata.json', 'utf-8', function (err, data) {
+var districtList = {};
 
-	bernie = JSON.parse(data);
+var readDistrictList = function() {
+	fs.readFile("districtListA.csv", "utf-8", function (err, districtListData) {
+		if (err)
+			console.error(err);
 
-	bernie = bernie.results;
+		var districtListData = d3.csv.parse(districtListData);
 
-	var count = 0;
+		districtListData.forEach(function (d) {
+			d.districtID = +d.districtID;
+			districtList[d.districtID] = {statecd: d.statecd, attendee_count: -1};
+		})
 
-	bernie.forEach(function (d) {
-		locationList.push([d.latitude, d.longitude, d.attendee_count]);
+		bernieReader(districtList); // probably should eventually switch this to an async series or waterfall
+	});
+}
+
+var bernieReader = function(districtList) {
+
+	fs.readFile("bdata.json", "utf-8", function (err, data) {
+
+		bernie = JSON.parse(data);
+
+		bernie = bernie.results;
+
+		var count = 0;
+
+		bernie.forEach(function (d) {
+			locationList.push([d.latitude, d.longitude, d.attendee_count]);
+		});
+
+		locationList.forEach(function (d) {
+			functionList.push(getDistrictInfo(d[0],d[1],d[2]));
+		});
+
+		async.map(functionList, fetch, function(err, results){
+		    if (err){
+		    	console.error(err);
+		       // either file1, file2 or file3 has raised an error, so you should not use results and handle the error
+		    } else {
+
+		    	// console.log(results);
+		    	results.forEach(function (d) {
+
+		    		var districtID = getdistrictID(d.statecd);
+
+		    		districtList[districtID].attendee_count = d.attendee_count;
+
+		    		console.log(districtList[districtID])
+		    	});
+		    }
+		});
+
 	});
 
-	locationList.forEach(function (d) {
-		functionList.push(getDistrictInfo(d[0],d[1],d[2]));
-	});
+	function getdistrictID(statecd) {
 
-	async.map(functionList, fetch, function(err, results){
-	    if (err){
-	    	console.error(err);
-	       // either file1, file2 or file3 has raised an error, so you should not use results and handle the error
-	    } else {
-	    	console.log(results);
-	    }
-	});
+	for (i = 0; i < 435; i++) {
+		if (districtList[i].statecd === statecd) {
+			return i;
+		}
+	}
+	return -1;
+}
+}
 
-});
+readDistrictList();
