@@ -1,22 +1,14 @@
 #!usr/bin/env node
 
+// Takes the data that was processed from his website and connects it to sunlight's
+// api of congressional districts. Then exports the attendee count at each congressional
+// district to a csv file.
+
 var request = require("request"),
-	tsv 	= require("node-tsv-json"),
 	fs 		= require("fs"),
 	async 	= require("async"),
 	d3 		= require("d3")
 	csv		= require("fast-csv");
-
-	// tsv({
-	// 	input: "bernieEventList.tsv", 
-	// 	output: "bernieEventList.json"
-	// 	//array of arrays, 1st array is column names 
-	// 	,parseRows: true
-	// }, function(err, result) {
-	// 	if(err) {
-	//     	console.error(err);
-	//   	}
-	// });
 
 var locationList = [];
 var districtList = {};
@@ -29,7 +21,6 @@ writeableStream.on("finish", function() {
 	console.log("done");
 });
 
-
 var sunlightAPI = function(info,cb){
 
 	var url = info[0];
@@ -39,14 +30,22 @@ var sunlightAPI = function(info,cb){
 		if (err) {
 			cb(err);
 		} else {
-		
-			var sunlightData = JSON.parse(sunlightData).results[0];
-			 // changes at-large districts to 1 instead of 0
-			sunlightData.district = (sunlightData.district == 0) ? 1 : sunlightData.district;
+			
+			sunlightData = JSON.parse(sunlightData);
 
-			sunlightData.statecd = sunlightData.state + sunlightData.district;
-			sunlightData.attendee_count = attendee_count;
-			cb(null,sunlightData);
+			if (sunlightData.count > 0) {
+
+				sunlightData = sunlightData.results[0];
+				 // changes at-large districts to 1 instead of 0
+				sunlightData.district = (sunlightData.district == 0) ? 1 : sunlightData.district;
+
+				sunlightData.statecd = sunlightData.state + sunlightData.district;
+				sunlightData.attendee_count = attendee_count;
+				cb(null,sunlightData);
+			}
+			else {
+				cb(null,-1);
+			}
 		}
 	
     });
@@ -83,7 +82,7 @@ var readDistrictList = function() {
 
 var bernieReader = function(districtList) {
 
-	fs.readFile("bdata.json", "utf-8", function (err, data) {
+	fs.readFile("bernie.json", "utf-8", function (err, data) {
 
 		bernie = JSON.parse(data);
 
@@ -108,18 +107,17 @@ var bernieReader = function(districtList) {
 		    	// results is an array of the data loaded from the sunlight API
 		    	results.forEach(function (d) {
 
-		    		var districtID = getdistrictID(d.statecd);
+		    		if (d != -1) {
 
-		    		// currently just simply adding the attendee count for each district
-		    		districtList[districtID].attendee_count += d.attendee_count;
+			    		var districtID = getdistrictID(d.statecd);
 
-		    		// console.log(districtList[districtID])
-				
-
+			    		// currently just simply adding the attendee count for each district
+			    		// eventually will do something with dates
+			    		districtList[districtID].attendee_count += d.attendee_count;
+		    		}
 				});
 
-				// console.log(districtList);
-
+				// this is used to make it a format the csv writer can handle
 		    	var districtListConvert = [];
 		    	districtListConvert.push(["statecd", "districtID", "attendee_count"])
 
