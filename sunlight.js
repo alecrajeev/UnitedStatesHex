@@ -4,7 +4,8 @@ var request = require("request"),
 	tsv 	= require("node-tsv-json"),
 	fs 		= require("fs"),
 	async 	= require("async"),
-	d3 		= require("d3");
+	d3 		= require("d3")
+	csv		= require("fast-csv");
 
 	// tsv({
 	// 	input: "bernieEventList.tsv", 
@@ -22,8 +23,14 @@ var districtList = {};
 
 var functionList = [];
 
+var writeableStream = fs.createWriteStream("districtListB.csv");
 
-var fetch = function(info,cb){
+writeableStream.on("finish", function() {
+	console.log("done");
+});
+
+
+var sunlightAPI = function(info,cb){
 
 	var url = info[0];
 	var attendee_count = info[1]
@@ -67,7 +74,7 @@ var readDistrictList = function() {
 
 		districtListData.forEach(function (d) {
 			d.districtID = +d.districtID;
-			districtList[d.districtID] = {statecd: d.statecd, attendee_count: -1};
+			districtList[d.districtID] = {statecd: d.statecd, attendee_count: 0};
 		})
 
 		bernieReader(districtList); // probably should eventually switch this to an async series or waterfall
@@ -92,35 +99,49 @@ var bernieReader = function(districtList) {
 			functionList.push(getDistrictInfo(d[0],d[1],d[2]));
 		});
 
-		async.map(functionList, fetch, function(err, results){
+		async.map(functionList, sunlightAPI, function (err, results) {
 		    if (err){
 		    	console.error(err);
 		       // either file1, file2 or file3 has raised an error, so you should not use results and handle the error
 		    } else {
 
-		    	// console.log(results);
+		    	// results is an array of the data loaded from the sunlight API
 		    	results.forEach(function (d) {
 
 		    		var districtID = getdistrictID(d.statecd);
 
-		    		districtList[districtID].attendee_count = d.attendee_count;
+		    		// currently just simply adding the attendee count for each district
+		    		districtList[districtID].attendee_count += d.attendee_count;
 
-		    		console.log(districtList[districtID])
-		    	});
-		    }
+		    		// console.log(districtList[districtID])
+				
+
+				});
+
+				// console.log(districtList);
+
+		    	var districtListConvert = [];
+		    	districtListConvert.push(["statecd", "districtID", "attendee_count"])
+
+		    	for (i = 0; i < 435; i++) {
+		    		districtListConvert.push([districtList[i].statecd, i, districtList[i].attendee_count]);
+		    	}
+
+		    	csv.write(districtListConvert, {headers: true}).pipe(writeableStream);
+			}
 		});
-
+				
 	});
 
 	function getdistrictID(statecd) {
 
-	for (i = 0; i < 435; i++) {
-		if (districtList[i].statecd === statecd) {
-			return i;
+		for (i = 0; i < 435; i++) {
+			if (districtList[i].statecd === statecd) {
+				return i;
+			}
 		}
+		return -1;
 	}
-	return -1;
-}
 }
 
 readDistrictList();
