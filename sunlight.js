@@ -16,21 +16,31 @@ var request = require("request"),
 	//   	}
 	// });
 
-var i = 0;
+var locationList = [];
+var districtList = {};
 
-var fetch = function(file,cb){
-     request.get(file, function(err,response,body){
-           if ( err){
-                 cb(err);
-           } else {
+var functionList = [];
 
-           		var body = JSON.parse(body).results[0];
-                 cb(null,body);
-           }
-     });
+
+var fetch = function(info,cb){
+
+	var url = info[0];
+	var attendee_count = info[1]
+
+    request.get(url, function(err,response,sunlightData){
+		if (err) {
+			cb(err);
+		} else {
+		
+			var sunlightData = JSON.parse(sunlightData).results[0];
+			sunlightData.attendee_count = attendee_count;
+			cb(null,sunlightData);
+		}
+	
+    });
 }
 
-function getAddress(latitude, longitude) {
+function getDistrictInfo(latitude, longitude, acount) {
 
 	var baseAddress = "https://congress.api.sunlightfoundation.com/";
 	var districtsLocate = "districts/locate?latitude="
@@ -38,13 +48,8 @@ function getAddress(latitude, longitude) {
 
 	var url = baseAddress + districtsLocate + latitude + "&longitude=" + longitude + "&apikey=" + apikey;
 
-	return url;
+	return [url,acount];
 }
-
-var locationList = [];
-var districtList = {};
-
-var functionList = [];
 
 fs.readFile('bdata.json', 'utf-8', function (err, data) {
 
@@ -59,14 +64,14 @@ fs.readFile('bdata.json', 'utf-8', function (err, data) {
 	});
 
 	locationList.forEach(function (d) {
-		functionList.push(getAddress(d[0],d[1]));
+		functionList.push(getDistrictInfo(d[0],d[1],d[2]));
 	});
 
 	async.map(functionList, fetch, function(err, results){
-	    if ( err){
+	    if (err){
+	    	console.error(err);
 	       // either file1, file2 or file3 has raised an error, so you should not use results and handle the error
 	    } else {
-
 	    	console.log(results);
 	    }
 	});
