@@ -26,8 +26,6 @@ var sunlightAPI = function(info,cb){
 	var url = info[0];
 	var attendee_count = info[1]
 
-	console.log(info[2]);
-
     request.get(url, function(err,response,sunlightData){
 		if (err) {
 			cb(err);
@@ -76,7 +74,7 @@ var readDistrictList = function() {
 
 		districtListData.forEach(function (d) {
 			d.districtID = +d.districtID;
-			districtList[d.districtID] = {statecd: d.statecd, attendee_count: 0};
+			districtList[d.districtID] = {statecd: d.statecd, attendee_count: +d.attendee_count};
 		})
 
 		bernieReader(districtList); // probably should eventually switch this to an async series or waterfall
@@ -85,7 +83,7 @@ var readDistrictList = function() {
 
 var bernieReader = function(districtList) {
 
-	fs.readFile("bernielast.json", "utf-8", function (err, data) {
+	fs.readFile("bernie.json", "utf-8", function (err, data) {
 
 		bernie = JSON.parse(data);
 

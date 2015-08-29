@@ -1,6 +1,20 @@
 {
     "results": [
       {
+        "attendee_count": 20,
+        "capacity": "20",
+        "id": "1133",
+        "id_obfuscated": "4jr7w",
+        "latitude": "37.535961",
+        "longitude": "-77.450470",
+        "name": "Oregon Hill, Richmond, VA Bernie Sanders Organizing Meeting",
+        "start_day": "2015-07-29",
+        "start_dt": "2015-07-29 18:00:00",
+        "start_time": "18:00:00",
+        "venue_zip": "23220",
+        "bernieID": 200
+      },
+      {
         "attendee_count": 15,
         "capacity": "16",
         "id": "2669",
