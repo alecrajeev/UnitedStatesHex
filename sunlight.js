@@ -26,6 +26,8 @@ var sunlightAPI = function(info,cb){
 	var url = info[0];
 	var attendee_count = info[1]
 
+	console.log(info[2]);
+
     request.get(url, function(err,response,sunlightData){
 		if (err) {
 			cb(err);
@@ -37,6 +39,7 @@ var sunlightAPI = function(info,cb){
 
 				sunlightData = sunlightData.results[0];
 				 // changes at-large districts to 1 instead of 0
+
 				sunlightData.district = (sunlightData.district == 0) ? 1 : sunlightData.district;
 
 				sunlightData.statecd = sunlightData.state + sunlightData.district;
@@ -51,7 +54,7 @@ var sunlightAPI = function(info,cb){
     });
 }
 
-function getDistrictInfo(latitude, longitude, acount) {
+function getDistrictInfo(latitude, longitude, attendee_count, bernieID) {
 
 	var baseAddress = "https://congress.api.sunlightfoundation.com/";
 	var districtsLocate = "districts/locate?latitude="
@@ -59,7 +62,7 @@ function getDistrictInfo(latitude, longitude, acount) {
 
 	var url = baseAddress + districtsLocate + latitude + "&longitude=" + longitude + "&apikey=" + apikey;
 
-	return [url,acount];
+	return [url,attendee_count, bernieID];
 }
 
 var districtList = {};
@@ -82,7 +85,7 @@ var readDistrictList = function() {
 
 var bernieReader = function(districtList) {
 
-	fs.readFile("bernie.json", "utf-8", function (err, data) {
+	fs.readFile("bernielast.json", "utf-8", function (err, data) {
 
 		bernie = JSON.parse(data);
 
@@ -91,11 +94,11 @@ var bernieReader = function(districtList) {
 		var count = 0;
 
 		bernie.forEach(function (d) {
-			locationList.push([d.latitude, d.longitude, d.attendee_count]);
+			locationList.push([d.latitude, d.longitude, d.attendee_count, d.bernieID]);
 		});
 
 		locationList.forEach(function (d) {
-			functionList.push(getDistrictInfo(d[0],d[1],d[2]));
+			functionList.push(getDistrictInfo(d[0],d[1],d[2],d[3]));
 		});
 
 		async.map(functionList, sunlightAPI, function (err, results) {
