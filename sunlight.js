@@ -15,7 +15,7 @@ var districtList = {};
 
 var functionList = [];
 
-var index = "4";
+var index = "13";
 
 var writeableStream = fs.createWriteStream("districtData/districtList" + index +".csv");
 
@@ -115,9 +115,17 @@ var bernieReader = function(districtList) {
 
 			    		var districtID = getdistrictID(d.statecd);
 
+			    		if (districtList[districtID] != undefined) {
+
 			    		// currently just simply adding the attendee count for each district
 			    		// eventually will do something with dates
 			    		districtList[districtID].attendee_count += d.attendee_count;
+			    		}
+			    		else {
+			    			// happens if the coordinates are not for a district such as DC or Guam etc.
+			    			// but the api still returns something
+			    			console.log(d.statecd);
+			    		}
 		    		}
 				});
 
