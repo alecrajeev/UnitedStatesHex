@@ -7,7 +7,7 @@ var districtList = {};
 var voteByDistrictID = {};
 var dataByDistrictID = {};
 var specificDistrictID = -2;
-var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Obama 2012", "Obama 2008"];
+var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Bernie Event", "Obama 2012", "Obama 2008"];
 var extentData = {};
 var cVoteData;
 var legendRectSize = 15,
@@ -33,8 +33,6 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 	if (error)
 		return console.warn(error);
 
-	// console.log(bernie);
-
 	districtListData.forEach(function(d) { // will use import the nyt member list here
 		d.districtID = +d.districtID;
 		districtList[d.districtID] = [d.statecd, d.nytID, d.party]; // eventually make this tree or a hashtable, preprocess in node
@@ -48,8 +46,9 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 		d.Multiracial = +d.Multiracial;
 		d.Party = +d.Party;
 		d.White = +d.White;
+		d.bernieAttendance = +d.bernieAttendance;
 
-		dataByDistrictID[d.districtID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial];
+		dataByDistrictID[d.districtID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial, d.bernieAttendance];
 	});
 
 	demoData = ddata;
@@ -183,13 +182,13 @@ function showDataSet(i) {
 	buildColorRange(i);
 	color.domain(buildColorDomain(i,extentData[i]));
 	updateHexagonColor(i);
-	showLegend();
+	showLegend(i);
 	d3.select(".legend").style("display", "block");
 	d3.select(".voteLegend").style("display", "none");
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
-function showLegend() {
+function showLegend(i) {
 
 	var LegendContent = svgLegend.selectAll(".LegendContent")
 		.data(color.domain())
@@ -212,7 +211,12 @@ function showLegend() {
 	LegendEnter.append("text")
 		.attr("x", legendRectSize + legendSpacing*1.3)
 		.attr("y", legendRectSize-1)
-		.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+		.text(function(d) {
+			if (i != 5)
+				return d3.round(d*100,1).toString() + "%";
+			else // bernie
+				return d3.round(d).toString() + " attendees";
+		});
 	
 	var updateSelection = svgLegend.selectAll(".LegendContent")
 		.transition()
@@ -228,7 +232,12 @@ function showLegend() {
 		.style("fill", function(d) {return color(d);	});
 	
 	updateSelection.select("text")
-		.text(function(d) {return d3.round(d*100,1).toString() + "%";	});
+		.text(function(d) {
+			if (i != 5)
+				return d3.round(d*100,1).toString() + "%";
+			else // bernie
+				return d3.round(d).toString() + " attendees";
+		});
 	
 	LegendContent.exit()
 		.transition()
@@ -244,18 +253,22 @@ function getRealDistrict(i, state) { // returns "at large" if the district numbe
 }
 
 function changeTooltip(d) {
-	if (d.properties.state != "Ocean") { // if you're on a district
+	if (d.properties.state != "Ocean") { // if you ARE on a district
 		d3.select(".whichState").text(d.properties.state);
 		d3.select(".whichDistrict").text(getRealDistrict(d.properties.district, d.properties.state));
 		for (i = 0; i < 7; i++) {
 			var classNameSplit = dataSets[i].split(" ");
-			if (classNameSplit.length < 2)
+			if (classNameSplit.length < 2) // data set names that are one word (Asian)
 				d3.select("." + dataSets[i] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]*100, 1) + "%");
-			else
-				d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]*100, 1) + "%");
+			else { // data set names that are two words (Obama 2012)
+				if (i > 5) // obama 2012
+					d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]*100, 1) + "%");
+				else // bernie
+					d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]));
+			}
 		}
 	}
-	else { // if you're not on a district
+	else { // if you are NOT on a district
 		d3.select(".whichState").text("");
 		d3.select(".whichDistrict").text("");		
 		for (i = 0; i < 7; i++) {
