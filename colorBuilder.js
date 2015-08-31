@@ -47,19 +47,13 @@ function buildVoteColor() {
 function buildColorDomain(i, extent) {
 	var colorDomain = [];
 
-	if (i < 5) {
+	if (i < 6) {
 		var j = 0;
-		for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0) {
+		for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0)
 			colorDomain[j++] = i;
-		}
-	} else {
-		if (i == 5) { // bernie
-			colorDomain = [0, 10, 20, 200, 400, 1048, 1258, 1467, 1888];
-
-		} else {
+	} else
 			colorDomain = [.18, .3, .35, .4, .45, .55, .6, .65, .7, .97];
-		}
-	}
+	
 	return colorDomain;
 }
 
