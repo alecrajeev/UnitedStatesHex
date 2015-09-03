@@ -11,6 +11,7 @@ var districtList = JSON.parse(fs.readFileSync("districtList.json", "utf8"));
 var hexID = {}; // every hexagon has its own identifying id
 var districtIDList = {}; // every district has its own identifying id. Eventually will be replaced by role or something
 var stateIDList = {};
+var bernieIDList = {};
 
 buildhexID(districtList);
 
@@ -21,11 +22,14 @@ function buildhexID(c) { // imports the hexID array from an external json file
 			hexID[c[i].id] = c[i].State + "-" + c[i].district;
 			districtIDList[c[i].id] = c[i].districtID;
 			stateIDList[c[i].id] = c[i].stateID;
+			bernieIDList[c[i].id] = c[i].bernieBin;
+
 		}
 		else {
 			hexID[c[i].id] = undefined;
 			districtIDList[c[i].id] = undefined;
 			stateIDList[c[i].id] = undefined;
+			bernieIDList[c[i].id] = undefined;
 		}
 	}
 }
@@ -70,7 +74,8 @@ function hexTopology() {
     				properties: {state: getState(hexCount-(2*n+1)),
             					district: getDistrict(hexCount-(2*n+1)), 
             					districtID: getDistrictID(hexCount-(2*n+1)),
-            					stateID: getStateID(hexCount-(2*n+1))
+            					stateID: getStateID(hexCount-(2*n+1)),
+            					bernieBin: getBernieBin(hexCount-(2*n+1))
             					}
     			});
   			}
@@ -113,9 +118,18 @@ function hexTopology() {
 			return -1;		
 	}
 
+	function getBernieBin(i) {
+		var bin = bernieIDList[i];
+
+		if (bin != undefined)
+			return bin;
+		else
+			return -1;
+	}
+
   return {
     type: "Topology",
-    objects: {states: {type: "GeometryCollection", bbox: [0,0,m,n], geometries: statesgeo}},
+    objects: {states: {type: "GeometryCollection", geometries: statesgeo}},
     arcs: arcs,
     transform: {translate: [0, 0], scale: [1, 1]}
   };

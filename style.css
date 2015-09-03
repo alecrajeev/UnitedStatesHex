@@ -45,6 +45,19 @@
 	display: none;
 }
 
+.bernieLegend {
+	position: relative;
+	top: -6px;
+	height: 220px;
+	border: solid black;
+	padding: 5px;
+	padding-top: 10px;
+	display: block;
+	font-family: "Helvetica Neue";
+	stroke-width: 2px;
+	display: none;
+}
+
 .voteSelector {
 	position: relative;
 	height: 302px;
@@ -153,15 +166,24 @@
 	fill: none;
 	pointer-events: all;
 	stroke: 0px;
+	z-index: 1;
 }
 
 .specificBorder {
 	fill: none;
-	stroke: #000;
 	stroke-width: 2.5px;
 	stroke-opacity: 1;
 	stroke: #fff;
 	pointer-events: none;
+}
+
+.bernieBorder {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 1;
+	pointer-events: none;
+	z-index: 2;
 }
 
 .districtBorder {

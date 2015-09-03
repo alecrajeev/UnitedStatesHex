@@ -13,6 +13,8 @@ var cVoteData;
 var legendRectSize = 15,
 	legendSpacing = 7;
 
+var binSelector = 8;
+
 var svg = d3.select(".map").append("svg")
 	.attr("width", width)
 	.attr("height", height);
@@ -21,6 +23,9 @@ var svgLegend = d3.select(".legend").append("svg")
 	.attr("height", "220px")
 	.attr("width", "162px");
 
+var svgBernieLegend = d3.select(".bernieLegend").append("svg")
+	.attr("height", "220px")
+	.attr("width", "162px");
 
 queue()
 	.defer(d3.tsv, "districtList.tsv")
@@ -61,13 +66,12 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 		dataByDistrictID[d.districtID].push(d.Obama2012,d.Obama2008);
 	});
 
+
 	presData = presidentialData;
 
 	buildExtentData();
-
+	
 	var projection = hexProjection(radius);
-
-	console.log(ushex);
 
 	var path = d3.geo.path()
 		.projection(projection)
@@ -87,18 +91,23 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
     	.attr("class", "stateBorder")
     	.call(drawStateBorder);
 
-  	var districtBorder = svg.append("path")
-    	.attr("class", "districtBorder")
-    	.call(drawDistrctBorder);
+  	// var districtBorder = svg.append("path")
+   //  	.attr("class", "districtBorder")
+   //  	.call(drawDistrctBorder);
 
     var specificDistrict = svg.append("path")
     	.attr("class", "specificBorder")
     	.call(drawSpecificDistrict);
 
+    var bernieBorder = svg.append("path")
+    	.attr("class", "bernieBorder")
+    	.call(drawBernieBorder);
+
  	function mouseover(d) {
-  		specificDistrictID = d.properties.districtID;
+ 		specificDistrictID = d.properties.districtID;
  		specificDistrict.call(drawSpecificDistrict);
  		changeTooltip(d);
+ 		console.log(d.properties.bernieBin);
  	}
 
  	function drawSpecificDistrict(border) {
@@ -111,6 +120,30 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 
  	function drawStateBorder(border) {
  		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByState)));
+ 	}
+
+ 	function drawBernieBorder(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie)));
+ 	}
+
+ 	function checkBorderByBernie(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+
+ 	 	// if (h1 == -1 || h2 == -1)
+ 	 	// 	return false;
+ 		
+ 		h1 = (h1 == binSelector ? true : false);
+ 		h2 = (h2 == binSelector ? true : false);
+
+ 		var bool = (h1 != h2);
+
+ 		if (bool == true)
+ 			console.log("woah");
+
+ 		return h1 != h2;
  	}
 
  	function checkSpecificDistrict(hex1, hex2) {
@@ -181,17 +214,28 @@ function showRollCallVote() {
 
 function showDataSet(i) {
 	d3.select(".header").text(dataSets[i] + " Demographics by Congressional District");
-	buildColorRange(i);
-	color.domain(buildColorDomain(i,extentData[i]));
-	updateHexagonColor(i);
-	showLegend(i);
-	d3.select(".legend").style("display", "block");
+	if (i != 5)	{
+		buildColorRange(i);
+		color.domain(buildColorDomain(i,extentData[i]));
+		updateHexagonColor(i);
+		showLegend(i);
+		d3.select(".bernieLegend").style("display", "none");
+		d3.select(".legend").style("display", "block");
+	}
+	else { // bernie event
+		buildBernieColor();
+		updateBernieHexagonColor();
+		showBernieLegend();
+		d3.select(".legend").style("display", "none");
+		d3.select(".bernieLegend").style("display", "block");
+	}
 	d3.select(".voteLegend").style("display", "none");
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
 function showBernie() {
-	console.log("show 0");
+
+	d3.select(".bernieBorder").style("stroke-opacity", "1");
 }
 
 function showLegend(i) {
