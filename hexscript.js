@@ -13,7 +13,7 @@ var cVoteData;
 var legendRectSize = 15,
 	legendSpacing = 7;
 
-var binSelector = 8;
+var binSelector = -1;
 
 var svg = d3.select(".map").append("svg")
 	.attr("width", width)
@@ -99,9 +99,42 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
     	.attr("class", "specificBorder")
     	.call(drawSpecificDistrict);
 
-    var bernieBorder = svg.append("path")
-    	.attr("class", "bernieBorder")
-    	.call(drawBernieBorder);
+    var bernieBorder0 = svg.append("path")
+    	.attr("class", "bernieBorder0")
+    	.call(drawBernieBorder0);
+
+    var bernieBorder1 = svg.append("path")
+    	.attr("class", "bernieBorder1")
+    	.call(drawBernieBorder1);
+
+    var bernieBorder2 = svg.append("path")
+    	.attr("class", "bernieBorder2")
+    	.call(drawBernieBorder2);
+
+    var bernieBorder3 = svg.append("path")
+    	.attr("class", "bernieBorder3")
+    	.call(drawBernieBorder3);
+
+    var bernieBorder4 = svg.append("path")
+    	.attr("class", "bernieBorder4")
+    	.call(drawBernieBorder4);
+
+    var bernieBorder5 = svg.append("path")
+    	.attr("class", "bernieBorder5")
+    	.call(drawBernieBorder5);
+
+    var bernieBorder6 = svg.append("path")
+    	.attr("class", "bernieBorder6")
+    	.call(drawBernieBorder6);
+
+    var bernieBorder7 = svg.append("path")
+    	.attr("class", "bernieBorder7")
+    	.call(drawBernieBorder7);
+
+    var bernieBorder8 = svg.append("path")
+    	.attr("class", "bernieBorder8")
+    	.call(drawBernieBorder8);
+
 
  	function mouseover(d) {
  		specificDistrictID = d.properties.districtID;
@@ -122,11 +155,11 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
  		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByState)));
  	}
 
- 	function drawBernieBorder(border) {
- 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie)));
+ 	function drawBernieBorder0(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie0)));
  	}
 
- 	function checkBorderByBernie(hex1, hex2) {
+ 	function checkBorderByBernie0(hex1, hex2) {
  	 	// if (hex1.properties.state == hex2.properties.state)
 
  	 	var h1 = hex1.properties.bernieBin;
@@ -135,13 +168,157 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
  	 	// if (h1 == -1 || h2 == -1)
  	 	// 	return false;
  		
- 		h1 = (h1 == binSelector ? true : false);
- 		h2 = (h2 == binSelector ? true : false);
+ 		h1 = (h1 == 0 ? true : false);
+ 		h2 = (h2 == 0 ? true : false);
 
- 		var bool = (h1 != h2);
+ 		return h1 != h2;
+ 	}
 
- 		if (bool == true)
- 			console.log("woah");
+ 	function drawBernieBorder1(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie1)));
+ 	}
+
+ 	function checkBorderByBernie1(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+ 		
+ 		h1 = (h1 == 1 ? true : false);
+ 		h2 = (h2 == 1 ? true : false);
+
+ 		return h1 != h2;
+ 	}
+
+ 	function drawBernieBorder2(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie2)));
+ 	}
+
+ 	function checkBorderByBernie2(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+
+ 	 	// if (h1 == -1 || h2 == -1)
+ 	 	// 	return false;
+ 		
+ 		h1 = (h1 == 2 ? true : false);
+ 		h2 = (h2 == 2 ? true : false);
+
+ 		return h1 != h2;
+ 	}
+
+ 	function drawBernieBorder3(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie3)));
+ 	}
+
+ 	function checkBorderByBernie3(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+
+ 	 	// if (h1 == -1 || h2 == -1)
+ 	 	// 	return false;
+ 		
+ 		h1 = (h1 == 3 ? true : false);
+ 		h2 = (h2 == 3 ? true : false);
+
+ 		return h1 != h2;
+ 	}
+
+ 	function drawBernieBorder4(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie4)));
+ 	}
+
+ 	function checkBorderByBernie4(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+
+ 	 	// if (h1 == -1 || h2 == -1)
+ 	 	// 	return false;
+ 		
+ 		h1 = (h1 == 4 ? true : false);
+ 		h2 = (h2 == 4 ? true : false);
+
+ 		return h1 != h2;
+ 	}
+
+ 	function drawBernieBorder5(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie5)));
+ 	}
+
+ 	function checkBorderByBernie5(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+
+ 	 	// if (h1 == -1 || h2 == -1)
+ 	 	// 	return false;
+ 		
+ 		h1 = (h1 == 5 ? true : false);
+ 		h2 = (h2 == 5 ? true : false);
+
+ 		return h1 != h2;
+ 	}
+
+ 	function drawBernieBorder6(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie6)));
+ 	}
+
+ 	function checkBorderByBernie6(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+
+ 	 	// if (h1 == -1 || h2 == -1)
+ 	 	// 	return false;
+ 		
+ 		h1 = (h1 == 6 ? true : false);
+ 		h2 = (h2 == 6 ? true : false);
+
+ 		return h1 != h2;
+ 	}
+
+ 	function drawBernieBorder7(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie7)));
+ 	}
+
+ 	function checkBorderByBernie7(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+
+ 	 	// if (h1 == -1 || h2 == -1)
+ 	 	// 	return false;
+ 		
+ 		h1 = (h1 == 7 ? true : false);
+ 		h2 = (h2 == 7 ? true : false);
+
+ 		return h1 != h2;
+ 	}
+
+ 	function drawBernieBorder8(border) {
+ 		border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie8)));
+ 	}
+
+ 	function checkBorderByBernie8(hex1, hex2) {
+ 	 	// if (hex1.properties.state == hex2.properties.state)
+
+ 	 	var h1 = hex1.properties.bernieBin;
+ 	 	var h2 = hex2.properties.bernieBin;
+
+ 	 	// if (h1 == -1 || h2 == -1)
+ 	 	// 	return false;
+ 		
+ 		h1 = (h1 == 8 ? true : false);
+ 		h2 = (h2 == 8 ? true : false);
 
  		return h1 != h2;
  	}
@@ -233,9 +410,16 @@ function showDataSet(i) {
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
-function showBernie() {
+function showBernie(i) {
 
-	d3.select(".bernieBorder").style("stroke-opacity", "1");
+	var classSelector = ".bernieBorder" + i;
+
+	for (j = 0; j < 9; j++) {
+		if (j != i)
+			d3.select(".bernieBorder" + j).style("stroke-opacity" , "0");
+		else
+			d3.select(".bernieBorder" + j).style("stroke-opacity" , "1");
+	}
 }
 
 function showLegend(i) {

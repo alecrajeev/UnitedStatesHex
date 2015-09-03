@@ -1,0 +1,103 @@
+.specificBorder {
+	fill: none;
+	stroke-width: 2.5px;
+	stroke-opacity: 1;
+	stroke: #fff;
+	pointer-events: none;
+}
+
+.districtBorder {
+	fill: none;
+	stroke: #000;
+	stroke-width: 1px;
+	stroke-opacity: .2;
+	pointer-events: none;
+}
+
+.stateBorder {
+	fill: none;
+	stroke: #000;
+	stroke-width: 2px;
+	pointer-events: none;
+}
+
+.bernieBorder0 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bernieBorder1 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bernieBorder2 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bernieBorder3 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bernieBorder4 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bernieBorder5 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bernieBorder6 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bernieBorder7 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bernieBorder8 {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+}
