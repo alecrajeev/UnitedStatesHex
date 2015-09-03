@@ -67,6 +67,8 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
 
 	var projection = hexProjection(radius);
 
+	console.log(ushex);
+
 	var path = d3.geo.path()
 		.projection(projection)
 
@@ -112,7 +114,7 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
  	}
 
  	function checkSpecificDistrict(hex1, hex2) {
- 		if (specificDistrictID < 0) // if there is not specific district to be highlighted
+ 		if (specificDistrictID < 0) // if there is no specific district to be highlighted
  			return false;
 
  		if (hex1.properties.districtID != specificDistrictID && 
@@ -188,6 +190,10 @@ function showDataSet(i) {
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
+function showBernie() {
+	console.log("show 0");
+}
+
 function showLegend(i) {
 
 	var LegendContent = svgLegend.selectAll(".LegendContent")
@@ -256,7 +262,7 @@ function changeTooltip(d) {
 	if (d.properties.state != "Ocean") { // if you ARE on a district
 		d3.select(".whichState").text(d.properties.state);
 		d3.select(".whichDistrict").text(getRealDistrict(d.properties.district, d.properties.state));
-		for (i = 0; i < 7; i++) {
+		for (i = 0; i < 8; i++) {
 			var classNameSplit = dataSets[i].split(" ");
 			if (classNameSplit.length < 2) // data set names that are one word (Asian)
 				d3.select("." + dataSets[i] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]*100, 1) + "%");

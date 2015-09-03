@@ -16,16 +16,16 @@ buildhexID(districtList);
 
 function buildhexID(c) { // imports the hexID array from an external json file
 	for (i = 0; i < c.length; i++) {
-		c[i].ID = +c[i].ID;
-		if (c[i].ID != 0) {
-			hexID[c[i].ID] = c[i].State + "-" + c[i].CD;
-			districtIDList[c[i].ID] = c[i].districtID;
-			stateIDList[c[i].ID] = c[i].stateID;
+		c[i].id = +c[i].id;
+		if (c[i].id != 0) {
+			hexID[c[i].id] = c[i].State + "-" + c[i].district;
+			districtIDList[c[i].id] = c[i].districtID;
+			stateIDList[c[i].id] = c[i].stateID;
 		}
 		else {
-			hexID[c[i].ID] = undefined;
-			districtIDList[c[i].ID] = undefined;
-			stateIDList[c[i].ID] = undefined;
+			hexID[c[i].id] = undefined;
+			districtIDList[c[i].id] = undefined;
+			stateIDList[c[i].id] = undefined;
 		}
 	}
 }
