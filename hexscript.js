@@ -409,7 +409,7 @@ function showDataSet(i) {
 	// d3.select(".districtBorder").style("stroke-opacity", ".5");		
 }
 
-function showBernie(i) {
+function showBernieSelection(i) {
 
 	var classSelector = ".bernieBorder" + i;
 
@@ -419,6 +419,12 @@ function showBernie(i) {
 		else
 			d3.select(".bernieBorder" + j).style("stroke-opacity" , "1");
 	}
+}
+
+function hideBernieSelection(d) {
+	for (j = 0; j < 9; j++)
+		d3.select(".bernieBorder" + j).style("stroke-opacity" , "0");
+
 }
 
 function showLegend(i) {

@@ -66,7 +66,8 @@ function showBernieLegend() {
 			var rectWidth = legendRectSize;
 			return "translate(" + rectWidth + ", " + rectHeight + ")";
 		})
-		.on("mouseover", function(d) {showBernie(d);	});
+		.on("mouseover", function(d) {showBernieSelection(d);	})
+		.on("mouseout", function(d) {hideBernieSelection();	})
 
 	LegendEnter.append("rect")
 		.attr("width", legendRectSize-2)
@@ -93,7 +94,7 @@ function showBernieLegend() {
 		.style("fill", function(d) {return bernieColor(d);	});
 
 	updateSelection.select("text")
-		.text(function(d) {return interpretBin(d);	});
+		.text(function(d) {return "< " + interpretBin(d);	});
 
 	LegendContent.exit()
 		.transition()
@@ -136,7 +137,10 @@ function interpretBin(d) {
 			break;
 	}
 
-	return bernieBin + " attendees" ;
+	if (bernieBin == 0)
+		return "Less than 1";
+
+	return "<" + (bernieBin+1) + " attendees" ;
 }
 
 function buildColorDomain(i, extent) {
