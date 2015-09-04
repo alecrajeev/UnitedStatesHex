@@ -140,7 +140,6 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData) {
  		specificDistrictID = d.properties.districtID;
  		specificDistrict.call(drawSpecificDistrict);
  		changeTooltip(d);
- 		console.log(d.properties.bernieBin);
  	}
 
  	function drawSpecificDistrict(border) {

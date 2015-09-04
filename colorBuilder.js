@@ -66,6 +66,7 @@ function showBernieLegend() {
 			var rectWidth = legendRectSize;
 			return "translate(" + rectWidth + ", " + rectHeight + ")";
 		})
+		.on("mouseover", function(d) {showBernie(d);	});
 
 	LegendEnter.append("rect")
 		.attr("width", legendRectSize-2)
