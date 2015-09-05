@@ -168,3 +168,34 @@
 	stroke: 0px;
 	z-index: 1;
 }
+
+.specificBorder {
+	fill: none;
+	stroke-width: 2.5px;
+	stroke-opacity: 1;
+	stroke: #fff;
+	pointer-events: none;
+}
+
+.districtBorder {
+	fill: none;
+	stroke: #000;
+	stroke-width: 1px;
+	stroke-opacity: .2;
+	pointer-events: none;
+}
+
+.stateBorder {
+	fill: none;
+	stroke: #000;
+	stroke-width: 2px;
+	pointer-events: none;
+}
+
+.bernieBorder {
+	fill: none;
+	stroke: #7fff00;
+	stroke-width: 2.5px;
+	stroke-opacity: 0;
+	pointer-events: none;
+}
