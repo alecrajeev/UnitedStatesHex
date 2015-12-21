@@ -2,14 +2,22 @@ var width = 1250,
     height = 730,
     radius = 6.5;
 
+<<<<<<< HEAD
 var hexagons, demoData, turnoutData
+=======
+var hexagons, demoData;
+>>>>>>> origin/master
 var districtList = {},
 	voteByDistrictID = {},
 	dataByDistrictID = {},
 	extentData = {};
 	specificDistrictID = -2
 
+<<<<<<< HEAD
 var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Bernie Event", "Obama 2012", "Obama 2008", "Turnout"];
+=======
+var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Bernie Event", "Obama 2012", "Obama 2008"];
+>>>>>>> origin/master
 var legendRectSize = 15,
 	legendSpacing = 7;
 
@@ -68,6 +76,7 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, turn
 		dataByDistrictID[d.districtID].push(d.Obama2012,d.Obama2008);
 	});
 
+<<<<<<< HEAD
 	turnOutData.forEach(function (d) {
 		d.districtID = +d.districtID;
 		d.Winner = +d.Winner;
@@ -77,6 +86,8 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, turn
 
 	turnoutData = turnOutData;
 
+=======
+>>>>>>> origin/master
 	buildExtentData();
 	
 	var projection = hexProjection(radius);

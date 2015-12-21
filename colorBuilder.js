@@ -165,8 +165,12 @@ function buildExtentData() { // builds the mininum and maximum value array, exte
 	extentData[2] = d3.extent(demoData, function(d) {return d.Latino;	});
 	extentData[3] = d3.extent(demoData, function(d) {return d.Asian;	});
 	extentData[4] = d3.extent(demoData, function(d) {return d.Multiracial;	});
+<<<<<<< HEAD
 	extentData[5] = d3.extent(demoData, function(d) {return d.bernieAttendance;		});
 	extentData[8] = d3.extent(turnoutData, function(d) {return d.Total;	});
+=======
+	extentData[5] = d3.extent(demoData, function(d) {return d.bernieAttendance;		})
+>>>>>>> origin/master
 }
 
 function updateHexagonColor(i) { // fills in the hexagons with the correct color according to the scale
