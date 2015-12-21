@@ -5,7 +5,6 @@
 		<meta charset="utf-8">
         <link rel="icon" href="favicon.ico" />
         <link rel="stylesheet", type="text/css", href="style.css">
-        <link rel="stylesheet", type="text/css", href="border.css">
 		<title>United States Congressional Districts as Hexagons</title>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js">
@@ -49,35 +48,11 @@
         		<div class="typeToggle">
         			<input type="radio" name="data-selector" onclick="showDataSet(4)">MultiRacial Demographics
         		</div>
-                <div class="typeToggle">
+<!--                 <div class="typeToggle">
                     <input type="radio" name="data-selector" onclick="showDataSet(5)">Bernie Event
-                </div>
+                </div> -->
                 <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(0)">Select 0
-                </div>
-                <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(1)">Select 1
-                </div>
-                <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(2)">Select 2
-                </div>
-                <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(3)">Select 3
-                </div>
-                <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(4)">Select 4
-                </div>
-                <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(5)">Select 5
-                </div>
-                <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(6)">Select 6
-                </div>
-                <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(7)">Select 7
-                </div>
-                <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showBernie(8)">Select 8
+                    <input type="radio" name="data-selector" onclick="showDataSet(8)">Turnout 2014
                 </div>
     		</div>
       		
@@ -91,11 +66,12 @@
     			<div class="Latino Tooltip">Latino: </div>
     			<div class="Asian Tooltip">Asian: </div>
     			<div class="Multiracial Tooltip">Multiracial: </div>
-                <div class="BernieEvent Tooltip">Bernie Event Attendance: </div>
+                <div class="Turnout Tooltip">Turnout: </div>
+                <!-- <div class="BernieEvent Tooltip">Bernie Event Attendance: </div> -->
     		</div>
 
             <div class="legend"></div>
-            <div class="bernieLegend"></div>
+            <!-- <div class="bernieLegend"></div> -->
         </div>
 
         <div class="main">

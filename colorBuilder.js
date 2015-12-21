@@ -36,6 +36,9 @@ function buildColorRange(i) { // builds the color range
 		case 5: // bernie event data
 			color.range(['rgb(255,247,251)','#e4fff9','rgb(208,209,230)','rgb(166,189,219)','rgb(103,169,207)','rgb(54,144,192)','rgb(2,129,138)','rgb(1,108,89)']);
 			break;
+		case 8: // turnout data
+			color.range(['rgb(247,244,249)','rgb(231,225,239)','rgb(212,185,218)','rgb(201,148,199)','rgb(223,101,176)','rgb(231,41,138)','rgb(206,18,86)','rgb(152,0,67)','rgb(103,0,31)']);
+			break;
 		default: // presidential
 			color.range(['#AE000C','#BA3035','#C56365','#D09697','#DBC8C8','#C8C8D5','#9697BD','#6465A5','#32358E', '#010a79']);
 			break;
@@ -66,6 +69,8 @@ function showBernieLegend() {
 			var rectWidth = legendRectSize;
 			return "translate(" + rectWidth + ", " + rectHeight + ")";
 		})
+		.on("mouseover", function(d) {showBernieSelection(d);	})
+		.on("mouseout", function(d) {hideBernieSelection();	})
 
 	LegendEnter.append("rect")
 		.attr("width", legendRectSize-2)
@@ -92,7 +97,7 @@ function showBernieLegend() {
 		.style("fill", function(d) {return bernieColor(d);	});
 
 	updateSelection.select("text")
-		.text(function(d) {return interpretBin(d);	});
+		.text(function(d) {return "< " + interpretBin(d);	});
 
 	LegendContent.exit()
 		.transition()
@@ -135,13 +140,16 @@ function interpretBin(d) {
 			break;
 	}
 
-	return bernieBin + " attendees" ;
+	if (bernieBin == 0)
+		return "Less than 1";
+
+	return "<" + (bernieBin+1) + " attendees" ;
 }
 
 function buildColorDomain(i, extent) {
 	var colorDomain = [];
 
-	if (i < 6) {
+	if (i < 6 || i > 7) {
 		var j = 0;
 		for (i = extent[0]; i <= (extent[1]+.01); i += ((extent[1]+.01) - extent[0])/8.0)
 			colorDomain[j++] = i;
@@ -157,9 +165,8 @@ function buildExtentData() { // builds the mininum and maximum value array, exte
 	extentData[2] = d3.extent(demoData, function(d) {return d.Latino;	});
 	extentData[3] = d3.extent(demoData, function(d) {return d.Asian;	});
 	extentData[4] = d3.extent(demoData, function(d) {return d.Multiracial;	});
-	extentData[5] = d3.extent(demoData, function(d) {return d.bernieAttendance;		})
-	extentData[6] = d3.extent(presData, function(d) {return d.Obama2012;	});
-	extentData[7] = d3.extent(presData, function(d) {return d.Obama2008;	});
+	extentData[5] = d3.extent(demoData, function(d) {return d.bernieAttendance;		});
+	extentData[8] = d3.extent(turnoutData, function(d) {return d.Total;	});
 }
 
 function updateHexagonColor(i) { // fills in the hexagons with the correct color according to the scale
