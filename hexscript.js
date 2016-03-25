@@ -354,24 +354,24 @@ function changeTooltip(d) {
 
 
         d3.select(".ClintonDelegates").text("Clinton Delegates: " + primaryByDistrictID[d.properties.districtID][0])
-        d3.select(".ClintonVote").text("Clinton Votes: " + primaryByDistrictID[d.properties.districtID][3])
+        d3.select(".ClintonVote").text("Clinton Vote: " + primaryByDistrictID[d.properties.districtID][3])
         d3.select(".SandersDelegates").text("Sanders Delegates: " + primaryByDistrictID[d.properties.districtID][1])
-        d3.select(".SandersVote").text("Sanders Votes: " + primaryByDistrictID[d.properties.districtID][4])
-        d3.select(".ClintonPreportion").text("Clinton Preportion: " + primaryByDistrictID[d.properties.districtID][7])
-        d3.select(".SandersPreportion").text("Sanders Preportion: " + primaryByDistrictID[d.properties.districtID][8])
-        d3.select(".DelegatePreportion").text("State Delegate Prep: " + d3.round(delegateByStateID[d.properties.stateID]*100.0,2));
+        d3.select(".SandersVote").text("Sanders Vote: " + primaryByDistrictID[d.properties.districtID][4])
+        d3.select(".ClintonPreportion").text("Clinton Pct.: " + primaryByDistrictID[d.properties.districtID][7])
+        d3.select(".SandersPreportion").text("Sanders Pct.: " + primaryByDistrictID[d.properties.districtID][8])
+        d3.select(".DelegatePreportion").text("State Delegate Pct.: " + d3.round(delegateByStateID[d.properties.stateID]*100.0,2));
     }
     else { // if you are NOT on a district
-        d3.select(".whichState").text("");
-        d3.select(".whichDistrict").text("");
+        d3.select(".whichState").text("State: ");
+        d3.select(".whichDistrict").text("District: ");
         
-        d3.select(".ClintonDelegates").text("");
-        d3.select(".ClintonVote").text("");
-        d3.select(".SandersDelegates").text("");
-        d3.select(".SandersVote").text("");
-        d3.select(".ClintonPreportion").text("");
-        d3.select(".SandersPreportion").text("");
-        d3.select(".DelegatePreportion").text("");
+        d3.select(".ClintonDelegates").text("Clinton Delegates: ");
+        d3.select(".ClintonVote").text("Clinton Vote: ");
+        d3.select(".SandersDelegates").text("Sanders Delegates: ");
+        d3.select(".SandersVote").text("Sanders Vote: ");
+        d3.select(".ClintonPreportion").text("Clinton Pct.: ");
+        d3.select(".SandersPreportion").text("Sanders Pct.: ");
+        d3.select(".DelegatePreportion").text("State Delegates Pct.: ");
     }
 }
 

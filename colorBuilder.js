@@ -212,28 +212,26 @@ function getPrimaryShade(d) {
 }
 
 function getPrimaryShadeVote(d) {
-	shadeRange2 = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
+	shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
 
 	if (d <= -.3)
-		return shadeRange2[0];
+		return shadeRange[0];
+	if (d >= .3)
+		return shadeRange[8];
 	if (d <= -.2)
-		return shadeRange2[1];
+		return shadeRange[1];
+	if (d >= .2)
+		return shadeRange[7];
 	if (d <= -.1)
-		return shadeRange2[2];
-	if (d < -0.05) {
-		return shadeRange2[3];
-	}
-	if (d == 0.0){
-		return shadeRange2[4];
-	}
-	if (d < 0.05)
-		return shadeRange2[5];
-	if (d <= .1)
-		return shadeRange2[6];
-	if (d <= .2)
-		return shadeRange2[7];
-	if (d > .3)
-		return shadeRange2[8];
+		return shadeRange[2];
+	if (d >= .1)
+		return shadeRange[6];
+	if (d <= -.05)
+		return shadeRange[3];
+	if (d >= .05)
+		return shadeRange[5];
+	else
+		return shadeRange[0];
 }
 
 function getDelegateShade(d) {
