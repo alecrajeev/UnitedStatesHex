@@ -35,13 +35,11 @@ var svgBernieLegend = d3.select(".bernieLegend").append("svg")
 queue()
     .defer(d3.tsv, "districtList.tsv")
     .defer(d3.json, "ushex.json")
-    .defer(d3.tsv, "demographics.tsv")
-    .defer(d3.tsv, "presidential_results.tsv")
     .defer(d3.csv, "primary_state_results.csv")
     .defer(d3.csv, "primary_district_results.csv")
     .await(makeMyMap);
 
-function makeMyMap(error, districtListData, ushex, ddata, presidentialData, delegateStateData, primaryData) {
+function makeMyMap(error, districtListData, ushex, delegateStateData, primaryData) {
     if (error) {
         return console.warn(error);
     }
@@ -49,29 +47,6 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, dele
     districtListData.forEach(function(d) { // will use import the nyt member list here
         d.districtID = +d.districtID;
         districtList[d.districtID] = [d.statecd, d.nytID, d.party]; // eventually make this tree or a hashtable, preprocess in node
-    });
-
-    ddata.forEach(function (d) {
-        d.Asian = +d.Asian;
-        d.Black = +d.Black;
-        d.districtID = +d.districtID;
-        d.Latino = +d.Latino;
-        d.Multiracial = +d.Multiracial;
-        d.Party = +d.Party;
-        d.White = +d.White;
-        d.bernieAttendance = +d.bernieAttendance;
-
-        dataByDistrictID[d.districtID] = [d.White, d.Black, d.Latino, d.Asian, d.Multiracial, d.bernieAttendance];
-    });
-
-    demoData = ddata;
-
-    presidentialData.forEach(function (d) {
-        d.Obama2012 = +d.Obama2012;
-        d.Obama2008 = +d.Obama2008;
-        d.districtID = +d.districtID;
-
-        dataByDistrictID[d.districtID].push(d.Obama2012,d.Obama2008);
     });
 
     delegateStateData.forEach(function (d) {
@@ -94,8 +69,6 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, dele
 
         primaryByDistrictID[d.districtID] = [d.ClintonDelegates, d.SandersDelegates, d.DifferenceDelegates, d.ClintonVotes, d.SandersVotes, d.DifferenceVotes, d.DifferencePreportionVotes, d.ClintonPreportion, d.SandersPreportion, early];
     })
-
-    buildExtentData();
     
     var projection = hexProjection(radius);
 
@@ -370,6 +343,7 @@ function changeTooltip(d) {
         d3.select(".ClintonPreportion").text("Clinton Pct.: " + grabDistrictInfo(d.properties.districtID, 7));
         d3.select(".SandersPreportion").text("Sanders Pct.: " + grabDistrictInfo(d.properties.districtID, 8));
         d3.select(".DelegatePreportion").text("State Delegate Pct.: " + formatDelegatePreportion(d.properties.stateID, d.properties.districtID, 0));
+        d3.select(".VotePreportion").text("State Vote Pct.: " + formatDelegatePreportion(d.properties.stateID, d.properties.districtID, 1));
     }
     else { // if you are NOT on a district
         d3.select(".whichState").text("State: ");
@@ -382,6 +356,7 @@ function changeTooltip(d) {
         d3.select(".ClintonPreportion").text("Clinton Pct.: ");
         d3.select(".SandersPreportion").text("Sanders Pct.: ");
         d3.select(".DelegatePreportion").text("State Delegates Pct.: ");
+        d3.select(".VotePreportion").text("State Vote Pct.: ");
     }
 }
 
