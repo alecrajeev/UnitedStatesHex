@@ -188,7 +188,7 @@ function getStateColor(stateID) {
 		return stateColor[stateID];
 }
 
-function getDelegateStateShade(d) {
+function getPrimaryShade(d) {
 	shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
 
 	if (d <= -.25)
@@ -211,12 +211,45 @@ function getDelegateStateShade(d) {
 		return shadeRange[8];
 }
 
+function getDelegateShade(d) {
+	shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
+
+	if (d <= -9)
+		return shadeRange[0];
+	if (d <= -5)
+		return shadeRange[1];
+	if (d <= -3)
+		return shadeRange[2];
+	if (d < 0.0)
+		return shadeRange[3];
+	if (d == 0.0)
+		return shadeRange[4];
+	if (d < 0.0)
+		return shadeRange[5];
+	if (d <= 3)
+		return shadeRange[6];
+	if (d <= 5)
+		return shadeRange[7];
+	if (d >= 9)
+		return shadeRange[8];
+}
+
 function getDelegateStateColor(stateID) {
 	if (stateID != -1) {
 		if (isNaN(delegateByStateID[stateID]))
 			return '#E2E2E2';
 		else
-			return getDelegateStateShade(delegateByStateID[stateID]);
+			return getPrimaryShade(delegateByStateID[stateID]);
+	}
+}
+
+function getPrimaryDelegates(districtID) {
+	if (districtID != -1) {
+		if (isNaN(primaryByDistrictID[districtID][2]))
+			return '#E2E2E2';
+		else {
+			return getDelegateShade(primaryByDistrictID[districtID][2]);
+		}
 	}
 }
 

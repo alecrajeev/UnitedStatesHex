@@ -223,6 +223,14 @@ function showStateDelegates() {
     d3.select(".legend").style("display", "none");
 }
 
+function showCongressionalDelegates() {
+    d3.select(".header").text("Democratic Primary Delegates by Congressional District");
+    hexagons
+        .style({fill: function (d) {return getPrimaryDelegates(d.properties.districtID);    },
+                stroke: function(d) {return getPrimaryDelegates(d.properties.districtID);   }});
+
+}
+
 function showRollCallVote() {
     buildVoteColor();
     updateVoteHexagonColor();
