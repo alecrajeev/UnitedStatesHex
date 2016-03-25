@@ -8,6 +8,7 @@ var districtList = {};
 var voteByDistrictID = {};
 var dataByDistrictID = {};
 var delegateByStateID = {};
+var primaryByDistrictID = {};
 var extentData = {};
 var specificDistrictID = -2;
 
@@ -37,9 +38,10 @@ queue()
     .defer(d3.tsv, "demographics.tsv")
     .defer(d3.tsv, "presidential_results.tsv")
     .defer(d3.csv, "delegate_results.csv")
+    .defer(d3.csv, "primary_results_district.csv")
     .await(makeMyMap);
 
-function makeMyMap(error, districtListData, ushex, ddata, presidentialData, delegateStateData) {
+function makeMyMap(error, districtListData, ushex, ddata, presidentialData, delegateStateData, primaryData) {
     if (error) {
         return console.warn(error);
     }
@@ -77,6 +79,19 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, dele
 
         delegateByStateID[d.stateID] = d.DifferencePreportion;
     });
+
+    primaryData.forEach(function (d) {
+        d.districtID = +d.districtID;
+        d.ClintonDelegates = +d.ClintonDelegates;
+        d.SandersDelegates = +d.SandersDelegates;
+        d.DifferenceDelegates = +d.DifferenceDelegates;
+        d.ClintonVotes = +d.ClintonVotes;
+        d.SandersVotes = +d.SandersVotes;
+        d.DifferenceVotes = +d.DifferenceVotes;
+        d.DifferencePreportionVotes = +d.DifferencePreportionVotes;
+
+        primaryByDistrictID[d.districtID] = [d.ClintonDelegates, d.SandersDelegates, d.DifferenceDelegates, d.ClintonVotes, d.SandersVotes, d.DifferenceVotes, d.DifferencePreportionVotes];
+    })
 
     buildExtentData();
     
