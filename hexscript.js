@@ -203,8 +203,6 @@ function showStates() {
 function showStateDelegates() {
     d3.select(".header").text("State Delegates");
     hexagons
-        .transition()
-        .delay(100)
         .style({fill: function(d) {return getDelegateStateColor(d.properties.stateID);  },
                 stroke: function(d) {return getDelegateStateColor(d.properties.stateID);        }});
     d3.select(".legend").style("display", "none");

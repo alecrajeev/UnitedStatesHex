@@ -11,10 +11,6 @@ var bernieColor = d3.scale.ordinal() // color scale for bernie event data
 	.range(['rgb(255,247,243)','rgb(253,224,221)','rgb(252,197,192)','rgb(250,159,181)','rgb(247,104,161)','rgb(221,52,151)','rgb(174,1,126)','rgb(122,1,119)','rgb(73,0,106)'])
 	.domain([0,1,2,3,4,5,6,7,8]);
 
-var stateDelegateColor = d3.scale.ordinal()
-	.range(['rgb(123,50,148)','rgb(194,165,207)','rgb(166,219,160)','rgb(0,136,55)'])
-	.domain([-1.0,-.5,0.0,.5])
-
 var stateColor = ["#A94588","#D76940","#D13F46","#23A5C5", "#F0A851", "#F0A851", "#A94588", "#23A5C5", "#228947", "#2B6AA1", "#D13F46", "#A94588", "#A94588",
  "#2B6AA1", "#F0A851", "#D76940", "#D13F46", "#D13F46", "#6EAE51", "#A94588", "#A94588", "#D76940", "#D13F46", "#F0A851", "#228947", "#D76940", "#23A5C5",
   "#23A5C5", "#D13F46", "#6EAE51", "#A94588", "#2B6AA1", "#23A5C5", "#2B6AA1", "#6EAE51", "#2B6AA1", "#2B6AA1", "#D13F46", "#23A5C5", "#6EAE51", "#6EAE51",
@@ -192,12 +188,35 @@ function getStateColor(stateID) {
 		return stateColor[stateID];
 }
 
+function getDelegateStateShade(d) {
+	shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
+
+	if (d <= -.3)
+		return shadeRange[0];
+	if (d <= -.2)
+		return shadeRange[1];
+	if (d <= -.1)
+		return shadeRange[2];
+	if (d < 0.0)
+		return shadeRange[3];
+	if (d == 0.0)
+		return shadeRange[4];
+	if (d < 0.0)
+		return shadeRange[5];
+	if (d <= .2)
+		return shadeRange[6];
+	if (d <= .3)
+		return shadeRange[7];
+	if (d > .3)
+		return shadeRange[8];
+}
+
 function getDelegateStateColor(stateID) {
 	if (stateID != -1) {
 		if (isNaN(delegateByStateID[stateID]))
-			return 'rgb(200,200,200)';
+			return '#E2E2E2';
 		else
-			return stateDelegateColor(delegateByStateID[stateID]);
+			return getDelegateStateShade(delegateByStateID[stateID]);
 	}
 }
 
