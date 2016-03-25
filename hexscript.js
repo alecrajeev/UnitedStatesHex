@@ -37,8 +37,8 @@ queue()
     .defer(d3.json, "ushex.json")
     .defer(d3.tsv, "demographics.tsv")
     .defer(d3.tsv, "presidential_results.tsv")
-    .defer(d3.csv, "delegate_results.csv")
-    .defer(d3.csv, "primary_results_district.csv")
+    .defer(d3.csv, "primary_state_results.csv")
+    .defer(d3.csv, "primary_district_results.csv")
     .await(makeMyMap);
 
 function makeMyMap(error, districtListData, ushex, ddata, presidentialData, delegateStateData, primaryData) {
@@ -75,9 +75,10 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, dele
     });
 
     delegateStateData.forEach(function (d) {
+        d.stateID = +d.stateID;
         d.DifferencePreportion = +d.DifferencePreportion;
-
-        delegateByStateID[d.stateID] = d.DifferencePreportion;
+        d.DifferenceVotePreportion = +d.DifferenceVotePreportion;
+        delegateByStateID[d.stateID] = [d.DifferencePreportion, d.DifferenceVotePreportion];
     });
 
     primaryData.forEach(function (d) {
@@ -228,6 +229,13 @@ function showCongressionalDelegates() {
 
 }
 
+function showStateVotes() {
+    d3.select(".header").text("Democratic Primary Vote by State");
+    hexagons
+        .style({fill: function(d) {return getVoteStateColor(d.properties.stateID);  },
+                stroke: function(d) {return getVoteStateColor(d.properties.stateID);    }});
+}
+
 function showPrimaryVote() {
     d3.select(".header").text("Primary Vote by Congressional District");
     hexagons
@@ -359,7 +367,7 @@ function changeTooltip(d) {
         d3.select(".SandersVote").text("Sanders Vote: " + primaryByDistrictID[d.properties.districtID][4])
         d3.select(".ClintonPreportion").text("Clinton Pct.: " + primaryByDistrictID[d.properties.districtID][7])
         d3.select(".SandersPreportion").text("Sanders Pct.: " + primaryByDistrictID[d.properties.districtID][8])
-        d3.select(".DelegatePreportion").text("State Delegate Pct.: " + formatDelegatePreportion(delegateByStateID[d.properties.stateID]));
+        d3.select(".DelegatePreportion").text("State Delegate Pct.: " + formatDelegatePreportion(delegateByStateID[d.properties.stateID][0]));
     }
     else { // if you are NOT on a district
         d3.select(".whichState").text("State: ");

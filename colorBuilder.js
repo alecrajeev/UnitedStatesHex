@@ -203,9 +203,9 @@ function getPrimaryShade(d) {
 		return shadeRange[2];
 	if (d >= .1)
 		return shadeRange[6];
-	if (d <= -.03)
+	if (d <= -.0002)
 		return shadeRange[3];
-	if (d >= .03)
+	if (d >= .0002)
 		return shadeRange[5];
 	else
 		return shadeRange[4];
@@ -236,10 +236,10 @@ function getDelegateShade(d) {
 
 function getDelegateStateColor(stateID) {
 	if (stateID != -1) {
-		if (isNaN(delegateByStateID[stateID]))
+		if (isNaN(delegateByStateID[stateID][0]))
 			return '#E2E2E2';
 		else
-			return getPrimaryShade(delegateByStateID[stateID]);
+			return getPrimaryShade(delegateByStateID[stateID][0]);
 	}
 }
 
@@ -259,6 +259,15 @@ function getPrimaryVote(districtID) {
 			return '#E2E2E2';
 		else
 			return getPrimaryShade(primaryByDistrictID[districtID][6]);
+	}
+}
+
+function getVoteStateColor(stateID) {
+	if (stateID != -1) {
+		if (isNaN(delegateByStateID[stateID][1]))
+			return '#E2E2E2';
+		else
+			return getPrimaryShade(delegateByStateID[stateID][1]);
 	}
 }
 
