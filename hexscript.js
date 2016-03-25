@@ -7,12 +7,11 @@ var demoData;
 var districtList = {};
 var voteByDistrictID = {};
 var dataByDistrictID = {};
-var delegateByStateID = {};
+var primaryByStateID = {};
 var primaryByDistrictID = {};
-var extentData = {};
 var specificDistrictID = -2;
 
-var dataSets = ["White", "Black", "Latino", "Asian", "Multiracial", "Bernie Event", "Obama 2012", "Obama 2008"];
+var toolTipSelector = 0;
 
 var legendRectSize = 15;
 var legendSpacing = 7;
@@ -53,7 +52,11 @@ function makeMyMap(error, districtListData, ushex, delegateStateData, primaryDat
         d.stateID = +d.stateID;
         d.DifferencePreportion = +d.DifferencePreportion;
         d.DifferenceVotePreportion = +d.DifferenceVotePreportion;
-        delegateByStateID[d.stateID] = [d.DifferencePreportion, d.DifferenceVotePreportion];
+        d.ClintonDelegates = +d.ClintonDelegates;
+        d.SandersDelegates = +d.SandersDelegates;
+        d.ClintonPreportion = +d.ClintonPreportion;
+        d.SandersPreportion = +d.SandersPreportion;
+        primaryByStateID[d.stateID] = [d.DifferencePreportion, d.DifferenceVotePreportion, d.ClintonDelegates, d.SandersDelegates, d.ClintonPreportion, d.SandersPreportion];
     });
 
     primaryData.forEach(function (d) {
@@ -184,8 +187,7 @@ function showStates() {
                 stroke: function(d) {return getStateColor(d.properties.stateID);    }});
     d3.select(".legend").style("display", "none");
     d3.select(".voteLegend").style("display", "none");
-
-    // d3.select(".districtBorder").style("stroke-opacity", ".2");
+    toolTipSelector = 1;
 }
 
 function showStateDelegates() {
@@ -194,6 +196,7 @@ function showStateDelegates() {
         .style({fill: function(d) {return getDelegateStateColor(d.properties.stateID);  },
                 stroke: function(d) {return getDelegateStateColor(d.properties.stateID);        }});
     d3.select(".legend").style("display", "none");
+    toolTipSelector = 0;
 }
 
 function showCongressionalDelegates() {
@@ -201,6 +204,7 @@ function showCongressionalDelegates() {
     hexagons    
         .style({fill: function (d) {return getPrimaryDelegates(d.properties.districtID);    },
                 stroke: function(d) {return getPrimaryDelegates(d.properties.districtID);   }});
+    toolTipSelector = 1;
 
 }
 
@@ -209,14 +213,16 @@ function showStateVotes() {
     hexagons  
         .style({fill: function(d) {return getVoteStateColor(d.properties.stateID);  },
                 stroke: function(d) {return getVoteStateColor(d.properties.stateID);    }});
+    toolTipSelector = 2;
 }
 
-function showPrimaryVote() {
-    d3.select(".header").text("Primary Vote by Congressional District");
+function showPrimaryDistrictVote() {
+    d3.select(".header").text("Democratic Primary Vote by Congressional District");
     hexagons   
         .style({fill: function(d) {return getPrimaryVote(d.properties.districtID);  },
                 stroke: function(d) {return getPrimaryVote(d.properties.districtID);        }});
     d3.select(".legend").style("display", "none");
+    toolTipSelector = 4;
 }
 
 function showRollCallVote() {
@@ -335,28 +341,51 @@ function changeTooltip(d) {
         d3.select(".whichState").text(d.properties.state);
         d3.select(".whichDistrict").text(getRealDistrict(d.properties.district, d.properties.state));
 
-
-        d3.select(".ClintonDelegates").text("Clinton Delegates: " + grabDistrictInfo(d.properties.districtID, 0));
-        d3.select(".ClintonVote").text("Clinton Vote: " + grabDistrictInfo(d.properties.districtID, 3));
-        d3.select(".SandersDelegates").text("Sanders Delegates: " + grabDistrictInfo(d.properties.districtID, 1));
-        d3.select(".SandersVote").text("Sanders Vote: " + grabDistrictInfo(d.properties.districtID, 4));
-        d3.select(".ClintonPreportion").text("Clinton Pct.: " + grabDistrictInfo(d.properties.districtID, 7));
-        d3.select(".SandersPreportion").text("Sanders Pct.: " + grabDistrictInfo(d.properties.districtID, 8));
-        d3.select(".DelegatePreportion").text("State Delegate Pct.: " + formatDelegatePreportion(d.properties.stateID, d.properties.districtID, 0));
-        d3.select(".VotePreportion").text("State Vote Pct.: " + formatDelegatePreportion(d.properties.stateID, d.properties.districtID, 1));
+        if (toolTipSelector == 0) {
+            d3.select(".toolTipA").text("Clinton Delegates: " + grabStateInfo(d.properties.stateID, d.properties.districtID,  2));
+            d3.select(".toolTipB").text("Sanders Delegates: " + grabStateInfo(d.properties.stateID, d.properties.districtID, 3));
+        }
+        if (toolTipSelector == 1) {
+            d3.select(".toolTipA").text("Clinton Delegates: " + grabDistrictInfo(d.properties.districtID, 0));
+            d3.select(".toolTipB").text("Sanders Delegates: " + grabDistrictInfo(d.properties.districtID, 1));
+        }
+        if (toolTipSelector == 2) {
+            d3.select(".toolTipA").text("Clinton Pct.: " + grabStateInfo(d.properties.stateID, d.properties.districtID, 4));
+            d3.select(".toolTipB").text("Sanders Pct.: " + grabStateInfo(d.properties.stateID, d.properties.districtID, 5));
+        }
+        if (toolTipSelector == 3) {
+            d3.select(".toolTipA").text("Clinton Pct.: " + grabDistrictInfo(d.properties.districtID, 7));
+            d3.select(".toolTipB").text("Sanders Pct.: " + grabDistrictInfo(d.properties.districtID, 8));
+        }
+        if (toolTipSelector == 4) {
+            d3.select(".toolTipA").text("Clinton Pct.: " + grabDistrictInfo(d.properties.districtID, 7));
+            d3.select(".toolTipB").text("Sanders Pct.: " + grabDistrictInfo(d.properties.districtID, 8));
+        }
     }
     else { // if you are NOT on a district
         d3.select(".whichState").text("State: ");
         d3.select(".whichDistrict").text("District: ");
+        if (toolTipSelector == 0) {
+            d3.select(".toolTipA").text("Clinton Delegates: ");
+            d3.select(".toolTipB").text("Sanders Delegates: ");
+        }
+        if (toolTipSelector == 1) {
+            d3.select(".toolTipA").text("Clinton Delegates: ");
+            d3.select(".toolTipB").text("Sanders Delegates: ");
+        }
+        if (toolTipSelector == 2) {
+            d3.select(".toolTipA").text("Clinton Pct.: ");
+            d3.select(".toolTipB").text("Sanders Pct.: ");
+        }
+        if (toolTipSelector == 3) {
+            d3.select(".toolTipA").text("Clinton Pct.: ");
+            d3.select(".toolTipB").text("Sanders Pct.: ");
+        }
+        if (toolTipSelector == 4) {
+            d3.select(".toolTipA").text("Clinton Pct.: ");
+            d3.select(".toolTipB").text("Sanders Pct.: ");
+        }
         
-        d3.select(".ClintonDelegates").text("Clinton Delegates: ");
-        d3.select(".ClintonVote").text("Clinton Vote: ");
-        d3.select(".SandersDelegates").text("Sanders Delegates: ");
-        d3.select(".SandersVote").text("Sanders Vote: ");
-        d3.select(".ClintonPreportion").text("Clinton Pct.: ");
-        d3.select(".SandersPreportion").text("Sanders Pct.: ");
-        d3.select(".DelegatePreportion").text("State Delegates Pct.: ");
-        d3.select(".VotePreportion").text("State Vote Pct.: ");
     }
 }
 
@@ -366,17 +395,28 @@ function grabDistrictInfo(districtID, i) {
     return primaryByDistrictID[districtID][i];
 }
 
+function grabStateInfo(stateID, districtID, i) {
+    if (primaryByDistrictID[districtID][9])
+        return "";
+
+    if (i >= 4)
+        return d3.round(primaryByStateID[stateID][i]*100.0, 2) + "%";
+    if (i < 4)
+        return primaryByStateID[stateID][i];
+}
+
 function formatDelegatePreportion(stateID, districtID, i) {
     if (primaryByDistrictID[districtID][9])
         return "";
 
-    d = delegateByStateID[stateID][i];
+    d = primaryByStateID[stateID][i];
 
     if (d <= 0.0) {
-        return "B " + d3.round(d*100, 2) + "%";
+        d *= -1.0;
+        return "B " + d3.round(d*100,1) + "%";
     }
     else
-        return "H " + d3.round(d*100, 2) + "%";
+        return "H " + d3.round(d*100,1) + "%";
 
 }
 
