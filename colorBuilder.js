@@ -12,8 +12,8 @@ var bernieColor = d3.scale.ordinal() // color scale for bernie event data
 	.domain([0,1,2,3,4,5,6,7,8]);
 
 var stateDelegateColor = d3.scale.ordinal()
-	.range(['rgb(64,0,75)','rgb(118,42,131)','rgb(153,112,171)','rgb(194,165,207)','rgb(231,212,232)','rgb(247,247,247)','rgb(217,240,211)','rgb(166,219,160)','rgb(90,174,97)','rgb(27,120,55)','rgb(0,68,27)'])
-	.domain([-1.0,-.8,-.6,-.4,-.2,0.0,.2,.4,.6,.8,1.0])
+	.range(['rgb(123,50,148)','rgb(194,165,207)','rgb(166,219,160)','rgb(0,136,55)'])
+	.domain([-1.0,-.5,0.0,.5])
 
 var stateColor = ["#A94588","#D76940","#D13F46","#23A5C5", "#F0A851", "#F0A851", "#A94588", "#23A5C5", "#228947", "#2B6AA1", "#D13F46", "#A94588", "#A94588",
  "#2B6AA1", "#F0A851", "#D76940", "#D13F46", "#D13F46", "#6EAE51", "#A94588", "#A94588", "#D76940", "#D13F46", "#F0A851", "#228947", "#D76940", "#23A5C5",
@@ -193,8 +193,12 @@ function getStateColor(stateID) {
 }
 
 function getDelegateStateColor(stateID) {
-	if (stateID != -1)
-		return stateDelegateColor(delegateByStateID[stateID]);
+	if (stateID != -1) {
+		if (isNaN(delegateByStateID[stateID]))
+			return 'rgb(200,200,200)';
+		else
+			return stateDelegateColor(delegateByStateID[stateID]);
+	}
 }
 
 function getVoteDistrictColor(districtID) {

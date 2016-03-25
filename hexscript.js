@@ -325,6 +325,7 @@ function changeTooltip(d) {
     if (d.properties.state != "Ocean") { // if you ARE on a district
         d3.select(".whichState").text(d.properties.state);
         d3.select(".whichDistrict").text(getRealDistrict(d.properties.district, d.properties.state));
+        d3.select(".DelegatePrep").text("Delegate Prep: " + d3.round(delegateByStateID[d.properties.stateID]*100.0,2) + "%");
         for (i = 0; i < 8; i++) {
             var classNameSplit = dataSets[i].split(" ");
             if (i == 8) {
@@ -344,7 +345,8 @@ function changeTooltip(d) {
     }
     else { // if you are NOT on a district
         d3.select(".whichState").text("");
-        d3.select(".whichDistrict").text("");       
+        d3.select(".whichDistrict").text("");
+        d3.select(".DelegatePrep").text("Delegate Prep: ");
         for (i = 0; i < 8; i++) {
             var classNameSplit = dataSets[i].split(" ");
             if (classNameSplit.length < 2)
