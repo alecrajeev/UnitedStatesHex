@@ -359,7 +359,7 @@ function changeTooltip(d) {
         d3.select(".SandersVote").text("Sanders Vote: " + primaryByDistrictID[d.properties.districtID][4])
         d3.select(".ClintonPreportion").text("Clinton Pct.: " + primaryByDistrictID[d.properties.districtID][7])
         d3.select(".SandersPreportion").text("Sanders Pct.: " + primaryByDistrictID[d.properties.districtID][8])
-        d3.select(".DelegatePreportion").text("State Delegate Pct.: " + d3.round(delegateByStateID[d.properties.stateID]*100.0,2));
+        d3.select(".DelegatePreportion").text("State Delegate Pct.: " + formatDelegatePreportion(delegateByStateID[d.properties.stateID]));
     }
     else { // if you are NOT on a district
         d3.select(".whichState").text("State: ");
@@ -373,6 +373,15 @@ function changeTooltip(d) {
         d3.select(".SandersPreportion").text("Sanders Pct.: ");
         d3.select(".DelegatePreportion").text("State Delegates Pct.: ");
     }
+}
+
+function formatDelegatePreportion(d) {
+    if (d <= 0.0) {
+        return "B " + d3.round(d*100, 2) + "%";
+    }
+    else
+        return "H " + d3.round(d*100, 2) + "%";
+
 }
 
 function getdistrictID(statecd) { // give the id for the specific congressional district
