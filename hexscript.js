@@ -85,12 +85,9 @@ function makeMyMap(error, districtListData, ushex, ddata, presidentialData, dele
         d.ClintonDelegates = +d.ClintonDelegates;
         d.SandersDelegates = +d.SandersDelegates;
         d.DifferenceDelegates = +d.DifferenceDelegates;
-        d.ClintonVotes = +d.ClintonVotes;
-        d.SandersVotes = +d.SandersVotes;
-        d.DifferenceVotes = +d.DifferenceVotes;
         d.DifferencePreportionVotes = +d.DifferencePreportionVotes;
 
-        primaryByDistrictID[d.districtID] = [d.ClintonDelegates, d.SandersDelegates, d.DifferenceDelegates, d.ClintonVotes, d.SandersVotes, d.DifferenceVotes, d.DifferencePreportionVotes];
+        primaryByDistrictID[d.districtID] = [d.ClintonDelegates, d.SandersDelegates, d.DifferenceDelegates, d.ClintonVotes, d.SandersVotes, d.DifferenceVotes, d.DifferencePreportionVotes, d.ClintonPreportion, d.SandersPreportion];
     })
 
     buildExtentData();
@@ -231,6 +228,14 @@ function showCongressionalDelegates() {
 
 }
 
+function showPrimaryVote() {
+    d3.select(".header").text("Primary Vote by Congressional District");
+    hexagons
+        .style({fill: function(d) {return getPrimaryVote(d.properties.districtID);  },
+                stroke: function(d) {return getPrimaryVote(d.properties.districtID);        }});
+    d3.select(".legend").style("display", "none");
+}
+
 function showRollCallVote() {
     buildVoteColor();
     updateVoteHexagonColor();
@@ -346,35 +351,27 @@ function changeTooltip(d) {
     if (d.properties.state != "Ocean") { // if you ARE on a district
         d3.select(".whichState").text(d.properties.state);
         d3.select(".whichDistrict").text(getRealDistrict(d.properties.district, d.properties.state));
-        d3.select(".DelegatePrep").text("Delegate Prep: " + d3.round(delegateByStateID[d.properties.stateID]*100.0,2) + "%");
-        for (i = 0; i < 8; i++) {
-            var classNameSplit = dataSets[i].split(" ");
-            if (i == 8) {
-                d3.select("." + dataSets[i] + ".Tooltip").text(dataSets[i] + ": " + dataByDistrictID[d.properties.districtID][i] + " votes");
-            }
-            else {
-                if (classNameSplit.length < 2) // data set names that are one word (Asian)
-                    d3.select("." + dataSets[i] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]*100, 1) + "%");
-                else { // data set names that are two words (Obama 2012)
-                    if (i > 5) // obama 2012
-                        d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]*100, 1) + "%");
-                    else // bernie
-                        d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": " + d3.round(dataByDistrictID[d.properties.districtID][i]));
-                }
-            }
-        }
+
+
+        d3.select(".ClintonDelegates").text("Clinton Delegates: " + primaryByDistrictID[d.properties.districtID][0])
+        d3.select(".ClintonVote").text("Clinton Votes: " + primaryByDistrictID[d.properties.districtID][3])
+        d3.select(".SandersDelegates").text("Sanders Delegates: " + primaryByDistrictID[d.properties.districtID][1])
+        d3.select(".SandersVote").text("Sanders Votes: " + primaryByDistrictID[d.properties.districtID][4])
+        d3.select(".ClintonPreportion").text("Clinton Preportion: " + primaryByDistrictID[d.properties.districtID][7])
+        d3.select(".SandersPreportion").text("Sanders Preportion: " + primaryByDistrictID[d.properties.districtID][8])
+        d3.select(".DelegatePreportion").text("State Delegate Prep: " + d3.round(delegateByStateID[d.properties.stateID]*100.0,2));
     }
     else { // if you are NOT on a district
         d3.select(".whichState").text("");
         d3.select(".whichDistrict").text("");
-        d3.select(".DelegatePrep").text("Delegate Prep: ");
-        for (i = 0; i < 8; i++) {
-            var classNameSplit = dataSets[i].split(" ");
-            if (classNameSplit.length < 2)
-                d3.select("." + dataSets[i] + ".Tooltip").text(dataSets[i] + ": ");
-            else
-                d3.select("." + classNameSplit[0] + classNameSplit[1] + ".Tooltip").text(dataSets[i] + ": ");
-        }
+        
+        d3.select(".ClintonDelegates").text("");
+        d3.select(".ClintonVote").text("");
+        d3.select(".SandersDelegates").text("");
+        d3.select(".SandersVote").text("");
+        d3.select(".ClintonPreportion").text("");
+        d3.select(".SandersPreportion").text("");
+        d3.select(".DelegatePreportion").text("");
     }
 }
 

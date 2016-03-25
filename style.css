@@ -153,6 +153,15 @@
 	display: block;
 }
 
+.info {
+	position: relative;
+	top: -3px;
+	border: solid black;
+	padding: 5px;
+	font-family: 'Helvetica Neue';
+	display: block;
+}
+
 .toggleSideBar {
 	position: relative;
 	top: -3px;

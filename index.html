@@ -31,43 +31,24 @@
                     <input type="radio" name="data-selector" onclick="showStateDelegates()">State Delegate Count</input>
                 </div>
                 <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showCongressionalDelegates()">Delegates by Congressional District</input>
+                    <input type="radio" name="data-selector" onclick="showCongressionalDelegates()">Delegates by CD</input>
                 </div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(6)">Presidential Results 2012
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(7)">Presidential Results 2008
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(0)">White Demographics
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(1)">Black Demographics
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(2)">Latino Demographics
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(3)">Asian Demographics
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(4)">MultiRacial Demographics
-        		</div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showPrimaryVote()">Primary Vote by CD</input>
+                </div>
     		</div>
-      		
-    		<div class="information">
-    			<div>State: <span class="whichState"></span></div>
-    			<div>District: <span class="whichDistrict"></span></div>
-    			<div class="Obama2012 Tooltip"> Obama 2012: </div>
-    			<div class="Obama2008 Tooltip"> Obama 2008: </div>
-    			<div class="White Tooltip">White: </div>
-    			<div class="Black Tooltip">Black: </div>
-    			<div class="Latino Tooltip">Latino: </div>
-    			<div class="Asian Tooltip">Asian: </div>
-    			<div class="Multiracial Tooltip">Multiracial: </div>
-                <div class="DelegatePrep">Preportion: </div>
-    		</div>
+
+            <div class="info">
+                <div>State: <span class="whichState"></span></div>
+                <div>District: <span class="whichDistrict"></span></div>
+                <div class="ClintonDelegates"> Clinton Delegates: </div>
+                <div class="SandersDelegates"> Sanders Delegates: </div>
+                <div class="ClintonVote"> Clinton Votes: </div>
+                <div class="SandersVote"> Sanders Votes: </div>
+                <div class="ClintonPreportion"> Clinton Preportion: </div>
+                <div class="SandersPreportion"> Sanders Preportion: </div>
+                <div class="DelegatePreportion">State Delegate Preportion: </div>
+            </div>
 
             <div class="legend"></div>
             <!-- <div class="bernieLegend"></div> -->
@@ -76,16 +57,6 @@
         <div class="main">
             <div class="map"></div>
         </div>
-
-<!--         <div class="right">
-            <div class="voteSelector">
-            <text>Congressional Votes</text>
-            </div>
-            <div class="voteLegend"></div>
-            <div class="nytimesLogo">
-                <a href="http://developer.nytimes.com"><img src="poweredby_nytimes_178c.png"></a>
-            </div>
-    	</div> -->
 
   </body>
   <script type="text/javascript" src="hexscript.js"></script>
