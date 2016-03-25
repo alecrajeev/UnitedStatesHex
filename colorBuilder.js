@@ -191,29 +191,6 @@ function getStateColor(stateID) {
 function getPrimaryShade(d) {
 	shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
 
-	if (d <= -.25)
-		return shadeRange[0];
-	if (d <= -.15)
-		return shadeRange[1];
-	if (d <= -.05)
-		return shadeRange[2];
-	if (d < 0.0)
-		return shadeRange[3];
-	if (d == 0.0)
-		return shadeRange[4];
-	if (d < 0.0)
-		return shadeRange[5];
-	if (d <= .05)
-		return shadeRange[6];
-	if (d <= .15)
-		return shadeRange[7];
-	if (d > .25)
-		return shadeRange[8];
-}
-
-function getPrimaryShadeVote(d) {
-	shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
-
 	if (d <= -.3)
 		return shadeRange[0];
 	if (d >= .3)
@@ -226,12 +203,12 @@ function getPrimaryShadeVote(d) {
 		return shadeRange[2];
 	if (d >= .1)
 		return shadeRange[6];
-	if (d <= -.05)
+	if (d <= -.03)
 		return shadeRange[3];
-	if (d >= .05)
+	if (d >= .03)
 		return shadeRange[5];
 	else
-		return shadeRange[0];
+		return shadeRange[4];
 }
 
 function getDelegateShade(d) {
@@ -281,7 +258,7 @@ function getPrimaryVote(districtID) {
 		if (isNaN(primaryByDistrictID[districtID][6]))
 			return '#E2E2E2';
 		else
-			return getPrimaryShadeVote(primaryByDistrictID[districtID][6]);
+			return getPrimaryShade(primaryByDistrictID[districtID][6]);
 	}
 }
 
