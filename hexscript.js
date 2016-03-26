@@ -23,11 +23,7 @@ var svg = d3.select(".map").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-var svgLegend = d3.select(".legend").append("svg")
-    .attr("height", "220px")
-    .attr("width", "162px");
-
-var svgBernieLegend = d3.select(".bernieLegend").append("svg")
+var svgLegend = d3.select(".legendChart").append("svg")
     .attr("height", "220px")
     .attr("width", "162px");
 
@@ -228,39 +224,8 @@ function showPrimaryDistrictVote() {
     showLeg(0)
 }
 
-function showRollCallVote() {
-    buildVoteColor();
-    updateVoteHexagonColor();
-    showVoteLegend();
-    d3.select(".voteLegend").style("display", "block");
-    d3.select(".legend").style("display", "none");
-
-    // d3.select(".districtBorder").style("stroke-opacity", ".5");
-}
-
-function showDataSet(i) {
-    d3.select(".header").text(dataSets[i] + " Demographics by Congressional District");
-    if (i != 5) {
-        buildColorRange(i);
-        color.domain(buildColorDomain(i,extentData[i]));
-        updateHexagonColor(i);
-        showLegend(i);
-        d3.select(".bernieLegend").style("display", "none");
-        d3.select(".legend").style("display", "block");
-    }
-    else { // bernie event
-        buildBernieColor();
-        updateBernieHexagonColor();
-        showBernieLegend();
-        d3.select(".legend").style("display", "none");
-        d3.select(".bernieLegend").style("display", "block");
-    }
-    d3.select(".voteLegend").style("display", "none");
-    // d3.select(".districtBorder").style("stroke-opacity", ".5");      
-}
-
 function showLeg(j) {
-    shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
+    shadeRange = ['6BA347','95C077','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
     var LegendContent = svgLegend.selectAll(".LegendContent")
         .data(shadeRange)
 
@@ -358,72 +323,6 @@ function showLeg(j) {
     }     
 }
 
-function showLegend(i) {
-
-    var LegendContent = svgLegend.selectAll(".LegendContent")
-        .data(color.domain())
-    
-    var LegendEnter = LegendContent.enter()
-        .append("g")
-        .attr("class", "LegendContent")
-        .attr("transform", function(d,i) {
-            var rectHeight = i*(legendRectSize + legendSpacing);
-            var rectWidth = legendRectSize;
-            return "translate(" + rectWidth + ", " + rectHeight + ")";
-        })
-    
-    LegendEnter.append("rect")
-        .attr("width", legendRectSize-2)
-        .attr("height", legendRectSize)
-        .style("fill", function(d) {return color(d)})
-        .style("stroke", "black")
-    
-    LegendEnter.append("text")
-        .attr("x", legendRectSize + legendSpacing*1.3)
-        .attr("y", legendRectSize-1)
-        .text(function(d) {
-            if (i == 5)
-                return d3.round(d).toString() + " attendees";
-            if (i == 8)
-                return d3.round(d).toString() + " votes";
-            return d3.round(d*100,1).toString() + "%";
-        });
-    
-    var updateSelection = svgLegend.selectAll(".LegendContent")
-        .transition()
-        .duration(1000)
-        .style("opacity", "1")
-        .attr("transform", function(d,i) {
-            var rectHeight = i*(legendRectSize + legendSpacing);
-            var rectWidth = legendRectSize;
-            return "translate(" + rectWidth + ", " + rectHeight + ")";
-        })
-    
-    updateSelection.select("rect")
-        .style("fill", function(d) {return color(d);    });
-    
-    updateSelection.select("text")
-        .text(function(d) {
-            if (i == 5)
-                return d3.round(d).toString() + " attendees";
-            if (i == 8)
-                return d3.round(d).toString() + " votes";
-            return d3.round(d*100,1).toString() + "%";
-        });
-    
-    LegendContent.exit()
-        .transition()
-        .duration(1000)
-        .style("opacity", "0")
-        .remove();
-}
-
-function getRealDistrict(i, state) { // returns "at large" if the district number is 0, like Montana
-    if (i > 0)
-        return i;
-    return "At-Large";
-}
-
 function changeTooltip(d) {
     if (d.properties.state != "Ocean") { // if you ARE on a district
         d3.select(".whichState").text(d.properties.state);
@@ -451,8 +350,8 @@ function changeTooltip(d) {
         }
     }
     else { // if you are NOT on a district
-        d3.select(".whichState").text("State: ");
-        d3.select(".whichDistrict").text("District: ");
+        d3.select(".whichState").text("");
+        d3.select(".whichDistrict").text("");
         if (toolTipSelector == 0) {
             d3.select(".toolTipA").text("Clinton Delegates: ");
             d3.select(".toolTipB").text("Sanders Delegates: ");
@@ -491,4 +390,10 @@ function grabStateInfo(stateID, districtID, i) {
         return d3.round(primaryByStateID[stateID][i]*100.0, 2) + "%";
     if (i < 4)
         return primaryByStateID[stateID][i];
+}
+
+function getRealDistrict(i, state) { // returns "at large" if the district number is 0, like Montana
+    if (i > 0)
+        return i;
+    return "At-Large";
 }
