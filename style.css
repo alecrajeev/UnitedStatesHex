@@ -42,7 +42,7 @@
 	display: block;
 	font-family: "Helvetica Neue";
 	stroke-width: 2px;
-	display: none;
+	/*display: none;*/
 }
 
 .bernieLegend {

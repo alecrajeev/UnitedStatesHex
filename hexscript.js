@@ -32,21 +32,15 @@ var svgBernieLegend = d3.select(".bernieLegend").append("svg")
     .attr("width", "162px");
 
 queue()
-    .defer(d3.tsv, "districtList.tsv")
     .defer(d3.json, "ushex.json")
     .defer(d3.csv, "primary_state_results.csv")
     .defer(d3.csv, "primary_district_results.csv")
     .await(makeMyMap);
 
-function makeMyMap(error, districtListData, ushex, delegateStateData, primaryData) {
+function makeMyMap(error, ushex, delegateStateData, primaryData) {
     if (error) {
         return console.warn(error);
     }
-
-    districtListData.forEach(function(d) { // will use import the nyt member list here
-        d.districtID = +d.districtID;
-        districtList[d.districtID] = [d.statecd, d.nytID, d.party]; // eventually make this tree or a hashtable, preprocess in node
-    });
 
     delegateStateData.forEach(function (d) {
         d.stateID = +d.stateID;
@@ -84,8 +78,8 @@ function makeMyMap(error, districtListData, ushex, delegateStateData, primaryDat
         .enter()
         .append("path")
         .attr("d", path)
-        .style({fill:   function(d) {return getStateColor(d.properties.stateID);    },
-                stroke: function(d) {return getStateColor(d.properties.stateID);    }})
+        .style({fill:   function(d) {return getDelegateStateColor(d.properties.stateID);    },
+                stroke: function(d) {return getDelegateStateColor(d.properties.stateID);    }})
         .on("mouseover", hoverOnDistrict)
 
     var stateBorder = svg.append("path")
@@ -99,6 +93,8 @@ function makeMyMap(error, districtListData, ushex, delegateStateData, primaryDat
     var specificDistrict = svg.append("path")
         .attr("class", "specificBorder")
         .call(drawSpecificDistrict);
+
+    showLeg(0);
 
     drawBernieBorder = function (border) {
         border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie)));
@@ -187,7 +183,7 @@ function showStates() {
                 stroke: function(d) {return getStateColor(d.properties.stateID);    }});
     d3.select(".legend").style("display", "none");
     d3.select(".voteLegend").style("display", "none");
-    toolTipSelector = 1;
+    toolTipSelector = 0;
 }
 
 function showStateDelegates() {
@@ -195,8 +191,9 @@ function showStateDelegates() {
     hexagons
         .style({fill: function(d) {return getDelegateStateColor(d.properties.stateID);  },
                 stroke: function(d) {return getDelegateStateColor(d.properties.stateID);        }});
-    d3.select(".legend").style("display", "none");
+    d3.select(".legend").style("display", "");
     toolTipSelector = 0;
+    showLeg(0);
 }
 
 function showCongressionalDelegates() {
@@ -205,6 +202,8 @@ function showCongressionalDelegates() {
         .style({fill: function (d) {return getPrimaryDelegates(d.properties.districtID);    },
                 stroke: function(d) {return getPrimaryDelegates(d.properties.districtID);   }});
     toolTipSelector = 1;
+    d3.select(".legend").style("display", "");
+    showLeg(1)
 
 }
 
@@ -214,6 +213,8 @@ function showStateVotes() {
         .style({fill: function(d) {return getVoteStateColor(d.properties.stateID);  },
                 stroke: function(d) {return getVoteStateColor(d.properties.stateID);    }});
     toolTipSelector = 2;
+    d3.select(".legend").style("display", "");
+    showLeg(0);
 }
 
 function showPrimaryDistrictVote() {
@@ -223,6 +224,8 @@ function showPrimaryDistrictVote() {
                 stroke: function(d) {return getPrimaryVote(d.properties.districtID);        }});
     d3.select(".legend").style("display", "none");
     toolTipSelector = 4;
+    d3.select(".legend").style("display", "");
+    showLeg(0)
 }
 
 function showRollCallVote() {
@@ -256,18 +259,103 @@ function showDataSet(i) {
     // d3.select(".districtBorder").style("stroke-opacity", ".5");      
 }
 
-function showBernieSelection(i) {
+function showLeg(j) {
+    shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
+    var LegendContent = svgLegend.selectAll(".LegendContent")
+        .data(shadeRange)
 
-    binSelector = i;
+    var LegendEnter = LegendContent.enter()
+        .append("g")
+        .attr("class", "LegendContent")
+        .attr("transform", function(d,i) {
+            var rectHeight = i*(legendRectSize + legendSpacing);
+            var rectWidth = legendRectSize;
+            return "translate(" + rectWidth + ", " + rectHeight + ")";
+        })
 
-    bernieBorder.call(drawBernieBorder);
-    d3.select(".bernieBorder").style("stroke-opacity" , "1");
-}
+    LegendEnter.append("rect")
+        .attr("width", legendRectSize-2)
+        .attr("height", legendRectSize)
+        .style("fill", function(d,i) {return shadeRange[i]})
+        .style("stroke", "black");
 
-function hideBernieSelection(d) {
+    LegendEnter.append("text")
+        .attr("x", legendRectSize + legendSpacing*1.3)
+        .attr("y", legendRectSize-1)
+        .text(function(d, i) {
+            if (j == 1) {
+                return getLegendDelText(i) + " delegates";
+            }
+            else {
+                return getLegendPrepText(i) + " Pct."
+            }
+        });
+
+
+    var updateSelection = svgLegend.selectAll(".LegendContent")
+        .attr("transform", function(d,i) {
+            var rectHeight = i*(legendRectSize + legendSpacing);
+            var rectWidth = legendRectSize;
+            return "translate(" + rectWidth + ", " + rectHeight + ")";
+        })
     
-    d3.select(".bernieBorder").style("stroke-opacity" , "0");
+    updateSelection.select("rect")
+        .style("fill", function(d,i) {return shadeRange[i];    });
+    
+    updateSelection.select("text")
+        .text(function(d, i) {
+            if (j == 1) {
+                return getLegendDelText(i) + " delegates";
+            }
+            else {
+                return getLegendPrepText(i) + " Pct."
+            }
+        });
+    
+    LegendContent.exit()
+        .remove();
 
+    function getLegendPrepText(i) {
+        if (i == 0)
+            return "B > 30%"
+        if (i == 8)
+            return "H > 30%";
+        if (i == 1)
+            return "B > 20%";
+        if (i == 7)
+            return "H > 20%";
+        if (i == 2)
+            return "B > 10%";
+        if (i == 6)
+            return "H > 10%";
+        if (i == 3)
+            return "B > 0%";
+        if (i == 5)
+            return "H > 0%";
+        else
+            return "B = 0%";        
+    }
+
+    function getLegendDelText(i) {
+        if (i == 0)
+            return "B > 8"
+        if (i == 8)
+            return "H > 8";
+        if (i == 1)
+            return "B > 3";
+        if (i == 7)
+            return "H > 3";
+        if (i == 2)
+            return "B > 1";
+        if (i == 6)
+            return "H > 2";
+        if (i == 3)
+            return "B > 0";
+        if (i == 5)
+            return "H > 0";
+        else
+            return "0 ";        
+    }     
 }
 
 function showLegend(i) {
@@ -403,31 +491,4 @@ function grabStateInfo(stateID, districtID, i) {
         return d3.round(primaryByStateID[stateID][i]*100.0, 2) + "%";
     if (i < 4)
         return primaryByStateID[stateID][i];
-}
-
-function formatDelegatePreportion(stateID, districtID, i) {
-    if (primaryByDistrictID[districtID][9])
-        return "";
-
-    d = primaryByStateID[stateID][i];
-
-    if (d <= 0.0) {
-        d *= -1.0;
-        return "B " + d3.round(d*100,1) + "%";
-    }
-    else
-        return "H " + d3.round(d*100,1) + "%";
-
-}
-
-function getdistrictID(statecd) { // give the id for the specific congressional district
-    // determined by the name of the state and district number
-    // will eventually preprocess a hashtable in node
-
-    for (i = 0; i < 435; i++) {
-        if (districtList[i][0] === statecd) {
-            return i;
-        }
-    }
-    return -1;
 }

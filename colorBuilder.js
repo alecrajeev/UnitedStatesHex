@@ -155,48 +155,6 @@ function getPrimaryShade(d) {
         return shadeRange[4];
 }
 
-function getPrimaryShade2(d) {
-    shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
-
-    if (d <= -.3) {
-        console.log(0);
-        return shadeRange[0];
-    }
-    if (d >= .3) {
-        console.log(8);
-        return shadeRange[8];
-    }
-    if (d <= -.2) {
-        console.log(1);
-        return shadeRange[1];
-    }
-    if (d >= .2) {
-        console.log(7);
-        return shadeRange[7];
-    }
-    if (d <= -.1) {
-        console.log(2);
-        return shadeRange[2];
-    }
-    if (d >= .1) {
-        console.log(6);
-        return shadeRange[6];
-    }
-    if (d <= -.0002) {
-        console.log(3);
-        return shadeRange[3];
-    }
-    if (d >= .0002) {
-        console.log(5);
-        return shadeRange[5];
-    }
-    else {
-        console.log(4);
-        return shadeRange[4];
-    }
-}
-
-
 function getDelegateShade(d) {
     shadeRange = ['6BA347','6BA347','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
 
