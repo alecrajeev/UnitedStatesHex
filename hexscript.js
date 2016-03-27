@@ -225,7 +225,7 @@ function showPrimaryDistrictVote() {
 }
 
 function showLeg(j) {
-    shadeRange = ['6BA347','95C077','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
+    shadeRange = ['#6BA347','#95C077','#BFDEA9','#E4F9D6','#FFF','#E0F0FD','#B3CFE9','#7FAAD3','#4488BD'];
     var LegendContent = svgLegend.selectAll(".LegendContent")
         .data(shadeRange)
 

@@ -3,7 +3,7 @@
 var color = d3.scale.linear() // initial color scale for the demographic data
     .range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
-var shadeRange = ['6BA347','95C077','BFDEA9','E4F9D6','FFF','E0F0FD','B3CFE9','7FAAD3','4488BD'];
+var shadeRange = ['#6BA347','#95C077','#BFDEA9','#E4F9D6','#FFF','#E0F0FD','#B3CFE9','#7FAAD3','#4488BD'];
 
 var stateColor = ["#A94588","#D76940","#D13F46","#23A5C5", "#F0A851", "#F0A851", "#A94588", "#23A5C5", "#228947", "#2B6AA1", "#D13F46", "#A94588", "#A94588",
  "#2B6AA1", "#F0A851", "#D76940", "#D13F46", "#D13F46", "#6EAE51", "#A94588", "#A94588", "#D76940", "#D13F46", "#F0A851", "#228947", "#D76940", "#23A5C5",
