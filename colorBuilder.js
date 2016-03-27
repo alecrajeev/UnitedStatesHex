@@ -3,6 +3,12 @@
 var color = d3.scale.linear() // initial color scale for the demographic data
     .range(['rgb(247,252,245)','rgb(229,245,224)','rgb(199,233,192)','rgb(161,217,155)','rgb(116,196,118)','rgb(65,171,93)','rgb(35,139,69)','rgb(0,109,44)','rgb(0,68,27)']);
 
+var eleven_domain = [-1.0,-0.3,-0.2,-0.1,-0.05,0.0,0.05,0.1,0.2,0.3,1.0]; 
+
+var primaryColor = d3.scale.linear()
+    .domain([-1.0,-.7,-.5,-.2,-.1,-.05,-.025,0.0,.025,.05,.1,.2,.5,.7,1.0])
+    .range(['#6ba347','#81b061','#97bd7b','#acca95','#c1d8af','#d5e5c9','#eaf1e3','#ffffff','#e6edf6','#cedcec','#b5cae3','#9cb9d9','#81a8d0','#6598c6','#4488bd']);
+
 var shadeRange = ['#6BA347','#95C077','#BFDEA9','#E4F9D6','#FFF','#E0F0FD','#B3CFE9','#7FAAD3','#4488BD'];
 
 var stateColor = ["#A94588","#D76940","#D13F46","#23A5C5", "#F0A851", "#F0A851", "#A94588", "#23A5C5", "#228947", "#2B6AA1", "#D13F46", "#A94588", "#A94588",
@@ -66,6 +72,7 @@ function getPrimaryShade(d) {
 }
 
 function getDelegateShade(d) {
+
     if (d <= -9)
         return shadeRange[0];
     if (d <= -4)
@@ -86,12 +93,23 @@ function getDelegateShade(d) {
         return shadeRange[8];
 }
 
+function getPrimaryColor(d,i) {
+    if (i == 1) // if looking at delegates per district
+        d = d/9.0;
+
+    return primaryColor(d);
+
+}
+
+
 function getDelegateStateColor(stateID) {
     if (stateID != -1) {
         if (isNaN(primaryByStateID[stateID][0]))
             return '#E2E2E2';
-        else
-            return getPrimaryShade(primaryByStateID[stateID][0]);
+        else {
+            // return getPrimaryShade(primaryByStateID[stateID][0]);
+            return getPrimaryColor(primaryByStateID[stateID][0],0);
+        }
     }
 }
 
@@ -100,7 +118,8 @@ function getPrimaryDelegates(districtID) {
         if (isNaN(primaryByDistrictID[districtID][2]))
             return '#E2E2E2';
         else {
-            return getDelegateShade(primaryByDistrictID[districtID][2]);
+            // return getDelegateShade(primaryByDistrictID[districtID][2]);
+            return getPrimaryColor(primaryByDistrictID[districtID][2],1);
         }
     }
 }
@@ -109,8 +128,10 @@ function getPrimaryVote(districtID) {
     if (districtID != -1) {
         if (isNaN(primaryByDistrictID[districtID][6]))
             return '#E2E2E2';
-        else
-            return getPrimaryShade(primaryByDistrictID[districtID][6]);
+        else {
+            // return getPrimaryShade(primaryByDistrictID[districtID][6]);
+            return getPrimaryColor(primaryByDistrictID[districtID][6],0);
+        }
     }
 }
 
@@ -118,8 +139,10 @@ function getVoteStateColor(stateID) {
     if (stateID != -1) {
         if (isNaN(primaryByStateID[stateID][1]))
             return '#E2E2E2';
-        else
-            return getPrimaryShade(primaryByStateID[stateID][1]);
+        else {
+            // return getPrimaryShade(primaryByStateID[stateID][1]);
+            return getPrimaryColor(primaryByStateID[stateID][1],0);
+        }
     }
 }
 

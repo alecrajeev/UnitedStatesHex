@@ -35,14 +35,13 @@
 .legend {
 	position: relative;
 	top: -6px;
-	height: 250px;
+	height: 375px;
 	border: solid black;
 	padding: 5px;
 	padding-top: 10px;
 	display: block;
 	font-family: "Helvetica Neue";
 	stroke-width: 2px;
-	/*display: none;*/
 }
 
 .legTitle {

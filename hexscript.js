@@ -24,7 +24,7 @@ var svg = d3.select(".map").append("svg")
     .attr("height", height);
 
 var svgLegend = d3.select(".legendChart").append("svg")
-    .attr("height", "220px")
+    .attr("height", "3200px")
     .attr("width", "162px");
 
 queue()
@@ -224,7 +224,60 @@ function showPrimaryDistrictVote() {
     showLeg(0)
 }
 
+function showLegend(j) {
+
+
+    var LegendContent = svgLegend.selectAll(".LegendContent")
+        .data(primaryColor.domain())
+    
+    var LegendEnter = LegendContent.enter()
+        .append("g")
+        .attr("class", "LegendContent")
+        .attr("transform", function(d,i) {
+            var rectHeight = i*(legendRectSize + legendSpacing);
+            var rectWidth = legendRectSize;
+            return "translate(" + rectWidth + ", " + rectHeight + ")";
+        })
+    
+    LegendEnter.append("rect")
+        .attr("width", legendRectSize-2)
+        .attr("height", legendRectSize)
+        .style("fill", function(d) {return primaryColor(d)})
+        .style("stroke", "black")
+    
+    LegendEnter.append("text")
+        .attr("x", legendRectSize + legendSpacing*1.3)
+        .attr("y", legendRectSize-1)
+        .text(function(d) {
+            return d3.round(d*100,1).toString() + "%";
+        });
+    
+    var updateSelection = svgLegend.selectAll(".LegendContent")
+        .transition()
+        .duration(1000)
+        .style("opacity", "1")
+        .attr("transform", function(d,i) {
+            var rectHeight = i*(legendRectSize + legendSpacing);
+            var rectWidth = legendRectSize;
+            return "translate(" + rectWidth + ", " + rectHeight + ")";
+        })
+    
+    updateSelection.select("rect")
+        .style("fill", function(d) {return primaryColor(d);    });
+    
+    updateSelection.select("text")
+        .text(function(d) {
+            return d3.round(d*100,1).toString() + "%";
+        });
+    
+    LegendContent.exit()
+        .remove();
+}
+
 function showLeg(j) {
+
+    showLegend(j);
+    /*
     shadeRange = ['#6BA347','#95C077','#BFDEA9','#E4F9D6','#FFF','#E0F0FD','#B3CFE9','#7FAAD3','#4488BD'];
     var LegendContent = svgLegend.selectAll(".LegendContent")
         .data(shadeRange)
@@ -320,7 +373,8 @@ function showLeg(j) {
             return "H > 0";
         else
             return "0 ";        
-    }     
+    }
+    */
 }
 
 function changeTooltip(d) {
