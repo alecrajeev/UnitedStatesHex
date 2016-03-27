@@ -90,7 +90,7 @@ function makeMyMap(error, ushex, delegateStateData, primaryData) {
         .attr("class", "specificBorder")
         .call(drawSpecificDistrict);
 
-    showLeg(0);
+    showLegend(0);
 
     drawBernieBorder = function (border) {
         border.attr("d", path(topojson.mesh(ushex, ushex.objects.states, checkBorderByBernie)));
@@ -189,7 +189,7 @@ function showStateDelegates() {
                 stroke: function(d) {return getDelegateStateColor(d.properties.stateID);        }});
     d3.select(".legend").style("display", "");
     toolTipSelector = 0;
-    showLeg(0);
+    showLegend(0);
 }
 
 function showCongressionalDelegates() {
@@ -199,7 +199,7 @@ function showCongressionalDelegates() {
                 stroke: function(d) {return getPrimaryDelegates(d.properties.districtID);   }});
     toolTipSelector = 1;
     d3.select(".legend").style("display", "");
-    showLeg(1)
+    showLegend(1)
 
 }
 
@@ -210,7 +210,7 @@ function showStateVotes() {
                 stroke: function(d) {return getVoteStateColor(d.properties.stateID);    }});
     toolTipSelector = 2;
     d3.select(".legend").style("display", "");
-    showLeg(0);
+    showLegend(0);
 }
 
 function showPrimaryDistrictVote() {
@@ -221,7 +221,7 @@ function showPrimaryDistrictVote() {
     d3.select(".legend").style("display", "none");
     toolTipSelector = 4;
     d3.select(".legend").style("display", "");
-    showLeg(0)
+    showLegend(0)
 }
 
 function showLegend(j) {
@@ -248,8 +248,17 @@ function showLegend(j) {
     LegendEnter.append("text")
         .attr("x", legendRectSize + legendSpacing*1.3)
         .attr("y", legendRectSize-1)
-        .text(function(d) {
-            return d3.round(d*100,1).toString() + "%";
+        .text(function(d,i) {
+            number = d3.round(d*100,1).toString() + "%";
+            text = "";
+            if (i < 7) {
+                text = " Bernie";
+            }
+            if (i > 7) {
+                text = " Hillary";
+            }
+
+            return number + text;
         });
     
     var updateSelection = svgLegend.selectAll(".LegendContent")
@@ -266,115 +275,23 @@ function showLegend(j) {
         .style("fill", function(d) {return primaryColor(d);    });
     
     updateSelection.select("text")
-        .text(function(d) {
-            return d3.round(d*100,1).toString() + "%";
+        .text(function(d, i) {
+            if (d < 0)
+                d *= -1.0;
+            number = d3.round(d*100,1).toString() + "%";
+            text = "";
+            if (i < 7) {
+                text = " B";
+            }
+            if (i > 7) {
+                text = " H";
+            }
+
+            return number + text;
         });
     
     LegendContent.exit()
         .remove();
-}
-
-function showLeg(j) {
-
-    showLegend(j);
-    /*
-    shadeRange = ['#6BA347','#95C077','#BFDEA9','#E4F9D6','#FFF','#E0F0FD','#B3CFE9','#7FAAD3','#4488BD'];
-    var LegendContent = svgLegend.selectAll(".LegendContent")
-        .data(shadeRange)
-
-    var LegendEnter = LegendContent.enter()
-        .append("g")
-        .attr("class", "LegendContent")
-        .attr("transform", function(d,i) {
-            var rectHeight = i*(legendRectSize + legendSpacing);
-            var rectWidth = legendRectSize;
-            return "translate(" + rectWidth + ", " + rectHeight + ")";
-        })
-
-    LegendEnter.append("rect")
-        .attr("width", legendRectSize-2)
-        .attr("height", legendRectSize)
-        .style("fill", function(d,i) {return shadeRange[i]})
-        .style("stroke", "black");
-
-    LegendEnter.append("text")
-        .attr("x", legendRectSize + legendSpacing*1.3)
-        .attr("y", legendRectSize-1)
-        .text(function(d, i) {
-            if (j == 1) {
-                return getLegendDelText(i) + " delegates";
-            }
-            else {
-                return getLegendPrepText(i) + " Pct."
-            }
-        });
-
-
-    var updateSelection = svgLegend.selectAll(".LegendContent")
-        .attr("transform", function(d,i) {
-            var rectHeight = i*(legendRectSize + legendSpacing);
-            var rectWidth = legendRectSize;
-            return "translate(" + rectWidth + ", " + rectHeight + ")";
-        })
-    
-    updateSelection.select("rect")
-        .style("fill", function(d,i) {return shadeRange[i];    });
-    
-    updateSelection.select("text")
-        .text(function(d, i) {
-            if (j == 1) {
-                return getLegendDelText(i) + " delegates";
-            }
-            else {
-                return getLegendPrepText(i) + " Pct."
-            }
-        });
-    
-    LegendContent.exit()
-        .remove();
-
-    function getLegendPrepText(i) {
-        if (i == 0)
-            return "B > 30%"
-        if (i == 8)
-            return "H > 30%";
-        if (i == 1)
-            return "B > 20%";
-        if (i == 7)
-            return "H > 20%";
-        if (i == 2)
-            return "B > 10%";
-        if (i == 6)
-            return "H > 10%";
-        if (i == 3)
-            return "B > 0%";
-        if (i == 5)
-            return "H > 0%";
-        else
-            return "B = 0%";        
-    }
-
-    function getLegendDelText(i) {
-        if (i == 0)
-            return "B > 8"
-        if (i == 8)
-            return "H > 8";
-        if (i == 1)
-            return "B > 3";
-        if (i == 7)
-            return "H > 3";
-        if (i == 2)
-            return "B > 1";
-        if (i == 6)
-            return "H > 2";
-        if (i == 3)
-            return "B > 0";
-        if (i == 5)
-            return "H > 0";
-        else
-            return "0 ";        
-    }
-    */
 }
 
 function changeTooltip(d) {
