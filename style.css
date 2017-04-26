@@ -10,13 +10,13 @@
 .left {
     position: absolute;
     left:0; top:80px; bottom: 0;
-    width: 178px;
+    width: 250px;
     margin-left: 15px;
 }
 
 .main {
     position: relative;
-    left:180px; top:92px; right:0; bottom:0;
+    left:252px; top:92px; right:0; bottom:0;
 }
 
 .right {
@@ -45,64 +45,10 @@
 	display: none;
 }
 
-.bernieLegend {
-	position: relative;
-	top: -6px;
-	height: 220px;
-	border: solid black;
-	padding: 5px;
-	padding-top: 10px;
-	display: block;
-	font-family: "Helvetica Neue";
-	stroke-width: 2px;
-	display: none;
-}
-
-.voteSelector {
-	position: relative;
-	height: 302px;
-	border: solid black;
-	padding: 5px;
-	display: block;
-	font-family: "Helvetica Neue";
-	stroke-width: 2px;
-	background: #fff;
-	overflow: scroll;
-	display: block;
-}
-
-.voteSelector text {
-	position: relative;
-	text-align: center;
-	display: block;
-	border-bottom: thin solid black;
-	padding: 10px 30px 10px 30px;
-	font-weight: bold;
-	font-family: 'Helvetica Neue';
-}
-
 .buttonDiv {
 	padding: 5px 5px 5px 5px;
 	font-family: "Helvetica Neue";
 
-}
-
-.voteLegend {
-	position: relative;
-	top: -3px;
-	height: 120px;
-	border: solid black;
-	padding: 5px;
-	padding-top: 10px;
-	display: block;
-	font-family: "Helvetica Neue";
-	stroke-width: 2px;
-	display: none;
-}
-
-.nytimesLogo {
-	position: relative;
-	top: -3px;
 }
 
 .passage {
@@ -151,6 +97,13 @@
 	padding: 5px;
 	font-family: 'Helvetica Neue';
 	display: block;
+	line-height: 1.3;
+}
+
+.legTitle {
+	text-align: center;
+	font-weight: bold;
+
 }
 
 .toggleSideBar {
@@ -192,10 +145,37 @@
 	pointer-events: none;
 }
 
-.bernieBorder {
-	fill: none;
-	stroke: #7fff00;
-	stroke-width: 2.5px;
-	stroke-opacity: 0;
-	pointer-events: none;
+
+.g-tooltip {
+	position: absolute;
+	background-color: #fff;
+	padding: 5px 8px 5px 6px;
+	font-family: "Helvetica Neue";
+	top: 800px;
+	width: 100px;
+	height: 25px;
+	overflow: hidden;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 7px rgba(0,0,0,0.3);
+/*	font-size: 62.5%;
+*/}
+
+.tooltip-district {
+	font-weight: bold;
+	text-align: center;
+}
+
+.tooltip-data {
+	font-size: 80%;
+	text-align: center;
+}
+
+.tooltip-data-a {
+	font-size: 80%;
+	text-align: left;
+}
+
+.tooltip-data-b {
+	font-size: 80%;
+	text-align: left;
 }

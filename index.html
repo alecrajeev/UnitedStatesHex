@@ -5,13 +5,12 @@
 		<meta charset="utf-8">
         <link rel="icon" href="favicon.ico" />
         <link rel="stylesheet", type="text/css", href="style.css">
-		<title>United States Congressional Districts as Hexagons</title>
+		<title>Best Map of the Democratic Primary</title>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js">
         </script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js">
         </script>
-    	<script type="text/javascript" src="colorBuilder.js"></script>
 	</head>
 
 	<body>
@@ -27,66 +26,75 @@
         		<div class="typeToggle">
         			<input type="radio" name="data-selector" checked onclick="showStates()">States
         		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(6)">Presidential Results 2012
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(7)">Presidential Results 2008
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(0)">White Demographics
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(1)">Black Demographics
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(2)">Latino Demographics
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(3)">Asian Demographics
-        		</div>
-        		<div class="typeToggle">
-        			<input type="radio" name="data-selector" onclick="showDataSet(4)">MultiRacial Demographics
-        		</div>
                 <div class="typeToggle">
-                    <input type="radio" name="data-selector" onclick="showDataSet(8)">Turnout 2014
+                    <input type="radio" name="data-selector" onclick="showDataSet(0)">White Demographics
                 </div>
-    		</div>
-      		
-    		<div class="information">
-    			<div>State: <span class="whichState"></span></div>
-    			<div>District: <span class="whichDistrict"></span></div>
-    			<div class="Obama2012 Tooltip"> Obama 2012: </div>
-    			<div class="Obama2008 Tooltip"> Obama 2008: </div>
-    			<div class="White Tooltip">White: </div>
-    			<div class="Black Tooltip">Black: </div>
-    			<div class="Latino Tooltip">Latino: </div>
-    			<div class="Asian Tooltip">Asian: </div>
-    			<div class="Multiracial Tooltip">Multiracial: </div>
-                <div class="Turnout Tooltip">Turnout: </div>
-                <!-- <div class="BernieEvent Tooltip">Bernie Event Attendance: </div> -->
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(1)">Black Demographics
+                </div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(2)">Latinx Demographics
+                </div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(3)">Asian Demographics
+                </div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(4)">Native American Demo
+                </div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(5)">Multiracial Demo
+                </div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(10)">2016 Presidential
+                </div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(11)">2012 Presidential
+                </div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(12)">2016 Change
+                </div>
+                <div class="typeToggle">
+                    <input type="radio" name="data-selector" onclick="showDataSet(15)">House Margin
+                </div>                
     		</div>
 
-            <div class="legend"></div>
-            <!-- <div class="bernieLegend"></div> -->
+            <div class="information">
+                <div>State: <span class="whichState"></span></div>
+                <div>District: <span class="whichDistrict"></span></div>
+
+                <div class="White Info">White: </div>
+                <div class="Black Info">Black: </div>
+                <div class="Latinx Info">Latinx: </div>
+                <div class="Asian Info">Asian: </div>
+                <div class="NativeAmerican Info">NativeAmerican: </div>
+                <div class="Multiracial Info">Multiracial: </div>
+                <div class="Pres2016 Info">2016 Margin: </div>
+                <div class="Pres2012 Info">2012 Margin: </div>
+                <div class="PresChange Info">'12 to '16 Change: </div>
+                <div class="HouseMargin Info">House Margin: </div>
+            </div>
+
+            <div class="legend">
+              <div class="legTitle">Margin of Victory</div>
+              <div class="legendChart"></div>
+            </div>
         </div>
 
         <div class="main">
             <div class="map"></div>
+       
+            <!-- <div class="sampleImage"> <img src="http://i.imgur.com/fxb0OcG.png" /></div> -->
         </div>
 
-<!--         <div class="right">
-            <div class="voteSelector">
-            <text>Congressional Votes</text>
-            </div>
-            <div class="voteLegend"></div>
-            <div class="nytimesLogo">
-                <a href="http://developer.nytimes.com"><img src="poweredby_nytimes_178c.png"></a>
-            </div>
-    	</div> -->
+        <div class="g-tooltip">
+            <div class="tooltip-district"></div>
+            <div class="tooltip-data"></div>
+            <div class="tooltip-data-a"></div>
+            <div class="tooltip-data-b"></div>
+        </div>             
 
   </body>
   <script type="text/javascript" src="hexscript.js"></script>
-  <script type="text/javascript" src="votescript.js"></script>
+  <script type="text/javascript" src="colorBuilder.js"></script>
 
 </html>
